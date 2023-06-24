@@ -60,12 +60,13 @@ I am a Full Stack Developer <img src="https://media.giphy.com/media/WUlplcMpOCEm
   <img src="https://github.com/tandpfun/skill-icons/blob/main/icons/VisualStudio-Dark.svg" title="VS" **alt="VS" width="50" height="50"/>&nbsp;
 </div>
 <div>
-  <img src="https://github.com/tandpfun/skill-icons/blob/main/icons/VisualStudio-Dark.svg" title="VScode" **alt="VScode" width="50" height="50"/>
-  <img src="https://github.com/tandpfun/skill-icons/blob/main/icons/PostgreSQL-Light.svg" title="PostgreSQL" **alt="PostgreSQL" width="50" height="50"/>
-  <img src="https://github.com/tandpfun/skill-icons/blob/main/icons/Github-Dark.svg" title="GitHub" **alt="GitHub" width="50" height="50"/>
+  <img src="https://github.com/tandpfun/skill-icons/blob/main/icons/VisualStudio-Dark.svg" title="VScode" **alt="VScode" width="50" height="50"/>&nbsp;
+  <img src="https://github.com/tandpfun/skill-icons/blob/main/icons/PostgreSQL-Light.svg" title="PostgreSQL" **alt="PostgreSQL" width="50" height="50"/>&nbsp;
+  <img src="https://github.com/tandpfun/skill-icons/blob/main/icons/Github-Dark.svg" title="GitHub" **alt="GitHub" width="50" height="50"/>&nbsp;
+  <img src="https://github.com/tandpfun/skill-icons/blob/main/icons/Wordpress.svg" title="WordPress" **alt="WordPress" width="50" height="50"/>&nbsp;
 </div>
 
 ### :hammer_and_wrench: Soon :
 <div>
-  <img src="https://github.com/tandpfun/skill-icons/blob/main/icons/GitLab-Light.svg" title="GitLab" **alt="GitLab" width="50" height="50"/>
+  <img src="https://github.com/tandpfun/skill-icons/blob/main/icons/GitLab-Light.svg" title="GitLab" **alt="GitLab" width="50" height="50"/>&nbsp;
 </div>
