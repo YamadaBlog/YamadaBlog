@@ -38,17 +38,34 @@ I am a Full Stack Developer <img src="https://media.giphy.com/media/WUlplcMpOCEm
 
 ### :hammer_and_wrench: Languages and Tools :
 <div>
-  <img src="https://github.com/devicons/devicon/blob/master/icons/react/react-original-wordmark.svg" title="React" alt="React" width="40" height="40"/>&nbsp;
-  <img src="https://github.com/devicons/devicon/blob/master/icons/java/java-original-wordmark.svg" title="Java" alt="Java" width="40" height="40"/>&nbsp;
-  <img src="https://github.com/devicons/devicon/blob/master/icons/angularjs/angularjs-original.svg" title="AngularJS" alt="AngularJS" width="40" height="40"/>&nbsp;
-  <img src="https://github.com/devicons/devicon/blob/master/icons/php/php-original.svg" title="PHP" alt="PHP" width="40" height="40"/>&nbsp;
-  <img src="https://github.com/devicons/devicon/blob/master/icons/tortoisegit/tortoisegit-original.svg" title="tortoisegit" alt="tortoisegit" width="40" height="40"/>&nbsp;
-  <img src="https://github.com/devicons/devicon/blob/master/icons/css3/css3-plain-wordmark.svg"  title="CSS3" alt="CSS" width="40" height="40"/>&nbsp;
-  <img src="https://github.com/devicons/devicon/blob/master/icons/html5/html5-original.svg" title="HTML5" alt="HTML" width="40" height="40"/>&nbsp;
-  <img src="https://github.com/devicons/devicon/blob/master/icons/javascript/javascript-original.svg" title="JavaScript" alt="JavaScript" width="40" height="40"/>&nbsp;
-  <img src="https://github.com/devicons/devicon/blob/master/icons/mysql/mysql-original-wordmark.svg" title="MySQL"  alt="MySQL" width="40" height="40"/>&nbsp;
-  <img src="https://github.com/devicons/devicon/blob/master/icons/nodejs/nodejs-original-wordmark.svg" title="NodeJS" alt="NodeJS" width="40" height="40"/>&nbsp;
-  <img src="https://github.com/devicons/devicon/blob/master/icons/git/git-original-wordmark.svg" title="Git" **alt="Git" width="40" height="40"/>
-  <img src="https://github.com/devicons/devicon/blob/master/icons/visualstudio/visualstudio-plain.svg" title="VS" **alt="VS" width="40" height="40"/>
-  <img src="https://github.com/devicons/devicon/blob/master/icons/vscode/vscode-original.svg" title="VScode" **alt="VScode" width="40" height="40"/>
+  <img src="https://github.com/tandpfun/skill-icons/blob/main/icons/React-Dark.svg" title="React" alt="React" width="50" height="50"/>&nbsp;
+  <img src="https://github.com/tandpfun/skill-icons/blob/main/icons/Java-Dark.svg" title="Java" alt="Java" width="50" height="50"/>&nbsp;
+  <img src="https://github.com/devicons/devicon/blob/master/icons/angularjs/angularjs-original.svg" title="Angular" alt="Angular" width="50" height="50"/>&nbsp;
+  <img src="https://github.com/tandpfun/skill-icons/blob/main/icons/CS.svg" title="CS" alt="CS" width="50" height="50"/>&nbsp;
+  <img src="https://github.com/tandpfun/skill-icons/blob/main/icons/Angular-Dark.svg" title="AngularJS" alt="AngularJS" width="50" height="50"/>&nbsp;
+  <img src="https://github.com/tandpfun/skill-icons/blob/main/icons/Python-Dark.svg" title="Py" **alt="Python" width="50" height="50"/>&nbsp;
+  <img src="https://github.com/tandpfun/skill-icons/blob/main/icons/PHP-Dark.svg" title="PHP" alt="PHP" width="50" height="50"/>&nbsp;
+  <img src="https://github.com/tandpfun/skill-icons/blob/main/icons/CSS.svg"  title="CSS3" alt="CSS" width="50" height="50"/>&nbsp;
+    <img src="https://github.com/tandpfun/skill-icons/blob/main/icons/Docker.svg" title="Docker" **alt="Docker" width="50" height="50"/>&nbsp;
+</div>
+<div>
+  <img src="https://github.com/tandpfun/skill-icons/blob/main/icons/MySQL-Dark.svg" title="MySQL" **alt="MySQL" width="50" height="50"/>&nbsp;
+  <img src="https://github.com/tandpfun/skill-icons/blob/main/icons/HTML.svg" title="HTML5" alt="HTML" width="50" height="50"/>&nbsp;
+  <img src="https://github.com/tandpfun/skill-icons/blob/main/icons/TailwindCSS-Dark.svg" title="Tailwind" **alt="Tailwind" width="50" height="50"/>&nbsp;
+  <img src="https://github.com/tandpfun/skill-icons/blob/main/icons/Bootstrap.svg" title="Bootstrap" **alt="Bootstrap" width="50" height="50"/>&nbsp;
+  <img src="https://github.com/tandpfun/skill-icons/blob/main/icons/Gulp.svg" title="Gulp" **alt="Gulp" width="50" height="50"/>&nbsp;
+  <img src="https://github.com/devicons/devicon/blob/master/icons/javascript/javascript-original.svg" title="JavaScript" alt="JavaScript" width="50" height="50"/>&nbsp;
+  <img src="https://github.com/tandpfun/skill-icons/blob/main/icons/NodeJS-Dark.svg" title="NodeJS" alt="NodeJS" width="50" height="50"/>&nbsp;
+  <img src="https://github.com/tandpfun/skill-icons/blob/main/icons/Git.svg" title="Git" **alt="Git" width="50" height="50"/>&nbsp;
+  <img src="https://github.com/tandpfun/skill-icons/blob/main/icons/VisualStudio-Dark.svg" title="VS" **alt="VS" width="50" height="50"/>&nbsp;
+</div>
+<div>
+  <img src="https://github.com/tandpfun/skill-icons/blob/main/icons/VisualStudio-Dark.svg" title="VScode" **alt="VScode" width="50" height="50"/>
+  <img src="https://github.com/tandpfun/skill-icons/blob/main/icons/PostgreSQL-Light.svg" title="PostgreSQL" **alt="PostgreSQL" width="50" height="50"/>
+  <img src="https://github.com/tandpfun/skill-icons/blob/main/icons/Github-Dark.svg" title="GitHub" **alt="GitHub" width="50" height="50"/>
+</div>
+
+### :hammer_and_wrench: Soon :
+<div>
+  <img src="https://github.com/tandpfun/skill-icons/blob/main/icons/GitLab-Light.svg" title="GitLab" **alt="GitLab" width="50" height="50"/>
 </div>
