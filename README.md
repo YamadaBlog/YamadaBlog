@@ -23,7 +23,7 @@
 
 ---
   
-### :man_technologist: Me :
+### :man_technologist: me :
 I am a Full Stack Developer <img src="https://media.giphy.com/media/WUlplcMpOCEmTGBtBW/giphy.gif" width="30"> from France.
 
 - :telescope: I’m working as a Software Engineer and contributing to frontend and backend for building web and mobile applications.
@@ -35,17 +35,17 @@ I am a Full Stack Developer <img src="https://media.giphy.com/media/WUlplcMpOCEm
 
 ---
 
-### :hammer_and_wrench: Live with :
+### :hammer_and_wrench: live with :
 
 [![My Skills](https://skillicons.dev/icons?i=angular,bootstrap,cs,react,css,docker,dotnet,figma,git,github,html,java,js,mysql,nodejs,php,postgres,py,react,visualstudio,vscode,wordpress&perline=9)](https://skillicons.dev)
 
-### :hammer_and_wrench: Soon :
+### :hammer_and_wrench: soon :
 
 [![My Skills](https://skillicons.dev/icons?i=nextjs,gitlab&perline=9)](https://skillicons.dev)
 
 ---
 
-### :fire: My Stats :
+### :fire: my stats :
 
 [![GitHub Streak](http://github-readme-streak-stats.herokuapp.com?user=YamadaBlog&theme=dark&hide_border=FAUX)](https://git.io/streak-stats)
 
