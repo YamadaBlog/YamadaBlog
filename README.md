@@ -23,9 +23,9 @@
 ## :man_technologist: me :
 I am a Full Stack Developer <img src="https://media.giphy.com/media/WUlplcMpOCEmTGBtBW/giphy.gif" width="30"> from France.
 
-- :telescope: I’m working as a Software Engineer and contributing to frontend and backend for building web and mobile applications.
+- :telescope: I’m working as a Software Engineer and contributing to frontend and backend for building web and mobile applications
 
-- :seedling: Exploring Technical Content Writing. LOL.
+- :seedling: Exploring Technical Content Writing. LOL
 
 - :zap: In my free time, I solve problems on GFG, travel, climb, chess, read, dev, series, movies, sleep and family content. iykyk 
 
@@ -46,3 +46,6 @@ I am a Full Stack Developer <img src="https://media.giphy.com/media/WUlplcMpOCEm
   <img src="https://github-readme-stats.vercel.app/api/top-langs?username=YamadaBlog&locale=en&hide_title=false&layout=compact&card_width=320&langs_count=5&theme=dracula&hide_border=false&order=2" height="150" alt="languages graph"  />
 </div>
 
+###
+
+- Feel free to contact me if you want to or need help
