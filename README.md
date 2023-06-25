@@ -21,6 +21,7 @@
 </div>
 
 ## :man_technologist: me :
+###### French student intern
 I am a Full Stack Developer <img src="https://media.giphy.com/media/WUlplcMpOCEmTGBtBW/giphy.gif" width="30"> from France.
 
 - :telescope: I’m working as a Software Engineer and contributing to frontend and backend for building web and mobile applications
@@ -48,4 +49,4 @@ I am a Full Stack Developer <img src="https://media.giphy.com/media/WUlplcMpOCEm
 
 ###
 
-- Feel free to contact me if you want to or need help
+- Feel free to contact me if you want to or iy need help
