@@ -44,4 +44,11 @@ I am a Full Stack Developer <img src="https://media.giphy.com/media/WUlplcMpOCEm
 
 [![My Skills](https://skillicons.dev/icons?i=nextjs,gitlab&perline=9)](https://skillicons.dev)
 
+---
+
+### :fire: My Stats :
+
+[![GitHub Streak](http://github-readme-streak-stats.herokuapp.com?user=YamadaBlog&theme=dark&hide_border=FAUX)](https://git.io/streak-stats)
+
+
 
