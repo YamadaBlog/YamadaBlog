@@ -30,7 +30,7 @@ I am a Full Stack Developer <img src="https://media.giphy.com/media/WUlplcMpOCEm
 
 - :seedling: Exploring Technical Content Writing. LOL.
 
-- :zap: In my free time, I solve problems on GeeksforGeeks and travel.
+- :zap: In my free time, I solve problems on GFG, travel, climb, chess, read, dev, series, movies, sleep and family content. iykyk 
 
 
 ---
