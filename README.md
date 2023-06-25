@@ -23,7 +23,7 @@
 
 ---
   
-### :man_technologist: About Me :
+### :man_technologist: Me :
 I am a Full Stack Developer <img src="https://media.giphy.com/media/WUlplcMpOCEmTGBtBW/giphy.gif" width="30"> from France.
 
 - :telescope: I’m working as a Software Engineer and contributing to frontend and backend for building web and mobile applications.
@@ -48,6 +48,12 @@ I am a Full Stack Developer <img src="https://media.giphy.com/media/WUlplcMpOCEm
 ### :fire: My Stats :
 
 [![GitHub Streak](http://github-readme-streak-stats.herokuapp.com?user=YamadaBlog&theme=dark&hide_border=FAUX)](https://git.io/streak-stats)
+
+###
+
+<img src="https://raw.githubusercontent.com/YamadaBlog/YamadaBlog/output/snake.svg" alt="Snake animation" />
+
+###
 
 
 
