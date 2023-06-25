@@ -45,7 +45,7 @@ I am a Full Stack Developer <img src="https://media.giphy.com/media/WUlplcMpOCEm
 
 ---
 
-### :fire: my stats :
+### :fire: stats :
 
 [![GitHub Streak](http://github-readme-streak-stats.herokuapp.com?user=YamadaBlog&theme=dark&hide_border=FAUX)](https://git.io/streak-stats)
 
