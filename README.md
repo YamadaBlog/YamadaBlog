@@ -51,7 +51,7 @@ I am a Full Stack Developer <img src="https://media.giphy.com/media/WUlplcMpOCEm
 
 ###
 
-<img src="https://github.com/YamadaBlog/YamadaBlog/blob/main/snake.yml" alt="Snake animation" />
+<img src="https://raw.githubusercontent.com/YamadaBlog/YamadaBlog/output/snake.svg" alt="Snake animation" />
 
 ###
 
