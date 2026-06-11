@@ -16,7 +16,7 @@
 
 ## The Realm — *who rules here*
 
-I'm **Loïc** — a software engineer who builds **premium developer tools, multi-framework UI libraries, and AI-first systems**.
+I'm **MAO** — a software engineer who builds **premium developer tools, multi-framework UI libraries, and AI-first systems**.
 
 The crown is a metaphor; the engineering is real. I favour calm, well-defended **foundations** over loud features — code that is tested, documented, and built to outlast its author. I'd rather ship one fortress than ten tents.
 
@@ -57,12 +57,6 @@ A premium **drop-in music player** — one component, six kingdoms: **Vue, React
 
 An **embodied AI companion** — a small digital being that lives on screen, understands your work context, and remembers across time. A Tauri desktop shell over a cognition-and-memory core. Early foundations.
 
-### 🜚 command-center · *the keep (private)*
-
-An **AI-first command center** — the spine that maps the estate, preserves captured knowledge, and orchestrates agents, memory, and tooling.
-
-> Some realms lie beyond the public gates. Their walls are real; their gates are closed.
-
 ---
 
 ## Current Campaigns — *where the banners march now*
@@ -77,8 +71,6 @@ An **AI-first command center** — the spine that maps the estate, preserves cap
 
 - 🏰 **GitHub** — [@YamadaBlog](https://github.com/YamadaBlog)
 - ▶️ **YouTube** — [@YamadaBlog](https://www.youtube.com/@YamadaBlog)
-- ✉️ **Email** — yamadaablog@gmail.com
-- 🔗 **LinkedIn** — *(to be added)* · **X / Twitter** — *(to be confirmed)*
 
 ---
 
