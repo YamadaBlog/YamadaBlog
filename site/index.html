@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>mao@lab</title>
-<meta name="description" content="MAO (YamadaBlog) builds systems that have to be right: quant research platforms, AI-first tooling, multi-framework UI.">
+<meta name="description" content="MAO (YamadaBlog) builds systems that have to be right: research infrastructure, agent orchestration, security research.">
 <meta property="og:title" content="mao@lab">
-<meta property="og:description" content="Systems that have to be right, not just run.">
+<meta property="og:description" content="Research infrastructure, agent orchestration, security research. Systems that have to be right, not just run.">
 <meta name="theme-color" content="#0b0e14">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b0e14'/%3E%3Ctext x='6' y='22' font-family='monospace' font-size='16' fill='%237ee7c4'%3E%3E_%3C/text%3E%3C/svg%3E">
 <!--
@@ -92,7 +92,14 @@ pre.code{margin:0;font-size:13.5px;line-height:1.75;background:var(--bg2);border
 .tl>div{display:grid;grid-template-columns:100px 1fr;gap:18px;padding:0 0 22px 20px;position:relative}
 .tl>div::before{content:"";position:absolute;left:-4px;top:8px;width:7px;height:7px;background:var(--acc);border-radius:50%}
 .tl time{font:12px var(--mono);color:var(--acc);padding-top:3px}.tl p{margin:2px 0 0;color:var(--mute);font-size:15px}
-.stack{font:14px/2.1 var(--mono);color:var(--mute)}.stack b{color:var(--vio);font-weight:500;display:inline-block;min-width:100px}
+.dom{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+.dom>div{border-left:2px solid var(--line);padding-left:14px}
+.dom b{font:600 13px var(--mono);color:var(--vio);letter-spacing:.03em}
+.dom p{margin:4px 0 0;color:var(--mute);font-size:14.5px}
+ul.auto{margin:10px 0 0;padding:0;list-style:none;font-size:14px;color:var(--mute);display:grid;gap:10px}
+ul.auto li{padding-left:16px;position:relative}ul.auto li::before{content:"-";position:absolute;left:0;color:var(--acc);font-family:var(--mono)}
+ul.auto b{color:var(--fg);font-weight:600}
+.note{font:12px var(--mono);color:var(--mute);margin-top:18px;line-height:1.7}
 footer{padding-block:40px 64px;font:12px var(--mono);color:var(--mute);border-top:1px solid var(--line)}
 footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 kbd{font:11px var(--mono);border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 5px}
@@ -117,7 +124,7 @@ body.crt::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:20
 <header class="top"><div class="wrap">
   <a class="logo" href="#">mao<b>@</b><i>lab</i></a>
   <span class="status"><span class="dot"></span><span id="calib">snapshot</span></span>
-  <nav><a href="#instruments">instruments</a><a href="#work">work</a><a href="#notebook">notebook</a><a href="#contact">contact</a></nav>
+  <nav><a href="#work">work</a><a href="#instruments">instruments</a><a href="#domains">domains</a><a href="#notebook">notebook</a><a href="#contact">contact</a></nav>
   <button class="ic" id="termBtn" title="Open shell (~)">~</button>
   <button class="ic" id="themeBtn" title="Toggle theme">theme</button>
 </div></header>
@@ -127,7 +134,7 @@ body.crt::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:20
   <div>
     <div class="prompt"><b>$</b> whoami</div>
     <h1>I build systems that have to be <em>right</em>, not just run.</h1>
-    <p class="lead">Research platforms where one look-ahead bug silently invalidates months of results. A UI component that must behave identically in six frameworks. AI tooling that remembers what it did yesterday. <strong>Mostly private work — this is the public index.</strong></p>
+    <p class="lead">Research platforms where one look-ahead bug silently invalidates months of results. A UI component that must behave identically in six frameworks. Orchestration that has to survive being interrupted halfway through. <strong>Mostly private work — this is the public index: enough to show the shape, not enough to spoil it.</strong></p>
     <div class="cta">
       <a class="btn pri" href="#work">./work</a>
       <a class="btn" href="https://github.com/YamadaBlog">github</a>
@@ -140,8 +147,8 @@ body.crt::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:20
   </div>
 </section>
 
-<section id="instruments">
-  <div class="sh"><b>01</b> instruments<span></span><em id="snap">snapshot</em></div>
+<section id="uptime">
+  <div class="sh"><b>01</b> uptime<span></span><em id="snap">snapshot</em></div>
   <div class="readout">
     <div><b id="r-total">3,764</b><span>contributions / 365d</span></div>
     <div><b id="r-active">236</b><span>active days</span></div>
@@ -187,8 +194,8 @@ body.crt::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:20
       <div class="st">typescript · vue 3 · lit · react native · vite · vitest · playwright</div>
     </article>
     <article class="card w3">
-      <header><span class="prv">[private] ~2k commits</span><span>2025 → now</span></header>
-      <h3>quant research &amp; trading platform</h3>
+      <header><span class="prv">[private] ~1k commits</span><span>9 months</span></header>
+      <h3>research platform</h3>
       <p>A year-long build, end to end. The interesting part is not the models — it is <b>making it impossible to fool yourself</b>.</p>
       <div class="pipe">ingest → <b>cross-validate</b> → features → RL agents → <b>replay</b> → qualify → <b>gate</b> → execute → monitor</div>
       <ul>
@@ -198,35 +205,91 @@ body.crt::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:20
       </ul>
       <div class="st">python · rl (ppo) · pandas · vue · docker · bash / pwsh</div>
     </article>
-    <article class="card">
-      <header><span class="prv">[private] experimental</span></header>
-      <h3>asof</h3>
-      <p>Static <b>temporal-leakage linter</b>, bitemporal as-of store, look-ahead-safe RAG retrieval, datasets sealed with Merkle / SHA-256 manifests.</p>
-      <div class="st">python · ast · hashing</div>
+    <article class="card w3">
+      <header><span class="prv">[private] ~700 commits</span><span>in progress</span></header>
+      <h3>agent control plane</h3>
+      <p>A private control plane for multi-agent workflows. <b>Persistence over cleverness</b> &mdash; the hard part is surviving a crash mid-call, not calling a model.</p>
+      <ul>
+        <li>transactional job queue: atomic claim, idempotent enqueue, bounded retry into a dead-letter table</li>
+        <li>policy-driven routing across providers, with budget ceilings checked <i>before</i> a billable call</li>
+        <li>append-only hash-chained event journal, checkpoint + replay recovery</li>
+        <li>fail-safe autonomy: an unlisted transition stops and asks a human</li>
+      </ul>
+      <div class="st">python &middot; docker compose &middot; sqlite (wal) &middot; temporal &middot; stdlib-only router</div>
     </article>
-    <article class="card">
-      <header><span class="prv">[private] experimental</span></header>
-      <h3>proof-of-fill</h3>
-      <p>Execution integrity: <b>signed slippage</b> against a broker-independent reference, asymmetry detection, hash-sealed receipts.</p>
-      <div class="st">python · statistics</div>
+    <article class="card w3">
+      <header><span class="prv">[private] ongoing</span></header>
+      <h3>security &amp; reverse engineering</h3>
+      <p>Authorized assessment only, under <b>written scope and rules of engagement</b>. Recognized methodology, CVSS-scored findings, timestamped evidence, prioritized remediation &mdash; and scope limits documented rather than papered over.</p>
+      <ul>
+        <li>web/API surface and desktop-client posture: transport hardening, cross-origin policy, auth-flow logic</li>
+        <li>update-channel and code-signing integrity, supply-chain exposure</li>
+        <li>obfuscated and virtualized managed binaries, packed interpreters, protocol reconstruction</li>
+      </ul>
+      <div class="st">targets, findings, evidence and tooling stay private &mdash; permanently</div>
     </article>
-    <article class="card">
+    <article class="card w3">
+      <header><span class="prv">[private] experimental</span></header>
+      <h3>integrity tools</h3>
+      <p>A static <b>temporal-leakage linter</b>, a bitemporal as-of store, datasets sealed with Merkle / SHA-256 manifests, and signed execution receipts. Turning <i>"this result is real"</i> into a checkable claim.</p>
+      <div class="st">python &middot; ast &middot; hashing &middot; statistics</div>
+    </article>
+    <article class="card w3">
       <header><span class="prv">[private] early</span></header>
       <h3>anima</h3>
-      <p>An <b>embodied AI desktop companion</b> — a small on-screen being that understands your context and keeps durable memory.</p>
-      <div class="st">tauri / rust · typescript</div>
-    </article>
-    <article class="card w6">
-      <header><span class="prv">[private] infrastructure</span></header>
-      <h3>personal OS</h3>
-      <p>The spine behind everything above: an <b>estate map</b> of every repo, architecture decision records, and agent/memory tooling so coding agents work with context instead of guessing. Plus a DevSecOps teaching lab comparing CI systems and identity providers on local Kubernetes.</p>
-      <div class="st">python · agents · adr · kind · keycloak · github actions / gitlab ci</div>
+      <p>An <b>embodied AI desktop companion</b> &mdash; a small on-screen being that understands your context and keeps durable memory across time.</p>
+      <div class="st">tauri / rust &middot; typescript</div>
     </article>
   </div>
 </section>
 
+<section id="instruments">
+  <div class="sh"><b>03</b> ls /instruments<span></span></div>
+  <p class="intro">The bench. What is actually installed, wired and used &mdash; not a list of things I have heard of.</p>
+<pre class="code"><span class="k">bench</span>          win11 + wsl2 . agent cli + mcp servers + hooks + subagents . tmux . ripgrep . just
+<span class="k">languages</span>      python 3.12 . typescript . rust (tauri) . c# (reading, mostly) . lua . bash . pwsh
+<span class="k">data</span>           pandas . numpy . duckdb . parquet . sqlite (wal, fts5) . polars
+<span class="k">ml</span>             pytorch . ppo / rl . mlflow . multi-seed consensus . walk-forward . bootstrap . fdr
+<span class="k">orchestration</span>  docker compose . temporal . task queues . scheduled ticks . dstack . cloud gpu
+<span class="k">models</span>         multi-provider routing . cost ledgers . json-contract validation . eval harnesses
+<span class="k">ui</span>             vue 3 . react . svelte . angular . lit / web components . react native . vite
+<span class="k">observability</span>  prometheus . grafana . sli/slo + error budgets . structured alerting . watchdogs
+<span class="k">delivery</span>       github actions . gitlab ci . canary deploys . semgrep . gitleaks . locked deps
+<span class="k">verification</span>   pytest . hypothesis . vitest . playwright (a11y) . golden traces . replay harnesses
+<span class="k">analysis</span>       decompilers . disassemblers . protocol analysis . dynamic instrumentation . proxies</pre>
+  <div class="two" style="margin-top:16px">
+    <div class="panel"><div class="lbl"><span>AUTOMATIONS THAT EARN THEIR KEEP</span></div>
+      <ul class="auto">
+        <li>a <b>git pre-commit canary gate</b> that blocks any commit regressing an established fact &mdash; a deterministic gate is the only kind an agent cannot talk its way past</li>
+        <li><b>markdown as source of truth, index as cache</b>: a rebuildable full-text index plus a bitemporal fact table. if the index burns down, nothing is lost</li>
+      </ul></div>
+    <div class="panel"><div class="lbl"><span>&nbsp;</span></div>
+      <ul class="auto">
+        <li><b>append-only ADRs</b> classifying every claim proven / logical / hypothesis / rejected &mdash; rejections kept, with the evidence that killed them</li>
+        <li><b>atomic writes everywhere</b> (tmp &rarr; fsync &rarr; replace), offsite continuity, restore drills that actually run</li>
+        <li><b>SLO reporting that returns <code>unavailable</code></b> rather than inventing a metric from zero observations</li>
+      </ul></div>
+  </div>
+</section>
+
+<section id="domains">
+  <div class="sh"><b>04</b> cat domains.md<span></span></div>
+  <p class="intro">Where I am comfortable, and roughly how deep. Deliberately short on detail.</p>
+  <div class="dom">
+    <div><b>research infrastructure</b><p>Making results trustworthy: no look-ahead, sealed test sets, replayable execution, honest statistics under multiple testing.</p></div>
+    <div><b>agent orchestration</b><p>Durable state machines, idempotency, budget governance, human-in-the-loop gates, multi-provider routing.</p></div>
+    <div><b>systems &amp; automation</b><p>Long-running processes that survive interruption, reboot and their own bugs. Schedulers, watchdogs, recovery drills.</p></div>
+    <div><b>security research</b><p>Authorized assessment under written scope and rules of engagement. Recognized methodology, CVSS-scored findings, evidence chains, remediation plans.</p></div>
+    <div><b>reverse engineering</b><p>Reading things that do not want to be read: obfuscated and virtualized binaries, packed interpreters, protocol layers. Static first, dynamic only in a lab.</p></div>
+    <div><b>applied ml</b><p>Reinforcement learning under non-stationarity, ensembles over point estimates, drift and OOD detection as a safety layer.</p></div>
+    <div><b>frontend engineering</b><p>Components that behave identically across framework boundaries, accessibility tested rather than claimed, size budgets in CI.</p></div>
+    <div><b>document engineering</b><p>Templated, QA-gated pipelines that compile documents and audit their own conformance.</p></div>
+  </div>
+  <p class="note">Security and reverse-engineering work is conducted under explicit written authorization, within a defined scope, and reported privately to the owner of the system. Targets, findings, evidence and tooling stay private &mdash; permanently.</p>
+</section>
+
 <section id="notebook">
-  <div class="sh"><b>03</b> lab notebook<span></span></div>
+  <div class="sh"><b>05</b> lab notebook<span></span></div>
   <p class="intro">Most experiments end in a written <i>no</i>. That is the lab working.</p>
 <pre class="code"><span class="m">- trailing / dynamic exits          cut exactly the tail winners that paid for everything</span>
 <span class="m">- mean-reversion on thin edge       real at zero cost, dead after realistic spreads</span>
@@ -234,20 +297,28 @@ body.crt::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:20
 <span class="p">+ entry at next-bar open            edge survived moving off the signal bar's close</span>
 <span class="p">+ rolling walk-forward + FDR        kept only what survived multiple-testing correction</span>
 <span class="p">+ replay engine                     backtest == live, proven: incremental run == batch run</span>
-<span class="x">! temporal-leakage linter           running. catch look-ahead before it reaches a backtest</span></pre>
+<span class="m">- vector DBs, graph RAG and three   evaluated for the memory engine, rejected with reasons.</span>
+<span class="m">  agent-memory frameworks           markdown + a rebuildable index outlived all of them</span>
+<span class="p">+ idempotent effect keys            a crashed worker can no longer double-charge a provider</span>
+<span class="x">! temporal-leakage linter           running. catch look-ahead before it reaches a backtest</span>
+<span class="x">! de-virtualizing a protected       partially mapped, then blocked without an execution oracle</span>
+<span class="x">  managed binary                    and documented as blocked instead of guessed</span></pre>
 </section>
 
 <section id="invariants">
-  <div class="sh"><b>04</b> invariants<span></span></div>
+  <div class="sh"><b>06</b> invariants<span></span></div>
 <pre class="code"><span class="k">assert</span> result.data_seen_at &lt;= decision.time          <span class="c"># no look-ahead, ever</span>
 <span class="k">assert</span> backtest.process_bar <span class="k">is</span> live.process_bar      <span class="c"># one code path, not two that "should match"</span>
 <span class="k">assert</span> out_of_sample.opened == 1                     <span class="c"># the test set is read once, then it is spent</span>
 <span class="k">assert</span> sha256(dataset) == manifest[dataset.name]     <span class="c"># results point at the exact bytes that made them</span>
+<span class="k">assert</span> transition <span class="k">in</span> contract <span class="k">or</span> requires_human()    <span class="c"># anything unlisted stops and asks</span>
+<span class="k">assert</span> effect_key <span class="k">not in</span> ledger <span class="k">or</span> <span class="k">not</span> retried       <span class="c"># never pay twice for an unknown outcome</span>
+<span class="k">assert</span> scope.authorized <span class="k">and</span> scope.written            <span class="c"># no target without a signed scope</span>
 <span class="k">assert</span> <span class="p">"no edge"</span> <span class="k">in</span> notebook                         <span class="c"># killing ideas is output, not waste</span></pre>
 </section>
 
 <section id="log">
-  <div class="sh"><b>05</b> git log --reverse<span></span></div>
+  <div class="sh"><b>07</b> git log --reverse<span></span></div>
   <div class="tl">
     <div><time>2022-11</time><div><h3>account created</h3><p>web projects, first public experiments.</p></div></div>
     <div><time>2025-10</time><div><h3>quant platform, commit 1</h3><p>research environment, backtest engines, the statistical validation stack.</p></div></div>
@@ -257,20 +328,8 @@ body.crt::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:20
   </div>
 </section>
 
-<section id="stack">
-  <div class="sh"><b>06</b> cat ~/.stack<span></span></div>
-  <div class="stack">
-    <div><b>lang</b> python · typescript · rust (tauri) · bash / pwsh</div>
-    <div><b>data/ml</b> pandas · numpy · reinforcement learning (ppo) · walk-forward · bootstrap · fdr</div>
-    <div><b>ui</b> vue 3 · react · svelte · angular · lit / web components · react native</div>
-    <div><b>infra</b> docker · github actions · gitlab ci · kind · keycloak · npm provenance</div>
-    <div><b>quality</b> pytest · vitest · playwright (a11y) · determinism tests · size budgets</div>
-    <div><b>ai</b> agentic workflows · durable memory · deterministic guardrails</div>
-  </div>
-</section>
-
 <section id="contact">
-  <div class="sh"><b>07</b> reach<span></span></div>
+  <div class="sh"><b>09</b> reach<span></span></div>
   <p class="intro">Interested in research infrastructure, correctness-critical systems and developer tooling. The fastest route is GitHub.</p>
 <pre class="code"><span class="c">$</span> curl -sL yamadablog.github.io/YamadaBlog/card.txt</pre>
   <div class="cta" style="margin-top:18px">
@@ -368,17 +427,21 @@ const term=$('term'),out=$('out'),ti=$('ti'),hist=[];let hi=0;
 const esc=s=>String(s).replace(/[&<]/g,m=>m==='&'?'&amp;':'&lt;');
 const print=h=>{out.insertAdjacentHTML('beforeend',h+'\n');out.scrollTop=out.scrollHeight};
 const go=id=>{closeT();$(id).scrollIntoView()};
-const files={'README.md':'systems that have to be right. see ./work','invariants.py':'assert backtest.process_bar is live.process_bar','.plan':'1. ship the leakage linter\n2. pulse-player v3.0.0 stable\n3. sleep (deprioritised)'};
+const files={'README.md':'systems that have to be right. see ./work','invariants.py':'assert backtest.process_bar is live.process_bar','.plan':'1. ship the leakage linter\n2. pulse-player v3.0.0 stable\n3. unattended mode for the control plane (still gated on purpose)\n4. sleep (deprioritised)',
+  'domains.md':'research infra . agent orchestration . systems & automation\nsecurity research . reverse engineering . applied ml . frontend'};
 const C={
-  help:()=>'<span class="y">available</span>\n  whoami  ls [work]  cat &lt;file&gt;  open &lt;project&gt;  stats  uptime  neofetch\n  goto &lt;section&gt;  theme  crt  history  clear  exit\n<span class="d">tab completes. some commands are not listed.</span>',
-  whoami:()=>'mao. builds research infra, ai tooling and multi-framework ui.',
-  ls:a=>/work/.test(a||'')?'<span class="v">pulse-player/</span>  quant-platform/  asof/  proof-of-fill/  anima/  personal-os/':'<span class="v">work/</span>  README.md  invariants.py  .plan',
+  help:()=>'<span class="y">available</span>\n  whoami  ls [work|instruments]  cat &lt;file&gt;  open &lt;project&gt;  stats  uptime  neofetch\n  instruments  domains  scope  goto &lt;section&gt;  theme  crt  history  clear  exit\n<span class="d">tab completes. some commands are not listed.</span>',
+  whoami:()=>'mao. research infrastructure, agent orchestration, security research.',
+  ls:a=>/work/.test(a||'')?'<span class="v">pulse-player/</span>  research-platform/  control-plane/  integrity-tools/  security-work/  anima/':/instrument/.test(a||'')?'bench  languages  data  ml  orchestration  models  ui  observability  delivery  verification  analysis':'<span class="v">work/</span>  <span class="v">instruments/</span>  README.md  invariants.py  domains.md  .plan',
   cat:a=>a in files?esc(files[a]):a?`cat: ${esc(a)}: No such file or directory`:'usage: cat &lt;file&gt;',
   open:a=>a==='pulse-player'?(open('https://github.com/YamadaBlog/pulse-player'),'opening…'):a?`${esc(a)}: private. ask for a walkthrough.`:'usage: open &lt;project&gt;',
   stats:()=>S?`contributions ${S.total}  active ${S.active}/365  streak ${S.best}d  peak ${S.peak} on ${S.peak_d}\ncommits ${S.commits}  source ${S.src_mb} MB  load ${S.load.join(' ')}`:'stats.json unavailable',
   uptime:()=>S?` ${new Date().toTimeString().slice(0,8)} up ${S.uptime},  1 user,  load average: ${S.load.join(', ')}`:'up',
   neofetch:()=>S?`<span class="g">mao</span>@<span class="v">lab</span>\n--------\n<span class="g">kernel</span>  python . typescript . rust\n<span class="g">365d</span>    ${S.total} contributions\n<span class="g">streak</span>  ${S.best}d\n<span class="g">status</span>  <span class="y">RUNNING</span>`:'…',
-  goto:a=>a&&$(a)?(go(a),''):'sections: instruments work notebook invariants log stack contact',
+  goto:a=>a&&$(a)?(go(a),''):'sections: uptime work instruments domains notebook invariants log contact',
+  domains:()=>(go('domains'),''),
+  instruments:()=>(go('instruments'),''),
+  scope:()=>'authorized work only: written scope, rules of engagement, private reporting.\nno targets, no findings, no tooling published. ever.',
   theme:()=>($('themeBtn').click(),'ok'),
   crt:()=>(document.body.classList.toggle('crt'),'phosphor '+(document.body.classList.contains('crt')?'on':'off')),
   history:()=>hist.map((h,i)=>`  ${i+1}  ${esc(h)}`).join('\n'),
