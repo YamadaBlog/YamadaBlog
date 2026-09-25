@@ -24,7 +24,7 @@ LOGIN = "YamadaBlog"
 ROOT = Path(__file__).resolve().parent.parent
 ASSETS, SITE, DATA = ROOT / "assets", ROOT / "site", ROOT / "data"
 SNAPSHOT = DATA / "snapshot.json"
-SKIP_REPOS = {"Sisyphus"}          # backup mirror: would double-count everything
+SKIP_MIRRORS = "mirror"             # backup mirrors would double-count everything
 AUTHORED = ["Python", "TypeScript", "Vue", "JavaScript", "Rust", "Shell", "CSS", "PowerShell", "Svelte", "Dockerfile"]
 
 MONO = "'JetBrains Mono','SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace"
@@ -66,7 +66,7 @@ def refresh_snapshot() -> None:
     langs: dict[str, int] = {}
     commits, n = 0, 0
     for r in repos:
-        if r["name"] in SKIP_REPOS or r["fork"]:
+        if SKIP_MIRRORS in (r["description"] or "").lower() or r["fork"]:
             continue
         n += 1
         for k, v in api(f"repos/{r['full_name']}/languages")[0].items():
