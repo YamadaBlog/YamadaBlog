@@ -201,6 +201,78 @@ text{{font-family:{MONO};font-size:14px}}
 </svg>'''
 
 
+
+# ---------------------------------------------------------------- svg: banner
+DOMAINS = ["research infrastructure", "agent orchestration", "reverse engineering",
+           "security research", "systems & automation", "applied ML"]
+
+
+def banner_svg(days, s: dict, th: dict) -> str:
+    """The masthead: a terminal that probes its own bench, over a live sparkline."""
+    W, H = 1100, 340
+    # --- live sparkline of the last 180 days, drawn along the floor
+    tail = days[-180:]
+    peak = max(1, max(c for _, c in tail))
+    step = W / len(tail)
+    pts = " ".join(f"{i*step:.1f},{H-56-44*(c/peak)**0.7:.1f}" for i, (_, c) in enumerate(tail))
+
+    rows = []
+    y = 96
+    for i, d in enumerate(DOMAINS):
+        col = [th["acc"], th["vio"], th["warn"]][i % 3]
+        delay = 1.5 + i * 0.16
+        rows.append(
+            f'<g class="rw" style="animation-delay:{delay:.2f}s">'
+            f'<text x="56" y="{y}" fill="{th["mute"]}">[</text>'
+            f'<text x="68" y="{y}" fill="{col}">ok</text>'
+            f'<text x="88" y="{y}" fill="{th["mute"]}">]</text>'
+            f'<text x="108" y="{y}" fill="{th["fg"]}">{esc(d)}</text></g>')
+        y += 25
+
+    tags = ""
+    x = 600
+    for i, t in enumerate(["no look-ahead", "replay == live", "scope first", "it stops and asks"]):
+        col = [th["acc"], th["vio"], th["warn"], th["red"]][i]
+        w = len(t) * 7.8 + 18
+        tags += (f'<g class="rw" style="animation-delay:{2.6 + i*0.14:.2f}s">'
+                 f'<rect x="{x}" y="{78 + (i//2)*30}" width="{w:.0f}" height="21" rx="10" fill="none" stroke="{col}" stroke-opacity=".55"/>'
+                 f'<text x="{x+9}" y="{93 + (i//2)*30}" fill="{col}" style="font-size:12px">{t}</text></g>')
+        x = 600 if i % 2 else x + w + 10
+
+    return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}" role="img" aria-label="mao@lab -- research infrastructure, agent orchestration, reverse engineering, security research. {s['total']} contributions in the last year.">
+<style>
+text{{font-family:{MONO};font-size:15px}}
+.rw{{animation:rw .35s ease-out backwards}}
+@keyframes rw{{from{{opacity:0;transform:translateX(-8px)}}}}
+.cur{{animation:bl 1.1s steps(1) infinite 1.2s}}
+@keyframes bl{{50%{{opacity:0}}}}
+.scan{{animation:sc 7s linear infinite}}
+@keyframes sc{{from{{transform:translateY(-60px)}}to{{transform:translateY({H}px)}}}}
+.spark{{stroke-dasharray:4000;animation:dr 3.4s ease-out backwards}}
+@keyframes dr{{from{{stroke-dashoffset:4000}}}}
+</style>
+<defs>
+  <linearGradient id="ti" x1="0" x2="1"><stop offset="0" stop-color="{th['vio']}"/><stop offset="1" stop-color="{th['acc']}"/></linearGradient>
+  <pattern id="gr" width="26" height="26" patternUnits="userSpaceOnUse"><path d="M26 0H0v26" fill="none" stroke="{th['line']}" stroke-width="1"/></pattern>
+  <linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="{th['acc']}" stop-opacity="0"/><stop offset="1" stop-color="{th['acc']}" stop-opacity=".07"/></linearGradient>
+</defs>
+<rect width="{W}" height="{H}" rx="14" fill="{th['bg']}"/>
+<rect width="{W}" height="{H}" rx="14" fill="url(#gr)"/>
+<rect class="scan" width="{W}" height="60" fill="url(#sg)"/>
+<polyline class="spark" points="{pts}" fill="none" stroke="{th['acc']}" stroke-width="1.2" stroke-opacity=".42"/>
+<rect x=".5" y=".5" width="{W-1}" height="{H-1}" rx="14" fill="none" stroke="{th['line']}"/>
+<circle cx="26" cy="24" r="5.5" fill="#ff5f57"/><circle cx="44" cy="24" r="5.5" fill="#febc2e"/><circle cx="62" cy="24" r="5.5" fill="#28c840"/>
+<text x="{W/2}" y="29" text-anchor="middle" fill="{th['mute']}" style="font-size:12px">mao@lab: ~/bench</text>
+<text x="34" y="66"><tspan fill="{th['acc']}">$</tspan><tspan fill="{th['fg']}"> probe --all</tspan><tspan class="cur" fill="{th['acc']}">_</tspan></text>
+{"".join(rows)}
+<text x="600" y="60" style="font-size:36px;font-weight:700" fill="url(#ti)">mao@lab</text>
+{tags}
+<text x="{W-34}" y="{H-16}" text-anchor="end" fill="{th['mute']}" style="font-size:12px">{s['total']:,} contributions . {s['active']}/365 active . streak {s['best']}d . {s['src_mb']} MB authored</text>
+<text x="34" y="{H-16}" fill="{th['mute']}" style="font-size:12px">180d signal</text>
+<line x1="0" y1="{H-34}" x2="{W}" y2="{H-34}" stroke="{th['line']}"/>
+</svg>'''
+
+
 # ---------------------------------------------------------------- svg: seismograph
 def seismo_svg(days, s, th) -> str:
     W, H, pl, pr, mid = 1000, 230, 40, 30, 110
@@ -313,6 +385,7 @@ def main() -> None:
     s = stats(days, snap)
     ASSETS.mkdir(exist_ok=True)
     for name, th in THEMES.items():
+        put(ASSETS / f"banner-{name}.svg", banner_svg(days, s, th))
         put(ASSETS / f"header-{name}.svg", header_svg(s, th))
         put(ASSETS / f"seismo-{name}.svg", seismo_svg(days, s, th))
         put(ASSETS / f"spectrum-{name}.svg", spectrum_svg(s, th))

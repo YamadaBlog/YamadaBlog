@@ -1,185 +1,239 @@
 <div align="center">
 
-<img src="./assets/banner.svg" alt="mao@lab -- systems builder: research infrastructure, agent orchestration, security research" width="100%" />
+<a href="https://yamadablog.github.io/YamadaBlog/">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="./assets/banner-dark.svg">
+    <img alt="mao@lab -- research infrastructure, agent orchestration, reverse engineering, security research" src="./assets/banner-light.svg" width="100%">
+  </picture>
+</a>
 
 <samp>
-  <a href="https://yamadablog.github.io/YamadaBlog/">site</a> ·
-  <a href="#-uptime">uptime</a> ·
-  <a href="#-ls-work">work</a> ·
-  <a href="#-ls-instruments">instruments</a> ·
-  <a href="#-cat-domainsmd">domains</a> ·
-  <a href="#-tail--f-labnotebook">notebook</a> ·
-  <a href="https://github.com/YamadaBlog/pulse-player">pulse-player</a>
+<b>site</b> <a href="https://yamadablog.github.io/YamadaBlog/">yamadablog.github.io</a> &nbsp;·&nbsp;
+<b>oss</b> <a href="https://github.com/YamadaBlog/pulse-player">pulse-player</a> &nbsp;·&nbsp;
+<b>shell</b> <code>curl -sL yamadablog.github.io/YamadaBlog/card.txt</code>
 </samp>
 
 </div>
 
----
-
-I build systems that have to be **right**, not just run — research platforms where one look-ahead bug silently
-invalidates months of work, a UI component that must behave identically in six frameworks, and orchestration
-that has to survive being interrupted halfway through.
-
-Most of what I build is private. This page is the public index: enough to show the shape of the work,
-not enough to spoil it.
+```console
+$ whoami
+mao — I build systems that have to be right, not just run.
+$ cat /etc/motd
+things that break silently are the only things worth engineering against.
+$ ls ~ | wc -l          # public index of a mostly private bench
+6
+```
 
 <!-- telemetry -->
-<samp>calibrated 2026-09-25 . 3,756 contributions . 236 active days . longest streak 32d . load avg 16.00 / 27.53 / 18.02</samp>
+<samp>calibrated 2026-09-26 . 3,779 contributions . 236 active days . longest streak 32d . load avg 18.43 / 28.00 / 18.28</samp>
 <!-- /telemetry -->
 
 ---
 
-## `$ uptime`
+### `/bench`
+
+```text
+┌─ rack ───────────────────────────────────────────────────────────────────────┐
+│ SLOT 01  research infra   no look-ahead · sealed test sets · replayable      │
+│ SLOT 02  orchestration    durable state · idempotent · budget-gated · HITL   │
+│ SLOT 03  reverse eng.     obfuscated binaries · packed runtimes · protocols  │
+│ SLOT 04  security         authorized only · scope first · private reporting  │
+│ SLOT 05  systems          survives crash, reboot, and its own bugs           │
+│ SLOT 06  applied ML       RL under non-stationarity · drift as a safety net  │
+│ SLOT 07  frontend         one core, six frameworks, identical behaviour      │
+└──────────────────────────────────────────────────────────────────────────────┘
+        pull a drawer ↓ for what each actually means
+```
+
+<details>
+<summary><samp><b>SLOT 03 · reverse engineering</b> — reading things that do not want to be read</samp></summary>
+
+<br>
+
+```text
+surface        obfuscated & virtualized managed binaries · packed interpreters
+               network protocol + serialization layers · update / licensing paths
+approach       static first. dynamic only in an isolated lab. never on a live host.
+discipline     no execution oracle  ->  documented as blocked, not guessed
+artifact       ~32k lines reconstructed from a protected binary · 277 commits / 2 weeks
+```
+
+A protector's bytecode VM got partially mapped — dispatcher, opcode tables, fetch mechanics —
+then hit a wall without an execution oracle. That wall is written down as a wall.
+Retracting a wrong conclusion in the notes is the job; guessing is not.
+
+</details>
+
+<details>
+<summary><samp><b>SLOT 04 · security research</b> — authorized assessment only</samp></summary>
+
+<br>
+
+```text
+gate           written authorization + defined scope + rules of engagement
+               any one missing  ->  engagement suspended. no exceptions.
+method         PTES · OWASP WSTG / ASVS · CVSS v3.1 · timestamped evidence chain
+surface        web/API posture · transport & header hardening · cross-origin policy
+               auth-flow logic · update-channel & code-signing integrity · supply chain
+output         findings register · executive report · prioritized remediation plan
+               scope limits documented rather than papered over
+```
+
+Targets, findings, evidence and tooling stay private. Permanently.
+Nothing operational is published here, and nothing ever will be.
+
+</details>
+
+<details>
+<summary><samp><b>SLOT 02 · agent orchestration</b> — a private control plane, ~700 commits</samp></summary>
+
+<br>
+
+```text
+queue          transactional · atomic claim · idempotent enqueue
+               bounded retry -> dead-letter, never an infinite loop
+routing        policy-driven across providers · primary/fallback cascades
+               degraded provider -> quarantined automatically
+money          budget ceiling checked BEFORE a billable call, not after
+               deterministic effect key: never re-issue a call whose outcome is unknown
+journal        append-only, hash-chained · checkpoint + replay recovery
+autonomy       fail-safe by default:
+                   transition whitelisted and within budget  ->  continue
+                   anything else                             ->  stop, ask a human
+```
+
+Scheduled and resumable. Deliberately operated attended — unattended mode is built
+but gated, because I have not yet earned the right to walk away from it.
+
+</details>
+
+<details>
+<summary><samp><b>SLOT 01 · research infrastructure</b> — ~1k commits, 9 months</samp></summary>
+
+<br>
+
+```text
+pipeline       ingest -> cross-validate -> features -> RL agents
+               -> replay -> qualify -> gate -> execute -> monitor
+core rule      backtest, replay and live call the same process_bar()
+               divergence is impossible by construction, not merely unlikely
+stats          walk-forward · frozen out-of-sample · FDR correction · cost stress
+safety         drift and out-of-distribution kill-switches
+compute        local-GPU-first, burst to cloud when the queue justifies it
+```
+
+</details>
+
+<details>
+<summary><samp><b>SLOT 05 · systems &amp; automation</b> — the boring parts that save you</samp></summary>
+
+<br>
+
+```text
+canary gate    a git pre-commit hook blocks any commit that regresses a known fact.
+               a deterministic gate is the only kind an agent cannot talk past.
+memory         markdown is truth, the index is cache. burn the index, lose nothing.
+               bitemporal facts: what was true, and when I knew it.
+ADRs           append-only. every claim tagged proven / logical / hypothesis / rejected.
+               rejections kept WITH the evidence that killed them.
+durability     atomic writes (tmp -> fsync -> replace) · offsite continuity
+               restore drills that actually run
+honesty        SLO reporting returns `unavailable` rather than inventing
+               a metric out of zero observations
+```
+
+</details>
+
+<details>
+<summary><samp><b>SLOT 07 · frontend</b> — <a href="https://github.com/YamadaBlog/pulse-player">pulse-player</a>, public, on npm</samp></summary>
+
+<br>
+
+One drop-in music player, seven `@pulse-music/*` packages, six frameworks — Vue, React, Svelte,
+Angular, Web Components, React Native — from a single framework-agnostic core.
+
+```text
+provenance     sigstore-attested, built in CI
+parity         Vue reference checked byte-for-byte in CI
+consumers      clean-install builds tested end to end
+demo           post-deploy smoke job fails on ONE console error
+```
+
+<a href="https://yamadablog.github.io/pulse-player/">live demo</a> · <a href="https://youtu.be/q_FJ1GWaCc8">3-min video</a>
+
+</details>
+
+---
+
+### `/signal`
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./assets/seismo-dark.svg">
   <img alt="Seismograph of daily contributions over the last 365 days" src="./assets/seismo-light.svg" width="100%">
 </picture>
 
-<sub>No hosted stat widgets. Rendered from the GitHub API by <a href="./scripts/forge.py"><code>scripts/forge.py</code></a> (stdlib Python only) and re-forged nightly.</sub>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./assets/spectrum-dark.svg">
+  <img alt="Authored source by language across public and private repositories" src="./assets/spectrum-light.svg" width="100%">
+</picture>
+
+<sub>No hosted widgets. Every graphic here is rendered from the GitHub API by
+<a href="./scripts/forge.py"><code>scripts/forge.py</code></a> — stdlib Python, no dependencies — and re-forged nightly.</sub>
 
 ---
 
-## `$ ls ~/work`
+### `/instruments`
 
 ```text
-~/work
-├── pulse-player/       public    one core, six frameworks, seven npm packages
-├── research-platform/  private   ~1k commits, 9 months . data -> features -> RL -> replay -> execution
-├── control-plane/      private   ~700 commits . multi-agent job queue, model router, human gates
-├── integrity-tools/    private   temporal-leakage linter, sealed datasets, execution receipts
-├── security-work/      private   authorized assessments . binary & protocol analysis
-└── anima/              private   embodied AI desktop companion (Tauri/Rust + TS)
+bench          win11 + wsl2 · agent cli + mcp + hooks + subagents · tmux · ripgrep · just
+languages      python 3.12 · typescript · rust (tauri) · c# (reading) · lua · bash · pwsh
+data           pandas · numpy · duckdb · parquet · sqlite (wal, fts5) · polars
+ml             pytorch · ppo/rl · mlflow · multi-seed consensus · walk-forward · bootstrap
+orchestration  docker compose · temporal · task queues · scheduled ticks · dstack · cloud gpu
+models         multi-provider routing · cost ledgers · json-contract validation · evals
+ui             vue 3 · react · svelte · angular · lit · react native · vite
+observability  prometheus · grafana · sli/slo + error budgets · watchdogs · alerting
+delivery       github actions · gitlab ci · canary deploys · semgrep · gitleaks · locked deps
+verification   pytest · hypothesis · vitest · playwright (a11y) · golden traces · replay
+analysis       decompilers · disassemblers · protocol analysis · instrumentation · proxies
 ```
 
-**[pulse-player](https://github.com/YamadaBlog/pulse-player)** — *public, on npm.* A drop-in music player shipped as seven
-`@pulse-music/*` packages: one framework-agnostic core with thin wrappers for Vue, React, Svelte, Angular,
-Web Components and React Native. The part I care about is the release engineering — npm provenance
-(sigstore-attested, built in CI), the Vue reference checked byte-for-byte in CI, clean-consumer installs tested
-end to end, and a post-deploy smoke job on the [live demo](https://yamadablog.github.io/pulse-player/) that
-fails on a single console error.
-
-**research-platform** — *private.* Nine months, ~1,000 commits. Cross-validated ingestion, feature pipelines,
-reinforcement-learning agents trained on a local-GPU-first / cloud-burst policy, a model factory
-(*train → select → replay → qualify*), and guarded execution with drift and out-of-distribution kill-switches.
-Backtest, replay and live all call the same `process_bar()`, so they cannot diverge — that is not a test,
-it is the architecture.
-
-**control-plane** — *private, in progress.* A personal control plane for multi-agent workflows: a transactional
-job queue with atomic claim and idempotent enqueue, bounded retry into a dead-letter table, per-job budget
-ceilings checked *before* a billable call, an append-only hash-chained event journal, and containerised worker
-pools. Plus a policy-driven router across several model providers with primary/fallback cascades, quarantine
-of degraded providers, and a deterministic effect key that refuses to re-issue a call whose outcome is unknown.
-Autonomy is **fail-safe by default**: a transition auto-continues only if explicitly whitelisted and within
-budget — everything else lands in a human review queue. Scheduled and resumable; deliberately operated
-attended for now.
-
-**integrity-tools** — *private, experimental.* What fell out of the above: a static linter for temporal leakage,
-a bitemporal as-of store, dataset sealing with Merkle/SHA-256 manifests, and signed execution receipts.
-Tools that turn *"this result is real"* into a checkable claim instead of a feeling.
-
-<sub>Private work is described in general terms on purpose — shape, not contents. Architecture walkthroughs on request.</sub>
-
 ---
 
-## `$ ls /instruments`
+### `/experiments`
 
-The bench. What is actually installed, wired and used — not a list of things I have heard of.
-
-```text
-/instruments
-├── bench/          Win11 + WSL2 . agent CLI + MCP servers + hooks + subagents . tmux . ripgrep . just
-├── languages/      python 3.12 . typescript . rust (tauri) . c# (reading, mostly) . lua . bash . pwsh
-├── data/           pandas . numpy . duckdb . parquet . sqlite (wal, fts5) . polars
-├── ml/             pytorch . ppo / rl . mlflow . multi-seed consensus . walk-forward . bootstrap . fdr
-├── orchestration/  docker compose . temporal . task queues . scheduled ticks . dstack . cloud gpu
-├── models/         multi-provider routing . cost ledgers . json-contract validation . eval harnesses
-├── ui/             vue 3 . react . svelte . angular . lit / web components . react native . vite
-├── observability/  prometheus . grafana . sli/slo + error budgets . structured alerting . watchdogs
-├── delivery/       github actions . gitlab ci . canary deploys . semgrep . gitleaks . locked deps
-├── verification/   pytest . hypothesis . vitest . playwright (a11y) . golden traces . replay harnesses
-└── analysis/       decompilers . disassemblers . protocol analysis . dynamic instrumentation . proxies
-```
-
-**Automations that earn their keep**
-
-- A **git pre-commit canary gate** that blocks any commit which regresses an established fact in my
-  knowledge base. A deterministic gate is the only kind an agent cannot talk its way past.
-- **Markdown as source of truth, index as cache** — a rebuildable full-text index over notes, plus a
-  bitemporal fact table. If the index burns down, nothing is lost.
-- **Append-only ADRs** where every claim is classified *proven / logical / hypothesis / rejected* —
-  and rejections are kept, with the evidence that killed them.
-- **Atomic writes everywhere** (`tmp → fsync → replace`), offsite continuity, restore drills that actually run.
-- **SLO reporting that returns `unavailable`** rather than computing a metric from zero observations.
-
----
-
-## `$ cat domains.md`
-
-Where I am comfortable, and roughly how deep. Deliberately short on detail.
-
-| Domain | What that means here |
-|---|---|
-| **Research infrastructure** | Making results trustworthy: no look-ahead, sealed test sets, replayable execution, honest statistics under multiple testing. |
-| **Agent orchestration** | Durable state machines, idempotency, budget governance, human-in-the-loop gates, multi-provider routing. Persistence over cleverness. |
-| **Systems & automation** | Long-running processes that survive interruption, reboot and their own bugs. Schedulers, watchdogs, recovery drills. |
-| **Security research** | Authorized assessment only — written scope, rules of engagement, recognized methodology (PTES / OWASP WSTG / ASVS), CVSS-scored findings, timestamped evidence, prioritized remediation. Web/API surface and desktop-client posture: transport and header hardening, cross-origin policy, auth-flow logic, update-channel and code-signing integrity, supply-chain exposure. |
-| **Reverse engineering** | Reading things that do not want to be read: obfuscated and virtualized managed binaries, packed interpreters, network protocol and serialization layers. Static analysis first, dynamic only in a controlled lab, and *"do not guess"* when there is no execution oracle. |
-| **Applied ML** | Reinforcement learning under non-stationarity, ensembles over point estimates, drift and OOD detection as a safety layer rather than a metric. |
-| **Frontend engineering** | Component libraries that must behave identically across framework boundaries, accessibility tested rather than claimed, size budgets enforced in CI. |
-| **Document & report engineering** | Templated, QA-gated pipelines that compile documents and audit their own conformance. |
-
-<sub>Security and reverse-engineering work is conducted under explicit written authorization, within a defined
-scope, and reported privately to the owner of the system. Targets, findings, evidence and tooling stay
-private — permanently. Nothing operational is published here, and nothing ever will be.</sub>
-
----
-
-## `$ tail -f lab/notebook`
-
-Most experiments end in a written *no*. That is the lab working, not failing.
+<samp>most of them end in a written <b>no</b>. that is the lab working, not failing.</samp>
 
 ```diff
-- trailing / dynamic exits          cut exactly the tail winners that paid for everything
-- mean-reversion on a thin edge     real at zero cost, dead after realistic spreads
-- vector DBs, graph RAG and three   evaluated for the memory engine, rejected with reasons.
-  agent-memory frameworks           markdown + a rebuildable index outlived all of them
-- a "great" backtest                an indicator compared against the wrong-timeframe volatility
-+ entry at next-bar open            edge survived moving off the signal bar's close
-+ rolling walk-forward + FDR        kept only what survived multiple-testing correction
-+ replay engine                     backtest == live, proven: incremental run == batch run
-+ idempotent effect keys            a crashed worker can no longer double-charge a provider
-! temporal-leakage linter           running. catch look-ahead before it reaches a backtest
-! de-virtualizing a protected       partially mapped, then blocked without an execution oracle
-  managed binary                    and documented as blocked instead of guessed
+- trailing / dynamic exits        cut exactly the tail winners that paid for everything
+- mean-reversion on a thin edge   real at zero cost, dead after realistic spreads
+- vector DBs, graph RAG, three    markdown + a rebuildable index outlived all of them
+  agent-memory frameworks
+- a "great" backtest              wrong-timeframe volatility. now a checklist item
++ entry at next-bar open          edge survived moving off the signal bar's close
++ walk-forward + FDR              kept only what survived multiple-testing correction
++ replay engine                   backtest == live. proven: incremental run == batch run
++ idempotent effect keys          a crashed worker can no longer double-charge a provider
+! temporal-leakage linter         running — catch look-ahead before it reaches a backtest
+! protected-binary devirt         mapped, then blocked. documented as blocked.
 ```
 
 ---
 
-## `$ cat invariants.py`
+### `/invariants`
 
 ```python
-assert result.data_seen_at <= decision.time          # no look-ahead, ever
-assert backtest.process_bar is live.process_bar      # one code path, not two that "should match"
-assert out_of_sample.opened == 1                     # the test set is read once, then it is spent
-assert sha256(dataset) == manifest[dataset.name]     # results point at the exact bytes that made them
-assert transition in contract or requires_human()    # anything unlisted stops and asks
-assert effect_key not in ledger or not retried       # never pay twice for an unknown outcome
-assert scope.authorized and scope.written            # no target without a signed scope
-assert "no edge" in notebook                         # killing ideas is output, not waste
-```
-
----
-
-## `$ whois mao`
-
-Interested in research infrastructure, correctness-critical systems, agent orchestration and security
-engineering. The fastest route is GitHub.
-
-```sh
-curl -sL yamadablog.github.io/YamadaBlog/card.txt
+assert result.data_seen_at <= decision.time        # no look-ahead, ever
+assert backtest.process_bar is live.process_bar    # one code path, not two that "should match"
+assert out_of_sample.opened == 1                   # read once, then it is spent
+assert sha256(dataset) == manifest[dataset.name]   # results point at the bytes that made them
+assert transition in contract or requires_human()  # anything unlisted stops and asks
+assert effect_key not in ledger or not retried     # never pay twice for an unknown outcome
+assert scope.authorized and scope.written          # no target without a signed scope
+assert "no edge" in notebook                       # killing ideas is output, not waste
 ```
 
 <div align="center">
-<sub><samp>this README re-forges itself nightly · press <code>~</code> on the <a href="https://yamadablog.github.io/YamadaBlog/">site</a> for a shell</samp></sub>
+<br>
+<samp>re-forged nightly · press <code>~</code> on the <a href="https://yamadablog.github.io/YamadaBlog/">site</a> for a shell</samp>
 </div>

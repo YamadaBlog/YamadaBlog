@@ -451,7 +451,18 @@ const C={
   vim:()=>'you are now in vim. there is no escape. (type exit)',
   git:a=>a==='blame'?'it was me. it is always me.':a==='status'?'On branch main\nnothing to commit, working tree clean (for once)':'try: git blame, git status',
   make:a=>a==='coffee'?"make: *** No rule to make target 'coffee'.":"make: Nothing to be done for 'all'.",
-  ping:()=>'PONG. fastest route: github.com/YamadaBlog'
+  ping:()=>'PONG. fastest route: github.com/YamadaBlog',
+  probe:()=>'<span class="d">probing bench...</span>
+'+['research infrastructure','agent orchestration','reverse engineering','security research','systems &amp; automation','applied ML','frontend'].map(d=>'[ <span class="g">ok</span> ] '+d).join('
+'),
+  dmesg:()=>'[    0.00] mao@lab booting
+[    0.42] canary gate armed
+[    1.07] out_of_sample sealed
+[    2.31] unattended mode: <span class="y">gated on purpose</span>
+[    3.99] it stops and asks',
+  strings:a=>a?'<span class="d">not on a live host.</span> static first, lab only.':'usage: strings &lt;file&gt;',
+  nmap:()=>'<span class="r">refused.</span> no target without a written scope.',
+  exploit:()=>'<span class="r">refused.</span> targets, findings and tooling stay private. permanently.'
 };
 const run=line=>{print(`<span class="g">$</span> ${esc(line)}`);const [c,...r]=line.trim().split(/\s+/);if(!c)return;
   const res=C[c]?C[c](r.join(' ')):`zsh: command not found: ${esc(c)}. try <span class="y">help</span>`;if(res)print(res)};
