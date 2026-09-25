@@ -452,14 +452,8 @@ const C={
   git:a=>a==='blame'?'it was me. it is always me.':a==='status'?'On branch main\nnothing to commit, working tree clean (for once)':'try: git blame, git status',
   make:a=>a==='coffee'?"make: *** No rule to make target 'coffee'.":"make: Nothing to be done for 'all'.",
   ping:()=>'PONG. fastest route: github.com/YamadaBlog',
-  probe:()=>'<span class="d">probing bench...</span>
-'+['research infrastructure','agent orchestration','reverse engineering','security research','systems &amp; automation','applied ML','frontend'].map(d=>'[ <span class="g">ok</span> ] '+d).join('
-'),
-  dmesg:()=>'[    0.00] mao@lab booting
-[    0.42] canary gate armed
-[    1.07] out_of_sample sealed
-[    2.31] unattended mode: <span class="y">gated on purpose</span>
-[    3.99] it stops and asks',
+  probe:()=>'<span class="d">probing bench...</span>\n'+['research infrastructure', 'agent orchestration', 'reverse engineering', 'security research', 'systems &amp; automation', 'applied ML', 'frontend'].map(d=>'[ <span class="g">ok</span> ] '+d).join('\n'),
+  dmesg:()=>'[    0.00] mao@lab booting\n[    0.42] canary gate armed\n[    1.07] out_of_sample sealed\n[    2.31] unattended mode: <span class="y">gated on purpose</span>\n[    3.99] it stops and asks',
   strings:a=>a?'<span class="d">not on a live host.</span> static first, lab only.':'usage: strings &lt;file&gt;',
   nmap:()=>'<span class="r">refused.</span> no target without a written scope.',
   exploit:()=>'<span class="r">refused.</span> targets, findings and tooling stay private. permanently.'
