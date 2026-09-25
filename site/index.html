@@ -3,304 +3,408 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>MAO — systems builder</title>
-<meta name="description" content="MAO (YamadaBlog): quant research platforms, AI-first tooling and multi-framework UI. Systems that have to be right, not just run.">
-<meta property="og:title" content="MAO — systems builder">
-<meta property="og:description" content="Quant research platforms · AI-first tooling · multi-framework UI">
+<title>mao@lab</title>
+<meta name="description" content="MAO (YamadaBlog) builds systems that have to be right: quant research platforms, AI-first tooling, multi-framework UI.">
+<meta property="og:title" content="mao@lab">
+<meta property="og:description" content="Systems that have to be right, not just run.">
+<meta name="theme-color" content="#0b0e14">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b0e14'/%3E%3Ctext x='6' y='22' font-family='monospace' font-size='16' fill='%237ee7c4'%3E%3E_%3C/text%3E%3C/svg%3E">
+<!--
+      you opened the source. good instinct.
+      no framework, no bundler, no tracker. one file, hand-written.
+      the numbers on this page come from stats.json, rebuilt every night by scripts/forge.py.
+      press ~ anywhere for a shell.
+-->
 <style>
 :root{
-  --bg:#f6f5f1;--bg2:#ecebe5;--fg:#1b1f29;--mute:#5d6577;--line:#d8d6ce;
-  --acc:#0f8a6a;--vio:#6a4fd6;--warn:#a86a00;--card:#ffffffb3;
+  --bg:#fbfaf7;--bg2:#f3f2ed;--fg:#1b1f29;--mute:#6a7182;--line:#e2e0d8;
+  --acc:#0f8a6a;--vio:#6a4fd6;--warn:#a86a00;--red:#c43d4b;--card:#ffffffcc;
   --mono:ui-monospace,'JetBrains Mono','SFMono-Regular',Consolas,'Liberation Mono',monospace;
   --sans:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color-scheme:light}
-:root[data-theme=dark]{--bg:#0b0e14;--bg2:#11151f;--fg:#d6dce8;--mute:#8590a6;--line:#1f2636;
-  --acc:#7ee7c4;--vio:#b69cff;--warn:#ffcf70;--card:#11151fcc;color-scheme:dark}
-@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0b0e14;--bg2:#11151f;--fg:#d6dce8;--mute:#8590a6;--line:#1f2636;
-  --acc:#7ee7c4;--vio:#b69cff;--warn:#ffcf70;--card:#11151fcc;color-scheme:dark}}
+:root[data-theme=dark]{--bg:#0b0e14;--bg2:#0f131c;--fg:#d6dce8;--mute:#7c869b;--line:#1c2230;
+  --acc:#7ee7c4;--vio:#b69cff;--warn:#ffcf70;--red:#ff7b86;--card:#0f131ccc;color-scheme:dark}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0b0e14;--bg2:#0f131c;--fg:#d6dce8;--mute:#7c869b;--line:#1c2230;
+  --acc:#7ee7c4;--vio:#b69cff;--warn:#ffcf70;--red:#ff7b86;--card:#0f131ccc;color-scheme:dark}}
 *{box-sizing:border-box}[hidden]{display:none!important}
 html{scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.65 var(--sans);
-  background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
-  background-size:32px 32px;background-attachment:fixed}
-body::before{content:"";position:fixed;inset:0;background:radial-gradient(ellipse at top,transparent 0,var(--bg) 70%);pointer-events:none;z-index:-1}
-a{color:var(--acc);text-decoration:none}a:hover{text-decoration:underline}
-.wrap{max-width:980px;margin:0 auto;padding-inline:20px}
-header.top{position:sticky;top:0;z-index:10;backdrop-filter:blur(10px);background:color-mix(in srgb,var(--bg) 80%,transparent);border-bottom:1px solid var(--line)}
-header.top .wrap{display:flex;align-items:center;gap:18px;height:56px;font:14px var(--mono)}
-.logo{color:var(--fg);font-weight:700}.logo b{color:var(--acc)}
-nav{display:flex;gap:16px;margin-left:auto;flex-wrap:wrap}nav a{color:var(--mute)}nav a:hover{color:var(--fg);text-decoration:none}
-button.icon{background:none;border:1px solid var(--line);color:var(--mute);border-radius:8px;padding:4px 9px;font:13px var(--mono);cursor:pointer}
-button.icon:hover{color:var(--fg);border-color:var(--mute)}
-section{padding-block:72px;border-bottom:1px dashed var(--line)}
-h2{font:600 13px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin:0 0 28px}
-h2::before{content:"$ ";color:var(--acc)}
-h3{margin:0;font-size:19px}
-.mono{font-family:var(--mono)}.mute{color:var(--mute)}
-/* hero */
-.hero{padding-block:96px 72px}
-.prompt{font:14px var(--mono);color:var(--mute)}.prompt i{color:var(--acc);font-style:normal}
-.hero h1{font-size:clamp(34px,6vw,58px);line-height:1.08;margin:14px 0 18px;letter-spacing:-.02em}
-.hero h1 span{background:linear-gradient(90deg,var(--vio),var(--acc));-webkit-background-clip:text;background-clip:text;color:transparent}
-.hero p.lead{font-size:clamp(17px,2.2vw,20px);max-width:680px;color:var(--mute);margin:0 0 28px}
-.hero p.lead strong{color:var(--fg)}
-.cta{display:flex;gap:12px;flex-wrap:wrap}
-.btn{font:14px var(--mono);padding:10px 16px;border-radius:9px;border:1px solid var(--line);color:var(--fg);background:var(--card)}
-.btn.pri{background:var(--fg);color:var(--bg);border-color:var(--fg)}
-.btn:hover{text-decoration:none;border-color:var(--acc)}
-.cursor{display:inline-block;width:.55em;height:1em;background:var(--acc);vertical-align:-2px;animation:b 1s steps(1) infinite}
-@keyframes b{50%{opacity:0}}
-/* stats */
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
-.stat{background:var(--bg2);padding:20px}
-.stat b{display:block;font:700 30px var(--mono);color:var(--fg)}
-.stat span{font-size:13px;color:var(--mute)}
-.note{font:13px var(--mono);color:var(--mute);margin-top:14px}
-/* cards */
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:16px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:10px;transition:border-color .2s,transform .2s}
-.card:hover{border-color:var(--acc);transform:translateY(-2px)}
-.card.big{grid-column:1/-1}
-.tag{font:12px var(--mono);color:var(--mute)}
-.tag.pub{color:var(--acc)}.tag.prv{color:var(--vio)}
-.card p{margin:0;color:var(--mute)}
-.card ul{margin:0;padding-left:18px;color:var(--mute);font-size:15px}
-.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:6px}
-.chips span{font:12px var(--mono);padding:2px 8px;border:1px solid var(--line);border-radius:99px;color:var(--mute)}
-.links{display:flex;gap:14px;font:13px var(--mono)}
-/* lab log */
-.log{font:14px var(--mono);border:1px solid var(--line);border-radius:12px;background:var(--bg2);overflow-x:auto}
-.log div{display:grid;grid-template-columns:90px 110px 1fr;gap:14px;padding:11px 18px;border-bottom:1px solid var(--line);min-width:560px}
-.log div:last-child{border:0}
-.ok{color:var(--acc)}.ko{color:#e0636b}.wip{color:var(--warn)}
-/* timeline */
-.tl{border-left:2px solid var(--line);margin-left:6px;padding-left:24px}
-.tl div{position:relative;margin-bottom:26px}
-.tl div::before{content:"";position:absolute;left:-31px;top:7px;width:12px;height:12px;border-radius:50%;background:var(--bg);border:2px solid var(--acc)}
-.tl time{font:13px var(--mono);color:var(--acc)}
-.tl p{margin:2px 0 0;color:var(--mute)}
-/* stack */
-.stack{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:22px}
-.stack h3{font:600 14px var(--mono);color:var(--vio);margin-bottom:6px}
-.stack p{margin:0;color:var(--mute);font-size:15px}
-.principles{counter-reset:p;list-style:none;padding:0;margin:0;display:grid;gap:14px}
-.principles li{counter-increment:p;padding-left:48px;position:relative}
-.principles li::before{content:"0" counter(p);position:absolute;left:0;font:700 14px var(--mono);color:var(--acc)}
-.principles b{color:var(--fg)}.principles li{color:var(--mute)}
-footer{padding-block:48px 64px;font:13px var(--mono);color:var(--mute)}
-kbd{font:12px var(--mono);border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:1px 6px}
-/* terminal */
-#term{position:fixed;inset:auto 16px 16px 16px;max-width:760px;margin-inline:auto;height:min(420px,70vh);background:#0b0e14f2;color:#d6dce8;border:1px solid #2a3348;border-radius:12px;box-shadow:0 20px 60px #0008;font:14px/1.55 var(--mono);display:flex;flex-direction:column;z-index:50}
-#term header{padding:8px 14px;border-bottom:1px solid #2a3348;color:#8590a6;display:flex;justify-content:space-between}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.65 var(--sans);-webkit-font-smoothing:antialiased}
+::selection{background:var(--acc);color:var(--bg)}
+a{color:var(--acc);text-decoration:none}a:hover{text-decoration:underline;text-underline-offset:3px}
+code,pre,.mono{font-family:var(--mono)}
+.wrap{max-width:1040px;margin:0 auto;padding-inline:20px}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;backdrop-filter:blur(10px);background:color-mix(in srgb,var(--bg) 82%,transparent);border-bottom:1px solid var(--line)}
+header.top .wrap{display:flex;align-items:center;gap:18px;height:52px;font:13px var(--mono)}
+.logo{color:var(--fg);font-weight:700}.logo b{color:var(--acc)}.logo i{color:var(--vio);font-style:normal}
+nav{display:flex;gap:18px;margin-left:auto}nav a{color:var(--mute)}nav a:hover{color:var(--fg);text-decoration:none}
+nav a::before{content:"./";opacity:.5}
+.ic{background:none;border:1px solid var(--line);color:var(--mute);border-radius:7px;padding:3px 9px;font:12px var(--mono);cursor:pointer}
+.ic:hover{color:var(--fg);border-color:var(--mute)}
+.status{font:12px var(--mono);color:var(--mute);display:flex;gap:7px;align-items:center}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--acc);box-shadow:0 0 0 0 var(--acc);animation:pulse 2.4s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 6px transparent}}
+section{padding-block:80px;border-top:1px solid var(--line)}
+.sh{display:flex;align-items:baseline;gap:14px;margin:0 0 30px;font:600 13px var(--mono);color:var(--mute);letter-spacing:.04em}
+.sh b{color:var(--acc);font-weight:600}.sh span{flex:1;height:1px;background:var(--line)}.sh em{font-style:normal;font-weight:400;font-size:11px}
+h3{margin:0;font-size:18px;letter-spacing:-.01em}
+.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:32px;align-items:center;padding-block:84px 72px;border:0}
+.prompt{font:13px var(--mono);color:var(--mute)}.prompt b{color:var(--acc)}
+.hero h1{font-size:clamp(34px,5.4vw,60px);line-height:1.04;margin:16px 0 20px;letter-spacing:-.035em}
+.hero h1 em{font-style:normal;background:linear-gradient(90deg,var(--vio),var(--acc));-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{font-size:18px;color:var(--mute);margin:0 0 28px;max-width:560px}.lead strong{color:var(--fg);font-weight:600}
+.cta{display:flex;gap:10px;flex-wrap:wrap}
+.btn{font:13px var(--mono);padding:9px 15px;border-radius:8px;border:1px solid var(--line);color:var(--fg);background:var(--card)}
+.btn.pri{background:var(--fg);color:var(--bg);border-color:var(--fg)}.btn:hover{text-decoration:none;border-color:var(--acc)}
+#torus{font:13px/13px var(--mono);margin:0;white-space:pre;text-align:center;user-select:none;cursor:grab;touch-action:none;
+  background:linear-gradient(135deg,var(--vio),var(--acc));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;overflow:hidden}
+.cap{font:11px var(--mono);color:var(--mute);text-align:center;margin-top:8px}
+.readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--line);gap:1px}
+.readout div{background:var(--bg2);padding:16px 18px}
+.readout b{display:block;font:600 24px var(--mono);letter-spacing:-.02em}
+.readout span{font:11px var(--mono);color:var(--mute);text-transform:uppercase;letter-spacing:.06em}
+.panel{border:1px solid var(--line);border-radius:12px;background:var(--bg2);padding:18px;margin-top:16px}
+.lbl{font:11px var(--mono);color:var(--mute);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+#seismo{width:100%;height:180px;display:block;margin-top:10px;cursor:crosshair;touch-action:pan-y}
+#readout{color:var(--warn)}
+.spec{display:flex;height:40px;margin-top:12px;border-radius:4px;overflow:hidden;gap:1px}
+.spec i{display:block;height:100%}
+.legend{display:flex;flex-wrap:wrap;gap:6px 20px;font:12px var(--mono);margin-top:10px;color:var(--mute)}.legend b{font-weight:600}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.bars{display:flex;align-items:flex-end;gap:8px;height:92px;margin-top:12px}
+.bars div{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;font:11px var(--mono);color:var(--mute);height:100%;justify-content:flex-end}
+.bars i{width:100%;background:var(--vio);border-radius:3px 3px 0 0;opacity:.85}
+.load{font:600 30px var(--mono);margin-top:14px;letter-spacing:-.02em}.load span{color:var(--mute);font-size:13px;font-weight:400}
+.grid{display:grid;grid-template-columns:repeat(6,1fr);gap:14px}
+.card{grid-column:span 2;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:10px;transition:border-color .2s}
+.card:hover{border-color:var(--mute)}.card.w3{grid-column:span 3}.card.w6{grid-column:span 6}
+.card header{display:flex;justify-content:space-between;gap:10px;font:12px var(--mono);color:var(--mute)}
+.pub{color:var(--acc)}.prv{color:var(--vio)}
+.card p{margin:0;color:var(--mute);font-size:15px}.card p b{color:var(--fg);font-weight:600}
+.card ul{margin:0;padding:0;list-style:none;font-size:14px;color:var(--mute)}
+.card li{padding-left:18px;position:relative}.card li::before{content:"-";position:absolute;left:2px;color:var(--acc);font-family:var(--mono)}
+.st{font:12px var(--mono);color:var(--mute);margin-top:auto;padding-top:8px;border-top:1px dashed var(--line)}
+.links{display:flex;gap:16px;font:13px var(--mono)}
+.pipe{font:12px var(--mono);color:var(--mute);overflow-x:auto;white-space:pre;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg)}
+.pipe b{color:var(--acc);font-weight:500}
+pre.code{margin:0;font-size:13.5px;line-height:1.75;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:18px 20px;overflow-x:auto}
+.m{color:var(--red)}.p{color:var(--acc)}.x{color:var(--warn)}.c{color:var(--mute)}.k{color:var(--vio)}
+.intro{color:var(--mute);margin:-10px 0 20px}
+.tl{border-left:1px solid var(--line);margin-left:4px}
+.tl>div{display:grid;grid-template-columns:100px 1fr;gap:18px;padding:0 0 22px 20px;position:relative}
+.tl>div::before{content:"";position:absolute;left:-4px;top:8px;width:7px;height:7px;background:var(--acc);border-radius:50%}
+.tl time{font:12px var(--mono);color:var(--acc);padding-top:3px}.tl p{margin:2px 0 0;color:var(--mute);font-size:15px}
+.stack{font:14px/2.1 var(--mono);color:var(--mute)}.stack b{color:var(--vio);font-weight:500;display:inline-block;min-width:100px}
+footer{padding-block:40px 64px;font:12px var(--mono);color:var(--mute);border-top:1px solid var(--line)}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+kbd{font:11px var(--mono);border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 5px}
+#boot{position:fixed;inset:0;z-index:100;background:#0b0e14;color:#7c869b;font:13px/1.7 var(--mono);padding:28px;white-space:pre-wrap;transition:opacity .35s}
+#boot .ok{color:#7ee7c4}#boot.gone{opacity:0;pointer-events:none}
+#term{position:fixed;left:16px;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));max-width:760px;margin-inline:auto;height:min(440px,70vh);background:#0b0e14f5;color:#d6dce8;border:1px solid #283044;border-radius:12px;box-shadow:0 24px 70px #000a;font:13px/1.6 var(--mono);display:flex;flex-direction:column;z-index:50}
+#term>header{padding:8px 14px;border-bottom:1px solid #283044;color:#7c869b;display:flex;justify-content:space-between;align-items:center}
 #out{flex:1;overflow:auto;padding:12px 14px;white-space:pre-wrap}
-#term form{display:flex;gap:8px;padding:8px 14px;border-top:1px solid #2a3348}
-#term input{flex:1;background:none;border:0;outline:0;color:#d6dce8;font:inherit}
-.g{color:#7ee7c4}.v{color:#b69cff}.y{color:#ffcf70}
-body.matrix{filter:hue-rotate(80deg) saturate(1.6)}
-@media (max-width:640px){nav{display:none}.log div{grid-template-columns:70px 90px 1fr}.hero{padding-block:64px 48px}}
+#tf{display:flex;gap:8px;padding:8px 14px;border-top:1px solid #283044}
+#ti{flex:1;background:none;border:0;outline:0;color:#d6dce8;font:inherit}
+.g{color:#7ee7c4}.v{color:#b69cff}.y{color:#ffcf70}.r{color:#ff7b86}.d{color:#7c869b}
+body.crt{filter:contrast(1.1) saturate(1.3)}
+body.crt::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:200;background:repeating-linear-gradient(0deg,#0000 0 2px,#0003 2px 3px)}
+@media (max-width:860px){.hero{grid-template-columns:1fr;padding-block:48px}.hero .viz{order:-1}#torus{font-size:9px;line-height:9px}
+  .card,.card.w3{grid-column:span 6}.two{grid-template-columns:1fr}nav,.status{display:none}.tl>div{grid-template-columns:1fr;gap:0}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
 </style>
 </head>
 <body>
+<div id="boot" hidden aria-hidden="true"></div>
+
 <header class="top"><div class="wrap">
-  <a class="logo" href="#">mao<b>@</b>lab<span class="cursor" aria-hidden="true"></span></a>
-  <nav><a href="#work">work</a><a href="#lab">lab</a><a href="#log">timeline</a><a href="#stack">stack</a><a href="#contact">contact</a></nav>
-  <button class="icon" id="termBtn" title="Open terminal (press ~)">&gt;_</button>
-  <button class="icon" id="themeBtn" title="Toggle theme">◐</button>
+  <a class="logo" href="#">mao<b>@</b><i>lab</i></a>
+  <span class="status"><span class="dot"></span><span id="calib">snapshot</span></span>
+  <nav><a href="#instruments">instruments</a><a href="#work">work</a><a href="#notebook">notebook</a><a href="#contact">contact</a></nav>
+  <button class="ic" id="termBtn" title="Open shell (~)">~</button>
+  <button class="ic" id="themeBtn" title="Toggle theme">theme</button>
 </div></header>
 
 <main class="wrap">
 <section class="hero">
-  <div class="prompt"><i>➜</i> ~ whoami</div>
-  <h1>MAO — I build systems<br>that have to be <span>right</span>, not just run.</h1>
-  <p class="lead">Software engineer working on <strong>quantitative research platforms</strong>, <strong>AI-first developer tooling</strong> and <strong>multi-framework UI libraries</strong>. I like hard constraints: no look-ahead, backtest identical to live, one component shipping to six frameworks.</p>
-  <div class="cta">
-    <a class="btn pri" href="#work">./see-the-work</a>
-    <a class="btn" href="https://github.com/YamadaBlog">github</a>
-    <a class="btn" href="https://yamadablog.github.io/pulse-player/">pulse-player demo</a>
+  <div>
+    <div class="prompt"><b>$</b> whoami</div>
+    <h1>I build systems that have to be <em>right</em>, not just run.</h1>
+    <p class="lead">Research platforms where one look-ahead bug silently invalidates months of results. A UI component that must behave identically in six frameworks. AI tooling that remembers what it did yesterday. <strong>Mostly private work — this is the public index.</strong></p>
+    <div class="cta">
+      <a class="btn pri" href="#work">./work</a>
+      <a class="btn" href="https://github.com/YamadaBlog">github</a>
+      <a class="btn" href="https://yamadablog.github.io/pulse-player/">pulse-player demo</a>
+    </div>
+  </div>
+  <div class="viz">
+    <pre id="torus" aria-hidden="true"></pre>
+    <div class="cap">fig. 0 — a torus, projected in 30 lines of JS. drag it.</div>
   </div>
 </section>
 
-<section id="stats">
-  <h2>uptime</h2>
-  <div class="stats">
-    <div class="stat"><b data-n="3761">3,761</b><span>contributions, last 12 months</span></div>
-    <div class="stat"><b data-n="236">236</b><span>active days out of 365</span></div>
-    <div class="stat"><b data-n="2400">~2,400</b><span>commits across 11 repos</span></div>
-    <div class="stat"><b>96%</b><span>of it in private repositories</span></div>
+<section id="instruments">
+  <div class="sh"><b>01</b> instruments<span></span><em id="snap">snapshot</em></div>
+  <div class="readout">
+    <div><b id="r-total">3,764</b><span>contributions / 365d</span></div>
+    <div><b id="r-active">236</b><span>active days</span></div>
+    <div><b id="r-streak">32d</b><span>longest streak</span></div>
+    <div><b id="r-commits">2,829</b><span>commits, all repos</span></div>
+    <div><b id="r-src">37.8 MB</b><span>authored source</span></div>
   </div>
-  <p class="note">// snapshot from the GitHub API, Sept 2026. Most work is private — this site is the public index of it.</p>
+  <div class="panel">
+    <div class="lbl"><span>SEISMO-01 · daily contributions · amplitude ∝ √n · hover to read</span><span id="readout">&nbsp;</span></div>
+    <canvas id="seismo"></canvas>
+  </div>
+  <div class="two">
+    <div class="panel">
+      <div class="lbl"><span>LOAD AVG · contributions/day over 7 | 30 | 90 days</span></div>
+      <div class="load" id="load">— — —</div>
+    </div>
+    <div class="panel">
+      <div class="lbl"><span>CIRCADIAN · contributions by weekday, 365d</span></div>
+      <div class="bars" id="bars"></div>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="lbl"><span>SPECTRO-02 · authored source by language · public + private · generated reports excluded</span></div>
+    <div class="spec" id="spec"></div>
+    <div class="legend" id="legend"></div>
+  </div>
 </section>
 
 <section id="work">
-  <h2>ls ~/work --featured</h2>
+  <div class="sh"><b>02</b> work<span></span></div>
   <div class="grid">
-    <article class="card big">
-      <span class="tag pub">● open source · npm</span>
+    <article class="card w3">
+      <header><span class="pub">[public] npm</span><span>2026</span></header>
       <h3>pulse-player</h3>
-      <p>A drop-in music player shipped as 7 <code>@pulse-music/*</code> packages: one framework-agnostic core with thin wrappers for Vue, React, Svelte, Angular, Web Components and React Native. Nine themes, FFT visualiser, drag-to-resize down to a floating button.</p>
+      <p>A drop-in music player shipped as seven <code>@pulse-music/*</code> packages: <b>one framework-agnostic core</b>, thin wrappers for Vue, React, Svelte, Angular, Web Components and React Native.</p>
       <ul>
-        <li>Releases published with <b>npm provenance</b> (sigstore-attested, built in CI)</li>
-        <li>Vue reference implementation byte-identity checked in CI; clean-consumer installs tested end-to-end</li>
-        <li>Post-deploy smoke job on the demo: zero console errors, zero broken assets</li>
+        <li>npm provenance — sigstore-attested, built in CI</li>
+        <li>Vue reference checked byte-for-byte in CI</li>
+        <li>clean-consumer installs tested end to end</li>
+        <li>post-deploy smoke job fails on a single console error</li>
       </ul>
-      <div class="links"><a href="https://github.com/YamadaBlog/pulse-player">source</a><a href="https://yamadablog.github.io/pulse-player/">live demo</a><a href="https://youtu.be/q_FJ1GWaCc8">3-min video</a></div>
-      <div class="chips"><span>TypeScript</span><span>Vue 3</span><span>Lit</span><span>React Native</span><span>Vite</span><span>Vitest</span><span>Playwright</span></div>
+      <div class="links"><a href="https://github.com/YamadaBlog/pulse-player">source</a><a href="https://yamadablog.github.io/pulse-player/">demo</a><a href="https://youtu.be/q_FJ1GWaCc8">video</a></div>
+      <div class="st">typescript · vue 3 · lit · react native · vite · vitest · playwright</div>
     </article>
-    <article class="card big">
-      <span class="tag prv">◆ private · ~2,000 commits · 11 months</span>
-      <h3>Quantitative research &amp; trading platform</h3>
-      <p>An end-to-end system: data ingestion with cross-source validation, feature pipelines, multi-instrument reinforcement-learning agents, a model factory (train → select → replay → qualify), broker execution and a monitoring dashboard.</p>
+    <article class="card w3">
+      <header><span class="prv">[private] ~2k commits</span><span>2025 → now</span></header>
+      <h3>quant research &amp; trading platform</h3>
+      <p>A year-long build, end to end. The interesting part is not the models — it is <b>making it impossible to fool yourself</b>.</p>
+      <div class="pipe">ingest → <b>cross-validate</b> → features → RL agents → <b>replay</b> → qualify → <b>gate</b> → execute → monitor</div>
       <ul>
-        <li><b>Deterministic replay</b> — backtest, replay and live share a single <code>process_bar()</code> path; divergence is impossible by construction</li>
-        <li>Walk-forward validation, frozen out-of-sample periods, FDR-corrected tests, cost stress-testing</li>
-        <li>Manual promotion gates to production and a disaster-recovery mirror</li>
+        <li>backtest, replay and live share one <code>process_bar()</code> — divergence is impossible by construction</li>
+        <li>walk-forward, frozen out-of-sample, FDR-corrected tests, cost stress</li>
+        <li>manual promotion gates, disaster-recovery mirror</li>
       </ul>
-      <div class="chips"><span>Python</span><span>RL (PPO)</span><span>pandas</span><span>Vue</span><span>Docker</span><span>Shell / PowerShell</span></div>
+      <div class="st">python · rl (ppo) · pandas · vue · docker · bash / pwsh</div>
     </article>
     <article class="card">
-      <span class="tag prv">◆ private · experimental</span>
-      <h3>Anti-look-ahead toolkit</h3>
-      <p>Static temporal-leakage linter for quant and agent code, bitemporal <i>as-of</i> store, look-ahead-safe RAG retrieval, and dataset sealing with Merkle / SHA-256 manifests.</p>
-      <div class="chips"><span>Python</span><span>AST analysis</span><span>hashing</span></div>
+      <header><span class="prv">[private] experimental</span></header>
+      <h3>asof</h3>
+      <p>Static <b>temporal-leakage linter</b>, bitemporal as-of store, look-ahead-safe RAG retrieval, datasets sealed with Merkle / SHA-256 manifests.</p>
+      <div class="st">python · ast · hashing</div>
     </article>
     <article class="card">
-      <span class="tag prv">◆ private · experimental</span>
-      <h3>Execution-integrity receipts</h3>
-      <p>Signed slippage measured against a broker-independent price reference, detection of statistically asymmetric fills, hash-sealed receipts.</p>
-      <div class="chips"><span>Python</span><span>statistics</span></div>
+      <header><span class="prv">[private] experimental</span></header>
+      <h3>proof-of-fill</h3>
+      <p>Execution integrity: <b>signed slippage</b> against a broker-independent reference, asymmetry detection, hash-sealed receipts.</p>
+      <div class="st">python · statistics</div>
     </article>
     <article class="card">
-      <span class="tag prv">◆ private · early</span>
+      <header><span class="prv">[private] early</span></header>
       <h3>anima</h3>
-      <p>Embodied AI desktop companion: a small on-screen being that understands your working context and keeps durable memory over time.</p>
-      <div class="chips"><span>Tauri / Rust</span><span>TypeScript</span></div>
+      <p>An <b>embodied AI desktop companion</b> — a small on-screen being that understands your context and keeps durable memory.</p>
+      <div class="st">tauri / rust · typescript</div>
     </article>
-    <article class="card">
-      <span class="tag prv">◆ private</span>
-      <h3>AI-first personal OS</h3>
-      <p>Estate map of every repo, architecture decision records and agent/memory tooling, so coding agents work with context instead of guessing.</p>
-      <div class="chips"><span>Python</span><span>agents</span><span>ADR</span></div>
-    </article>
-    <article class="card">
-      <span class="tag prv">◆ private · teaching demo</span>
-      <h3>DevSecOps lab</h3>
-      <p>Side-by-side pipelines (GitHub Actions vs GitLab CI) and identity providers (Keycloak vs Auth0) on a local Kubernetes cluster.</p>
-      <div class="chips"><span>kind</span><span>Keycloak</span><span>CI/CD</span></div>
+    <article class="card w6">
+      <header><span class="prv">[private] infrastructure</span></header>
+      <h3>personal OS</h3>
+      <p>The spine behind everything above: an <b>estate map</b> of every repo, architecture decision records, and agent/memory tooling so coding agents work with context instead of guessing. Plus a DevSecOps teaching lab comparing CI systems and identity providers on local Kubernetes.</p>
+      <div class="st">python · agents · adr · kind · keycloak · github actions / gitlab ci</div>
     </article>
   </div>
-  <p class="note">// private work described in general terms on purpose. Happy to walk through architecture and code in a conversation.</p>
 </section>
 
-<section id="lab">
-  <h2>tail -f lab.log</h2>
-  <p class="mute" style="margin-top:-12px">Most experiments end in a documented <i>“no edge”</i>. That's the lab working, not failing.</p>
-  <div class="log">
-    <div><span class="mute">EXP-01</span><span class="ko">REJECTED</span><span>Dynamic / trailing exits vs fixed targets → trailing cut the winners that paid for everything</span></div>
-    <div><span class="mute">EXP-02</span><span class="ko">REJECTED</span><span>Mean-reversion signal: real at zero cost, dead after realistic spreads</span></div>
-    <div><span class="mute">EXP-03</span><span class="ok">KEPT</span><span>Rolling walk-forward across instruments — kept only what survived FDR correction</span></div>
-    <div><span class="mute">EXP-04</span><span class="ko">FIXED</span><span>An indicator compared to the wrong-timeframe ATR → invalidated a “great” result. Now a checklist item</span></div>
-    <div><span class="mute">EXP-05</span><span class="ok">KEPT</span><span>Entry at next-bar open instead of signal close — edge survived the audit</span></div>
-    <div><span class="mute">EXP-06</span><span class="ok">SHIPPED</span><span>Replay engine: backtest ≡ live, proven by determinism tests (incremental == batch)</span></div>
-    <div><span class="mute">EXP-07</span><span class="wip">RUNNING</span><span>Static linter that catches temporal leakage before it reaches a backtest</span></div>
-  </div>
+<section id="notebook">
+  <div class="sh"><b>03</b> lab notebook<span></span></div>
+  <p class="intro">Most experiments end in a written <i>no</i>. That is the lab working.</p>
+<pre class="code"><span class="m">- trailing / dynamic exits          cut exactly the tail winners that paid for everything</span>
+<span class="m">- mean-reversion on thin edge       real at zero cost, dead after realistic spreads</span>
+<span class="m">- a "great" backtest                indicator vs the wrong-timeframe ATR. now a checklist item</span>
+<span class="p">+ entry at next-bar open            edge survived moving off the signal bar's close</span>
+<span class="p">+ rolling walk-forward + FDR        kept only what survived multiple-testing correction</span>
+<span class="p">+ replay engine                     backtest == live, proven: incremental run == batch run</span>
+<span class="x">! temporal-leakage linter           running. catch look-ahead before it reaches a backtest</span></pre>
+</section>
+
+<section id="invariants">
+  <div class="sh"><b>04</b> invariants<span></span></div>
+<pre class="code"><span class="k">assert</span> result.data_seen_at &lt;= decision.time          <span class="c"># no look-ahead, ever</span>
+<span class="k">assert</span> backtest.process_bar <span class="k">is</span> live.process_bar      <span class="c"># one code path, not two that "should match"</span>
+<span class="k">assert</span> out_of_sample.opened == 1                     <span class="c"># the test set is read once, then it is spent</span>
+<span class="k">assert</span> sha256(dataset) == manifest[dataset.name]     <span class="c"># results point at the exact bytes that made them</span>
+<span class="k">assert</span> <span class="p">"no edge"</span> <span class="k">in</span> notebook                         <span class="c"># killing ideas is output, not waste</span></pre>
 </section>
 
 <section id="log">
-  <h2>git log --reverse --oneline</h2>
+  <div class="sh"><b>05</b> git log --reverse<span></span></div>
   <div class="tl">
-    <div><time>2022</time><h3>First commits</h3><p>GitHub account opened, web projects and tutorials.</p></div>
-    <div><time>2025 · Q4</time><h3>Quant platform begins</h3><p>Research environment, backtesting engines, statistical validation stack. ~2,000 commits since.</p></div>
-    <div><time>2026 · Q2</time><h3>anima &amp; AI-first tooling</h3><p>Tauri desktop companion; personal OS for agents and memory.</p></div>
-    <div><time>2026 · Jun</time><h3>pulse-player on npm</h3><p>v3 release candidates across 6 frameworks, with provenance.</p></div>
-    <div><time>2026 · Jun</time><h3>Integrity tooling</h3><p>Anti-look-ahead toolkit and execution-integrity receipts.</p></div>
-    <div><time>2026 · Sep</time><h3>Model factory &amp; production gates</h3><p>Train → select → replay → qualify pipeline, manual promotion to production.</p></div>
+    <div><time>2022-11</time><div><h3>account created</h3><p>web projects, first public experiments.</p></div></div>
+    <div><time>2025-10</time><div><h3>quant platform, commit 1</h3><p>research environment, backtest engines, the statistical validation stack.</p></div></div>
+    <div><time>2026-04</time><div><h3>anima</h3><p>Tauri desktop companion: cognition and memory core.</p></div></div>
+    <div><time>2026-06</time><div><h3>pulse-player v3 on npm</h3><p>release candidates across six frameworks, with provenance. asof and proof-of-fill spin out.</p></div></div>
+    <div><time>2026-09</time><div><h3>model factory + production gates</h3><p>train → select → replay → qualify. busiest month on record.</p></div></div>
   </div>
 </section>
 
 <section id="stack">
-  <h2>cat ~/.stack</h2>
+  <div class="sh"><b>06</b> cat ~/.stack<span></span></div>
   <div class="stack">
-    <div><h3>languages</h3><p>Python · TypeScript · Rust (Tauri) · Shell / PowerShell</p></div>
-    <div><h3>data &amp; ml</h3><p>pandas · NumPy · reinforcement learning (PPO) · walk-forward, bootstrap, FDR</p></div>
-    <div><h3>frontend</h3><p>Vue 3 · React · Svelte · Angular · Lit / Web Components · React Native</p></div>
-    <div><h3>infra</h3><p>Docker · GitHub Actions · GitLab CI · kind · Keycloak · npm provenance</p></div>
-    <div><h3>quality</h3><p>pytest · Vitest · Playwright (a11y) · determinism tests · size budgets</p></div>
-    <div><h3>ai engineering</h3><p>agentic workflows · durable memory · deterministic guardrails</p></div>
+    <div><b>lang</b> python · typescript · rust (tauri) · bash / pwsh</div>
+    <div><b>data/ml</b> pandas · numpy · reinforcement learning (ppo) · walk-forward · bootstrap · fdr</div>
+    <div><b>ui</b> vue 3 · react · svelte · angular · lit / web components · react native</div>
+    <div><b>infra</b> docker · github actions · gitlab ci · kind · keycloak · npm provenance</div>
+    <div><b>quality</b> pytest · vitest · playwright (a11y) · determinism tests · size budgets</div>
+    <div><b>ai</b> agentic workflows · durable memory · deterministic guardrails</div>
   </div>
 </section>
 
-<section id="principles">
-  <h2>cat ~/principles.md</h2>
-  <ol class="principles">
-    <li><b>Measure, then believe.</b> Every result carries its test: out-of-sample, cost stress, multiple-testing correction.</li>
-    <li><b>One code path.</b> If backtest and production can diverge, they will. Make it impossible, not unlikely.</li>
-    <li><b>Seal the evidence.</b> Frozen test sets, hashed datasets, append-only decision logs.</li>
-    <li><b>Kill ideas fast.</b> A documented “no” is worth more than an unexamined “maybe”.</li>
-    <li><b>Ship fortresses, not tents.</b> Fewer features — tested, documented, built to outlast their author.</li>
-  </ol>
-</section>
-
 <section id="contact">
-  <h2>ping mao</h2>
-  <p class="mute">Open to interesting problems: research infrastructure, correctness-critical systems, developer tooling.</p>
-  <div class="cta">
+  <div class="sh"><b>07</b> reach<span></span></div>
+  <p class="intro">Interested in research infrastructure, correctness-critical systems and developer tooling. The fastest route is GitHub.</p>
+<pre class="code"><span class="c">$</span> curl -sL yamadablog.github.io/YamadaBlog/card.txt</pre>
+  <div class="cta" style="margin-top:18px">
     <a class="btn pri" href="https://github.com/YamadaBlog">github.com/YamadaBlog</a>
     <a class="btn" href="https://www.youtube.com/@YamadaBlog">youtube</a>
+    <a class="btn" href="card.txt">card.txt</a>
   </div>
 </section>
 </main>
 
-<footer class="wrap">© 2026 MAO · hand-written HTML, zero dependencies, zero trackers · press <kbd>~</kbd> for a shell</footer>
+<footer><div class="wrap">
+  <span>© 2026 mao · one html file · zero dependencies · zero trackers</span>
+  <span>press <kbd>~</kbd> for a shell · <a href="https://github.com/YamadaBlog/YamadaBlog">view source</a></span>
+</div></footer>
 
-<div id="term" hidden role="dialog" aria-label="Terminal">
-  <header><span>mao@lab: ~</span><button class="icon" id="termClose">esc</button></header>
+<div id="term" hidden role="dialog" aria-label="Shell">
+  <header><span>mao@lab: ~ — zsh</span><button class="ic" id="termClose">esc</button></header>
   <div id="out"></div>
-  <form id="tf"><span class="g">➜</span><input id="ti" autocomplete="off" spellcheck="false" aria-label="command"></form>
+  <form id="tf"><span class="g">$</span><input id="ti" autocomplete="off" spellcheck="false" aria-label="command"></form>
 </div>
 
 <script>
 (()=>{
-  const root=document.documentElement;
-  try{const t=localStorage.getItem('theme');if(t)root.dataset.theme=t}catch(e){}
-  const dark=()=>root.dataset.theme?root.dataset.theme==='dark':matchMedia('(prefers-color-scheme:dark)').matches;
-  document.getElementById('themeBtn').onclick=()=>{root.dataset.theme=dark()?'light':'dark';try{localStorage.setItem('theme',root.dataset.theme)}catch(e){}};
+const $=id=>document.getElementById(id), root=document.documentElement;
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const css=v=>getComputedStyle(root).getPropertyValue(v).trim();
+const store={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}}};
+let S=null,draw=null;
 
-  // terminal
-  const term=document.getElementById('term'),out=document.getElementById('out'),ti=document.getElementById('ti');
-  const hist=[];let hi=0;
-  const print=h=>{out.insertAdjacentHTML('beforeend',h+'\n');out.scrollTop=out.scrollHeight};
-  const go=id=>{close();document.getElementById(id).scrollIntoView()};
-  const cmds={
-    help:()=>'<span class="y">commands</span>: whoami  ls  open &lt;project&gt;  stack  principles  uptime  theme  contact  clear  exit',
-    whoami:()=>'MAO — systems builder. Quant research, AI tooling, multi-framework UI.',
-    ls:()=>'<span class="v">pulse-player/</span>  quant-platform/  asof-toolkit/  exec-receipts/  anima/  personal-os/  devsecops-lab/',
-    open:a=>a==='pulse-player'?(open('https://github.com/YamadaBlog/pulse-player'),'opening…'):a?`${a}: private repo — ask me for a walkthrough.`:'usage: open &lt;project&gt;',
-    stack:()=>(go('stack'),''),principles:()=>(go('principles'),''),contact:()=>(go('contact'),''),
-    uptime:()=>'3761 contributions · 236 active days · load average: always 1.00',
-    theme:()=>(document.getElementById('themeBtn').click(),'theme toggled'),
-    clear:()=>(out.innerHTML='',''),exit:()=>(close(),''),
-    sudo:a=>a==='hire-me'||a==='hire mao'?'<span class="g">[sudo] permission granted.</span> → scroll to #contact':'mao is not in the sudoers file. This incident will be reported.',
-    'rm':a=>/-rf/.test(a)?'nice try. the out-of-sample set is read-only.':'rm: missing operand',
-    vim:()=>'you are now trapped. (type exit)',
-    coffee:()=>'☕ brewing… ETA: before the next backtest finishes.',
-    make:a=>a==='me a sandwich'?'what? make it yourself.':'make: *** No targets. Stop.'
-  };
-  const run=line=>{print(`<span class="g">➜</span> <span class="v">~</span> ${line.replace(/</g,'&lt;')}`);
-    const [c,...r]=line.trim().split(/\s+/);if(!c)return;const f=cmds[c];
-    const res=f?f(r.join(' ')):`zsh: command not found: ${c.replace(/</g,'&lt;')} — try <span class="y">help</span>`;if(res)print(res)};
-  function openT(){term.hidden=false;if(!out.innerHTML)print('Welcome to mao@lab. Type <span class="y">help</span>.');ti.focus()}
-  function close(){term.hidden=true}
-  document.getElementById('termBtn').onclick=openT;document.getElementById('termClose').onclick=close;
-  document.getElementById('tf').onsubmit=e=>{e.preventDefault();const v=ti.value;hist.push(v);hi=hist.length;ti.value='';run(v)};
-  ti.onkeydown=e=>{if(e.key==='ArrowUp'&&hi>0){ti.value=hist[--hi]}else if(e.key==='ArrowDown'){ti.value=hist[++hi]??'';hi=Math.min(hi,hist.length)}};
-  const K=['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];let k=0;
-  addEventListener('keydown',e=>{
-    if(e.key==='Escape')close();
-    if((e.key==='~'||e.key==='`')&&document.activeElement!==ti){e.preventDefault();openT()}
-    k=e.key===K[k]?k+1:0;if(k===K.length){k=0;document.body.classList.toggle('matrix')}
-  });
-  console.log('%cmao@lab','font:700 20px monospace;color:#7ee7c4','\nReading the source? Good instinct. Press ~ for a shell.');
+/* theme */
+if(store.get('theme'))root.dataset.theme=store.get('theme');
+const isDark=()=>root.dataset.theme?root.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;
+$('themeBtn').onclick=()=>{root.dataset.theme=isDark()?'light':'dark';store.set('theme',root.dataset.theme);if(draw)draw()};
+
+/* boot: once per session, any key or click skips */
+(()=>{let seen;try{seen=sessionStorage.getItem('boot')}catch(e){seen=1}
+  if(seen||reduce)return;try{sessionStorage.setItem('boot',1)}catch(e){}
+  const b=$('boot'),ok='[ <span class="ok">ok</span> ] ';b.hidden=false;
+  const L=['mao@lab bootloader',ok+'mounting /work (6 projects, 5 private)',ok+'loading stats.json',ok+'verifying invariants: no look-ahead, replay == live',ok+'out-of-sample set: sealed',ok+'spinning torus','welcome.'];
+  let i=0,done=false;const end=()=>{if(done)return;done=true;b.classList.add('gone');setTimeout(()=>b.hidden=true,400);removeEventListener('keydown',end)};
+  addEventListener('keydown',end);b.onclick=end;
+  (function tick(){if(done)return;if(i<L.length){b.innerHTML+=L[i++]+'\n';setTimeout(tick,110)}else setTimeout(end,300)})()})();
+
+/* torus: after a1k0n's donut.c */
+(()=>{const el=$('torus'),W=46,H=24,ch='.,-~:;=!*#$@';let A=1,B=.4,drag=null,vis=true;
+  new IntersectionObserver(e=>vis=e[0].isIntersecting).observe(el);
+  el.addEventListener('pointerdown',e=>{drag=[e.clientX,e.clientY];el.setPointerCapture(e.pointerId)});
+  el.addEventListener('pointermove',e=>{if(!drag)return;B+=(e.clientX-drag[0])*.01;A+=(e.clientY-drag[1])*.01;drag=[e.clientX,e.clientY];frame()});
+  el.addEventListener('pointerup',()=>drag=null);
+  function frame(){const o=new Array(W*H).fill(' '),z=new Array(W*H).fill(0);
+    const cA=Math.cos(A),sA=Math.sin(A),cB=Math.cos(B),sB=Math.sin(B);
+    for(let j=0;j<6.28;j+=.07)for(let i=0;i<6.28;i+=.02){
+      const ci=Math.cos(i),si=Math.sin(i),cj=Math.cos(j),sj=Math.sin(j),h=cj+2,
+        D=1/(si*h*sA+sj*cA+5),t=si*h*cA-sj*sA,
+        x=0|(W/2+W*.42*D*(ci*h*cB-t*sB)),y=0|(H/2+H*.72*D*(ci*h*sB+t*cB)),
+        N=0|(8*((sj*sA-si*cj*cA)*cB-si*cj*sA-sj*cA-ci*cj*sB)),k=x+W*y;
+      if(y>=0&&y<H&&x>=0&&x<W&&D>z[k]){z[k]=D;o[k]=ch[N>0?N:0]}}
+    let s='';for(let y=0;y<H;y++)s+=o.slice(y*W,y*W+W).join('')+'\n';el.textContent=s}
+  frame();if(reduce)return;
+  (function loop(){if(vis&&!drag&&!document.hidden){A+=.035;B+=.015;frame()}requestAnimationFrame(loop)})()})();
+
+/* instruments, fed by stats.json */
+fetch('stats.json').then(r=>r.json()).then(s=>{S=s;
+  const f=n=>n.toLocaleString('en-US');
+  $('r-total').textContent=f(s.total);$('r-active').textContent=s.active;$('r-streak').textContent=s.best+'d';
+  $('r-commits').textContent=f(s.commits);$('r-src').textContent=s.src_mb+' MB';
+  $('calib').textContent='calibrated '+s.today;$('snap').textContent='live · '+s.today;
+  $('load').innerHTML=s.load.map(x=>x.toFixed(2)).join('&nbsp;&nbsp;')+' <span>c/day</span>';
+  const dn=['mon','tue','wed','thu','fri','sat','sun'],mx=Math.max(...s.weekday);
+  $('bars').innerHTML=s.weekday.map((v,i)=>`<div title="${v} contributions"><i style="height:${Math.max(3,v/mx*68)}px"></i>${dn[i]}</div>`).join('');
+  const L=Object.entries(s.langs),tot=L.reduce((a,[,v])=>a+v,0),cols=['--acc','--vio','--warn','--red','--fg'];
+  $('spec').innerHTML=L.map(([k,v],i)=>`<i title="${k} ${(100*v/tot).toFixed(1)}%" style="flex:${v} 0 0;min-width:2px;background:var(${cols[i]||'--mute'});opacity:${i<5?1:.45}"></i>`).join('');
+  $('legend').innerHTML=L.slice(0,6).map(([k,v],i)=>`<span><b style="color:var(${cols[i]||'--mute'})">${k}</b> ${(100*v/tot).toFixed(1)}%</span>`).join('')+(L.length>6?`<span>+${L.length-6} trace</span>`:'');
+  seismo(s.series)}).catch(()=>{$('calib').textContent='offline snapshot'});
+
+function seismo(series){const c=$('seismo'),x=c.getContext('2d'),peak=Math.max(...series.map(d=>d[1]));let hover=-1;
+  draw=()=>{const r=devicePixelRatio||1,w=c.clientWidth,h=c.clientHeight;c.width=w*r;c.height=h*r;x.setTransform(r,0,0,r,0,0);
+    const mid=h/2-6,st=w/series.length;
+    x.clearRect(0,0,w,h);x.strokeStyle=css('--line');x.lineWidth=1;x.setLineDash([2,4]);
+    [mid-60,mid+60].forEach(y=>{x.beginPath();x.moveTo(0,y);x.lineTo(w,y);x.stroke()});x.setLineDash([]);
+    x.beginPath();x.moveTo(0,mid);x.lineTo(w,mid);x.stroke();
+    x.strokeStyle=css('--acc');x.lineWidth=1.1;x.lineJoin='round';x.beginPath();x.moveTo(0,mid);
+    series.forEach(([,n],i)=>{const a=n?5+(mid-14)*Math.sqrt(n/peak):0,X=i*st;x.lineTo(X+st*.25,mid-a);x.lineTo(X+st*.75,mid+a*.8)});
+    x.lineTo(w,mid);x.stroke();
+    x.fillStyle=css('--mute');x.font='10px '+css('--mono');let lm='',lx=-99;
+    series.forEach(([d],i)=>{const m=d.slice(5,7);if(m!==lm&&i*st-lx>36){lm=m;lx=i*st;x.fillText(new Date(d+'T12:00').toLocaleString('en',{month:'short'}).toLowerCase(),lx,h-2)}});
+    if(hover>=0){x.strokeStyle=css('--warn');x.beginPath();x.moveTo(hover*st+st/2,0);x.lineTo(hover*st+st/2,h-14);x.stroke()}};
+  const pick=e=>{const b=c.getBoundingClientRect();hover=Math.min(series.length-1,Math.max(0,Math.floor((e.clientX-b.left)/b.width*series.length)));
+    const [d,n]=series[hover];$('readout').textContent=`${d} · ${n} contribution${n===1?'':'s'}${n===peak?' · peak event':''}`;draw()};
+  c.addEventListener('pointermove',pick);c.addEventListener('pointerleave',()=>{hover=-1;$('readout').innerHTML='&nbsp;';draw()});
+  addEventListener('resize',draw);draw()}
+
+/* shell */
+const term=$('term'),out=$('out'),ti=$('ti'),hist=[];let hi=0;
+const esc=s=>String(s).replace(/[&<]/g,m=>m==='&'?'&amp;':'&lt;');
+const print=h=>{out.insertAdjacentHTML('beforeend',h+'\n');out.scrollTop=out.scrollHeight};
+const go=id=>{closeT();$(id).scrollIntoView()};
+const files={'README.md':'systems that have to be right. see ./work','invariants.py':'assert backtest.process_bar is live.process_bar','.plan':'1. ship the leakage linter\n2. pulse-player v3.0.0 stable\n3. sleep (deprioritised)'};
+const C={
+  help:()=>'<span class="y">available</span>\n  whoami  ls [work]  cat &lt;file&gt;  open &lt;project&gt;  stats  uptime  neofetch\n  goto &lt;section&gt;  theme  crt  history  clear  exit\n<span class="d">tab completes. some commands are not listed.</span>',
+  whoami:()=>'mao. builds research infra, ai tooling and multi-framework ui.',
+  ls:a=>/work/.test(a||'')?'<span class="v">pulse-player/</span>  quant-platform/  asof/  proof-of-fill/  anima/  personal-os/':'<span class="v">work/</span>  README.md  invariants.py  .plan',
+  cat:a=>a in files?esc(files[a]):a?`cat: ${esc(a)}: No such file or directory`:'usage: cat &lt;file&gt;',
+  open:a=>a==='pulse-player'?(open('https://github.com/YamadaBlog/pulse-player'),'opening…'):a?`${esc(a)}: private. ask for a walkthrough.`:'usage: open &lt;project&gt;',
+  stats:()=>S?`contributions ${S.total}  active ${S.active}/365  streak ${S.best}d  peak ${S.peak} on ${S.peak_d}\ncommits ${S.commits}  source ${S.src_mb} MB  load ${S.load.join(' ')}`:'stats.json unavailable',
+  uptime:()=>S?` ${new Date().toTimeString().slice(0,8)} up ${S.uptime},  1 user,  load average: ${S.load.join(', ')}`:'up',
+  neofetch:()=>S?`<span class="g">mao</span>@<span class="v">lab</span>\n--------\n<span class="g">kernel</span>  python . typescript . rust\n<span class="g">365d</span>    ${S.total} contributions\n<span class="g">streak</span>  ${S.best}d\n<span class="g">status</span>  <span class="y">RUNNING</span>`:'…',
+  goto:a=>a&&$(a)?(go(a),''):'sections: instruments work notebook invariants log stack contact',
+  theme:()=>($('themeBtn').click(),'ok'),
+  crt:()=>(document.body.classList.toggle('crt'),'phosphor '+(document.body.classList.contains('crt')?'on':'off')),
+  history:()=>hist.map((h,i)=>`  ${i+1}  ${esc(h)}`).join('\n'),
+  clear:()=>(out.innerHTML='',''),exit:()=>(closeT(),''),
+  sudo:a=>/hire/.test(a)?'<span class="g">[sudo] access granted.</span> try: goto contact':'mao is not in the sudoers file. This incident will be reported.',
+  rm:a=>/-rf/.test(a)?'<span class="r">refused:</span> out_of_sample/ is read-only. that is the point.':'rm: missing operand',
+  vim:()=>'you are now in vim. there is no escape. (type exit)',
+  git:a=>a==='blame'?'it was me. it is always me.':a==='status'?'On branch main\nnothing to commit, working tree clean (for once)':'try: git blame, git status',
+  make:a=>a==='coffee'?"make: *** No rule to make target 'coffee'.":"make: Nothing to be done for 'all'.",
+  ping:()=>'PONG. fastest route: github.com/YamadaBlog'
+};
+const run=line=>{print(`<span class="g">$</span> ${esc(line)}`);const [c,...r]=line.trim().split(/\s+/);if(!c)return;
+  const res=C[c]?C[c](r.join(' ')):`zsh: command not found: ${esc(c)}. try <span class="y">help</span>`;if(res)print(res)};
+function openT(){term.hidden=false;if(!out.innerHTML)print('<span class="d">mao@lab. type</span> <span class="y">help</span>');ti.focus()}
+function closeT(){term.hidden=true}
+$('termBtn').onclick=openT;$('termClose').onclick=closeT;
+$('tf').onsubmit=e=>{e.preventDefault();const v=ti.value;if(v.trim())hist.push(v);hi=hist.length;ti.value='';run(v)};
+ti.onkeydown=e=>{if(e.key==='ArrowUp'&&hi>0){e.preventDefault();ti.value=hist[--hi]}
+  else if(e.key==='ArrowDown'){e.preventDefault();hi=Math.min(hist.length,hi+1);ti.value=hist[hi]??''}
+  else if(e.key==='Tab'){e.preventDefault();const m=Object.keys(C).filter(k=>k.startsWith(ti.value));if(m.length===1)ti.value=m[0]+' ';else if(m.length)print(m.join('  '))}};
+const K=['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];let k=0;
+addEventListener('keydown',e=>{
+  if(e.key==='Escape')closeT();
+  if((e.key==='~'||e.key==='`')&&document.activeElement!==ti){e.preventDefault();openT()}
+  k=e.key===K[k]?k+1:(e.key===K[0]?1:0);if(k===K.length){k=0;document.body.classList.toggle('crt')}});
+console.log('%cmao@lab','font:600 16px monospace;color:#7ee7c4','\nsource is hand-written, read freely. press ~ for a shell.');
 })();
 </script>
 </body>

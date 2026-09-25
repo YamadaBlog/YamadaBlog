@@ -1,0 +1,15 @@
+
+[38;5;141m                  #bpf        [0m   [38;5;122mmao[0m@[38;5;141mlab[0m
+[38;5;141m        yeyt{@>  lyro#ais     [0m   [38;5;245m----------------------------------[0m
+[38;5;141m      tsEyr      o-hrahnah    [0m   [38;5;122mrole[0m      systems builder
+[38;5;141m    prtl           ittts:iu   [0m   [38;5;122mfocus[0m     research infra . AI tooling . UI
+[38;5;141m   eatG              Syletrn  [0m   [38;5;122m365d[0m      3,770 contributions
+[38;5;141m   eipy               rtmnntm [0m   [38;5;122mload[0m      17.14 27.70 18.18
+[38;5;141m  motpm               iustoie [0m   [38;5;122minvariant[0m no look-ahead, replay == live
+[38;5;141m  piaNa               O(_oppS [0m   
+[38;5;141m   IAaRt             /ADajP=  [0m   [38;5;122mgh[0m        github.com/YamadaBlog
+[38;5;141m    hcrle           eiOyypJ   [0m   [38;5;122mweb[0m       yamadablog.github.io/YamadaBlog
+[38;5;141m     it,wlerOBoounLi,mcS:g    [0m   [38;5;122moss[0m       npm i @pulse-music/core
+[38;5;141m       1l1=06u7cc#,fr7ic      [0m   
+[38;5;141m          fpfl2g2=20v         [0m   [38;5;221m$ echo 'measure, then believe'[0m
+
