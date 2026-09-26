@@ -3,7 +3,7 @@ on:
   schedule: [{ cron: '17 3 * * *' }]
   push: { branches: [main] }
   workflow_dispatch:
-permissions: { contents: write, pages: write, id-token: write }
+permissions: { contents: write, pages: write, id-token: write, administration: read }
 concurrency: { group: forge, cancel-in-progress: false }
 jobs:
   forge:
