@@ -25,7 +25,7 @@ Most of the bench is private — this is the public index.
 </picture>
 
 <!-- telemetry -->
-<samp>calibrated 2026-09-26 . 3,791 contributions . 237 active days . longest streak 32d . load avg 20.14 / 28.40 / 18.41</samp>
+<samp>sampled 2026-09-26 . 3,791 contributions . 236/365 active . streak 32d . cadence 20.1/d . 1 views / 1 unique inbound</samp>
 <!-- /telemetry -->
 
 ---
@@ -165,42 +165,21 @@ demo           post-deploy smoke job fails on ONE console error
 
 ---
 
-### `/telemetry`
+### `/state`
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./assets/punch-dark.svg">
-  <img alt="Punch card of commits by weekday and author-local hour" src="./assets/punch-light.svg" width="100%">
+  <source media="(prefers-color-scheme: dark)" srcset="./assets/state-dark.svg">
+  <img alt="System state console: coverage, cadence and focus gauges, commit rhythm by local hour, language composition, and aggregated inbound traffic" src="./assets/state-light.svg" width="100%">
 </picture>
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./assets/seismo-dark.svg">
-  <img alt="Seismograph of daily contributions over the last 365 days" src="./assets/seismo-light.svg" width="100%">
+  <source media="(prefers-color-scheme: dark)" srcset="./assets/signal-dark.svg">
+  <img alt="Daily contribution signal across 365 days" src="./assets/signal-light.svg" width="100%">
 </picture>
 
-<details>
-<summary><samp><b>emission spectrum</b> — what the source is actually made of</samp></summary>
-
-<br>
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./assets/spectrum-dark.svg">
-  <img alt="Authored source by language across public and private repositories" src="./assets/spectrum-light.svg" width="100%">
-</picture>
-
-</details>
-
----
-
-### `/automaton`
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./assets/life-dark.svg">
-  <img alt="Conway's Game of Life seeded by the year's own contribution pattern" src="./assets/life-light.svg" width="100%">
-</picture>
-
-<sub>Life, B3/S23, seeded by the year itself: a cell is born wherever that day beat the median.
-The colonies are the busy weeks. Generations are pre-computed and cross-faded in SMIL,
-because a README cannot run JavaScript.</sub>
+<sub>Hue states a level, never a mood: <b>cyan</b> nominal, <b>steel</b> structural, <b>amber</b> elevated.
+Inbound figures come from GitHub's own Traffic API — already aggregated, 14-day window.
+No cookie, no script, no fingerprint, nothing that could single out a visitor.</sub>
 
 ---
 
@@ -261,10 +240,16 @@ assert "no edge" in notebook                       # killing ideas is output, no
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./assets/sigil-dark.svg">
-  <img alt="An ouroboros drawn in ASCII, where every glyph is a character of the source file that generates it" src="./assets/sigil-light.svg" width="480">
+  <img alt="The observer sigil: twenty-four hour ticks lit by real commit activity, a gauge of active days, and an iris where the whole year is plotted as a polar rosette" src="./assets/sigil-light.svg" width="380">
 </picture>
 
-<samp>every graphic above is rendered from the GitHub API by <a href="./scripts/forge.py"><code>scripts/forge.py</code></a><br>
+<samp><b>THE OBSERVER</b> — the ticks are hours, lit by the commits that land in them.<br>
+the ring is coverage. the iris is the year itself, one mark per day:<br>
+angle is the date, radius is the rank. nothing here is ornament.</samp>
+
+<br><br>
+
+<samp>every graphic is rendered from the GitHub API by <a href="./scripts/forge.py"><code>scripts/forge.py</code></a><br>
 stdlib python, no dependencies, no hosted widgets · re-forged nightly<br>
 press <code>~</code> on the <a href="https://yamadablog.github.io/YamadaBlog/">site</a> for a shell</samp>
 

@@ -15,13 +15,34 @@ jobs:
       - name: render assets from live data
         env: { GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}' }
         run: python scripts/forge.py
-      - name: sanity-check every generated svg parses
+      - name: every svg must parse, and must read correctly with no animation
         run: |
           python - <<'PY'
-          import glob, xml.dom.minidom as m
+          import glob, io, re, xml.dom.minidom as m
+          def strip_kf(css):
+              out, i = [], 0
+              while i < len(css):
+                  k = re.compile(r'@keyframes\s+[\w-]+\s*\{').search(css, i)
+                  if not k:
+                      out.append(css[i:]); break
+                  out.append(css[i:k.start()])
+                  j, d = k.end(), 1
+                  while j < len(css) and d:
+                      d += (css[j] == '{') - (css[j] == '}'); j += 1
+                  i = j
+              return ''.join(out)
+          bad = []
           for f in sorted(glob.glob('assets/*.svg')):
-              m.parse(f)
-          print('all svg ok:', len(glob.glob('assets/*.svg')))
+              m.parse(f)                                   # well-formed XML
+              s = strip_kf(io.open(f, encoding='utf-8').read())
+              s = re.sub(r'animation[\w-]*\s*:[^;}"]*;?', '', s)
+              m.parseString(s)                             # still valid without animation
+              # a gauge must never rest on an empty arc
+              if 'stroke-dashoffset="1"' in s:
+                  bad.append(f)
+          if bad:
+              raise SystemExit('gauge rests empty without animation: ' + ', '.join(bad))
+          print('svg ok:', len(glob.glob('assets/*.svg')), '| static state verified')
           PY
       - name: commit if anything moved
         run: |
