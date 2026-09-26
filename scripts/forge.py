@@ -426,6 +426,90 @@ def spectrum_svg(s, th) -> str:
 
 
 
+
+# ---------------------------------------------------------------- svg: session
+def session_svg(st: dict, snap: dict, th: dict) -> str:
+    """A terminal session that types itself out. Every value is real.
+
+    No input, no state, nobody else can write to it: the whole thing is
+    recomputed from this account's own data on every forge run.
+
+    The typewriter is a background-coloured rect sitting on top of each line,
+    animated from full width down to zero. Its *attribute* width is 0, so a
+    renderer that ignores animation shows the finished session rather than a
+    blank box -- the failure mode is "already typed", never "invisible".
+    """
+    CH, LH, X0, Y0 = 7.8, 22, 22, 56          # advance width of the mono face
+    punch = snap.get("punch") or []
+    by_hour = [sum(punch[d][h] for d in range(7)) for h in range(24)] if punch else []
+    tot = sum(by_hour) or 1
+    peak = by_hour.index(max(by_hour)) if by_hour else 0
+    night = sum(by_hour[h] for h in list(range(0, 7)) + [23]) if by_hour else 0
+    top = list(st["langs"])[:3]
+
+    P, C, O, D, W_ = "prompt", "cmd", "out", "dim", "warn"
+    lines = [
+        (P, "forge --status"),
+        (O, f"calendar     {st['total']:,} contributions . {st['active']}/365 active . streak {st['best']}d"),
+        (O, f"source       {st['src_mb']} MB authored . {st['repos']} repos ({st['public']} public)"),
+        (O, f"languages    {' . '.join(top)}"),
+        (W_, f"rhythm       peak {peak:02d}:00 local . {100*night//tot}% of commits outside 07-23"),
+        (P, "tail -n 2 lab/decisions"),
+        (D, "REJECTED  vector store for agent memory"),
+        (D, "          markdown + a rebuildable index outlived it"),
+        (P, "echo $INVARIANT"),
+        (C, "it stops and asks"),
+    ]
+
+    t, rows = 0.35, []
+    for ln, (kind, txt) in enumerate(lines):
+        y = Y0 + ln * LH
+        if kind == P:
+            body = (f'<tspan fill="{th["acc"]}">mao@lab</tspan>'
+                    f'<tspan fill="{th["mute"]}">:~$ </tspan>'
+                    f'<tspan fill="{th["fg"]}">{esc(txt)}</tspan>')
+            n = 11 + len(txt)
+            speed = 0.045                      # commands are "typed"
+        else:
+            col = {O: th["fg"], D: th["mute"], W_: th["warn"], C: th["acc"]}[kind]
+            body = f'<tspan fill="{col}">{esc(txt)}</tspan>'
+            n = len(txt)
+            speed = 0.006                      # output arrives fast
+        dur = max(n * speed, 0.12)
+        w = n * CH + 10
+        rows.append(
+            f'<text x="{X0}" y="{y}" xml:space="preserve">{body}</text>'
+            f'<rect x="{X0-2}" y="{y-14}" width="0" height="19" fill="{th["bg"]}">'
+            f'<animate attributeName="width" values="{w:.0f};{w:.0f};0" keyTimes="0;{t/(t+dur):.4f};1" '
+            f'dur="{t+dur:.2f}s" fill="freeze" calcMode="discrete" '
+            f'begin="0s" repeatCount="1"/></rect>')
+        # cursor that walks the line while it types, then disappears
+        rows.append(
+            f'<rect x="{X0}" y="{y-13}" width="8" height="16" fill="{th["acc"]}" opacity="0">'
+            f'<animate attributeName="opacity" values="0;1;0" keyTimes="0;{t/(t+dur):.4f};1" '
+            f'dur="{t+dur:.2f}s" fill="freeze" calcMode="discrete"/>'
+            f'<animate attributeName="x" values="{X0};{X0+w-10:.0f}" keyTimes="0;1" '
+            f'begin="{t:.2f}s" dur="{dur:.2f}s" fill="freeze"/></rect>')
+        t += dur + (0.32 if kind == P else 0.06)
+
+    H = Y0 + len(lines) * LH + 26
+    W = 1000
+    return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}" role="img" aria-label="A terminal session reporting {st['total']} contributions, {st['active']} active days, {st['src_mb']} MB of authored source, and a peak commit hour of {peak:02d}:00 local.">
+<style>
+text{{font-family:{MONO};font-size:13.5px}}
+.cur{{animation:bl 1.1s steps(1) infinite {t+0.2:.2f}s}}
+@keyframes bl{{50%{{opacity:0}}}}
+</style>
+<rect width="{W}" height="{H}" rx="12" fill="{th['bg']}"/>
+<circle cx="24" cy="23" r="5" fill="#ff5f57"/><circle cx="41" cy="23" r="5" fill="#febc2e"/><circle cx="58" cy="23" r="5" fill="#28c840"/>
+<text x="{W/2}" y="28" text-anchor="middle" fill="{th['mute']}" style="font-size:11.5px">mao@lab: ~ . session recorded at forge time . read-only</text>
+<line x1="0" y1="38" x2="{W}" y2="38" stroke="{th['line']}"/>
+{"".join(rows)}
+<text x="{X0}" y="{Y0 + len(lines)*LH}" xml:space="preserve"><tspan fill="{th['acc']}">mao@lab</tspan><tspan fill="{th['mute']}">:~$ </tspan><tspan class="cur" fill="{th['acc']}">&#9608;</tspan></text>
+<rect x=".5" y=".5" width="{W-1}" height="{H-1}" rx="12" fill="none" stroke="{th['line']}"/>
+</svg>'''
+
+
 # ---------------------------------------------------------------- svg: punch card
 def punch_svg(snap: dict, th: dict) -> str:
     """When the work actually happens. Author-local hours, not UTC."""
@@ -574,6 +658,7 @@ def main() -> None:
         put(ASSETS / f"life-{name}.svg", life_svg(days, th))
         put(ASSETS / f"punch-{name}.svg", punch_svg(snap, th))
         put(ASSETS / f"sigil-{name}.svg", sigil_svg(th))
+        put(ASSETS / f"session-{name}.svg", session_svg(s, snap, th))
     put(SITE / "card.txt", card_txt(s))
     put(SITE / "stats.json", json.dumps({**s, "series": [[d.isoformat(), c] for d, c in days]}) + "\n")
     patch_readme(s)

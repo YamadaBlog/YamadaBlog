@@ -15,17 +15,17 @@
 
 </div>
 
-```console
-$ whoami
-mao — I build systems that have to be right, not just run.
-$ cat /etc/motd
-things that break silently are the only things worth engineering against.
-$ ls ~ | wc -l          # public index of a mostly private bench
-6
-```
+I build systems that have to be **right**, not just run.
+Things that break silently are the only things worth engineering against.
+Most of the bench is private — this is the public index.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./assets/session-dark.svg">
+  <img alt="A terminal session reporting live contribution, source and commit-rhythm figures" src="./assets/session-light.svg" width="100%">
+</picture>
 
 <!-- telemetry -->
-<samp>calibrated 2026-09-26 . 3,790 contributions . 237 active days . longest streak 32d . load avg 20.00 / 28.37 / 18.40</samp>
+<samp>calibrated 2026-09-26 . 3,790 contributions . 236 active days . longest streak 32d . load avg 20.00 / 28.37 / 18.40</samp>
 <!-- /telemetry -->
 
 ---
