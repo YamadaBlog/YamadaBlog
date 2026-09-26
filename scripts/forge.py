@@ -36,13 +36,13 @@ MONO = "'JetBrains Mono','SFMono-Regular',Consolas,'Liberation Mono',Menlo,monos
 #   cyan = nominal signal . steel = structure . amber = elevated . rose = refused
 THEMES = {
     "dark": dict(
-        bg="#080b12", panel="#0c111c", line="#18202f", grid="#111827",
-        fg="#ccd6e8", mute="#5f6e88", dim="#39445a",
+        bg="#06080e", panel="#0b1018", line="#161d2b", grid="#0f1520",
+        fg="#e6ecf5", mute="#7d8aa3", dim="#737e99",
         cyan="#5ad2e8", steel="#8fa8ff", amber="#f5b95c", rose="#ff6b9d", violet="#b08cff",
         ink=".62", glow=".26"),
     "light": dict(
         bg="#f7f8fb", panel="#eef1f7", line="#dde3ee", grid="#e7ecf5",
-        fg="#131924", mute="#5c6880", dim="#97a2b8",
+        fg="#131924", mute="#5a6478", dim="#6a7386",
         cyan="#0e7d93", steel="#3f5bd4", amber="#a06708", rose="#c02f69", violet="#6a4fd6",
         ink=".88", glow=".14"),
 }
@@ -219,6 +219,72 @@ def ramp(t: float, th: dict) -> str:
 def hours(st: dict) -> list[int]:
     p = st.get("punch") or [[0] * 24 for _ in range(7)]
     return [sum(p[d][h] for d in range(7)) for h in range(24)]
+
+
+
+# ---------------------------------------------------------------- svg: the field
+def field_svg(days, st: dict, th: dict) -> str:
+    """One mark per day of the year -- the same mapping the portfolio animates.
+
+    x is the date. y is the day's RANK among the year, so a handful of huge days
+    cannot pin every ordinary day to the floor. Radius and hue carry the level,
+    and the scatter around each mark is that day's deviation from its own
+    30-day median. Nothing here is invented: remove the data and the picture
+    is empty.
+    """
+    W, H = 1000, 340
+    n = len(days)
+    counts = [c for _, c in days]
+    peak = max(1, max(counts))
+    order = sorted(range(n), key=lambda i: counts[i])
+    rank = [0.0] * n
+    for pos, i in enumerate(order):
+        rank[i] = pos / max(n - 1, 1)
+
+    def med(i):
+        w = sorted(counts[max(0, i - 15):min(n, i + 15)])
+        return w[len(w) // 2] if w else 0
+
+    seed = 1
+    def rnd():
+        nonlocal seed
+        seed = (seed * 1103515245 + 12345) & 0x7fffffff
+        return seed / 0x7fffffff
+
+    PAD_L, PAD_R, PAD_T, PAD_B = 46, 34, 44, 46
+    dots = []
+    for i, (d, c) in enumerate(days):
+        lvl = (c / peak) ** 0.55
+        dev = min(1.0, abs(c - med(i)) / max(peak * 0.35, 1))
+        bx = PAD_L + (W - PAD_L - PAD_R) * (i / max(n - 1, 1))
+        by = H - PAD_B - (H - PAD_T - PAD_B) * rank[i]
+        col = ramp(lvl, th)
+        for _ in range(3):
+            jx = bx + (rnd() - 0.5) * (2 + dev * 16)
+            jy = by + (rnd() - 0.5) * (3 + dev * 22)
+            r = 0.7 + lvl * 2.0
+            dots.append(f'<circle cx="{jx:.1f}" cy="{jy:.1f}" r="{r:.2f}" fill="{col}" '
+                        f'fill-opacity="{0.16 + 0.7 * lvl:.2f}"/>')
+
+    ticks, last, lastx = [], None, -99
+    for i, (d, _) in enumerate(days):
+        x = PAD_L + (W - PAD_L - PAD_R) * (i / max(n - 1, 1))
+        if d.month != last and x - lastx > 66:
+            last, lastx = d.month, x
+            ticks.append(f'<line x1="{x:.1f}" y1="{H-PAD_B+4}" x2="{x:.1f}" y2="{H-PAD_B+9}" stroke="{th["line"]}"/>'
+                         f'<text x="{x:.1f}" y="{H-PAD_B+22}" text-anchor="middle" fill="{th["dim"]}">{d.strftime("%b").lower()}</text>')
+
+    return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}" role="img" aria-label="The field: one mark per day of the last {n} days. Horizontal position is the date, vertical position is that day's rank among the year, and the scatter is its deviation from the surrounding 30-day median. Peak {st['peak']} on {st['peak_d']}.">
+<style>text{{font-family:{MONO};font-size:10.5px}}</style>
+<rect width="{W}" height="{H}" rx="12" fill="{th['bg']}"/>
+<rect x=".5" y=".5" width="{W-1}" height="{H-1}" rx="12" fill="none" stroke="{th['line']}"/>
+<text x="{PAD_L}" y="26" fill="{th['mute']}" style="letter-spacing:.11em">THE FIELD</text>
+<text x="{W-PAD_R}" y="26" text-anchor="end" fill="{th['dim']}">x DATE . y RANK . SCATTER DEVIATION FROM 30-DAY MEDIAN</text>
+<line x1="{PAD_L}" y1="{H-PAD_B}" x2="{W-PAD_R}" y2="{H-PAD_B}" stroke="{th['line']}"/>
+{"".join(dots)}{"".join(ticks)}
+<text x="{PAD_L}" y="{H-12}" fill="{th['dim']}">{st['total']:,} contributions . {st['active']}/{n} active</text>
+<text x="{W-PAD_R}" y="{H-12}" text-anchor="end" fill="{th['amber']}">peak {st['peak']} . {st['peak_d']}</text>
+</svg>'''
 
 
 # ---------------------------------------------------------------- svg: observer
@@ -650,10 +716,9 @@ def main() -> None:
     ASSETS.mkdir(exist_ok=True)
     for name, th in THEMES.items():
         put(ASSETS / f"banner-{name}.svg", banner_svg(days, st, th))
-        put(ASSETS / f"sigil-{name}.svg", sigil_svg(days, st, th))
         put(ASSETS / f"bench-{name}.svg", bench_svg(th))
         put(ASSETS / f"state-{name}.svg", state_svg(st, tr, th))
-        put(ASSETS / f"signal-{name}.svg", signal_svg(days, st, th))
+        put(ASSETS / f"field-{name}.svg", field_svg(days, st, th))
         put(ASSETS / f"session-{name}.svg", session_svg(st, tr, th))
     put(SITE / "card.txt", card_txt(st, tr))
     put(SITE / "stats.json", json.dumps({**st, "traffic": tr,

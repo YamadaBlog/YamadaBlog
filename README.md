@@ -15,8 +15,18 @@
 </div>
 
 I build systems that have to be **right**, not just run.
-Things that break silently are the only things worth engineering against.
 Most of the bench is private — this is the public index.
+
+<a href="https://yamadablog.github.io/YamadaBlog/">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="./assets/field-dark.svg">
+    <img alt="The field: one mark per day of the last 365 days. Horizontal position is the date, vertical position is that day's rank among the year, and the scatter is its deviation from the surrounding 30-day median." src="./assets/field-light.svg" width="100%">
+  </picture>
+</a>
+
+<sub><b>THE FIELD</b> — one mark per day. x is the date, y is that day's rank among the year,
+and the scatter is its deviation from the surrounding 30-day median. The portfolio animates
+the same mapping in WebGL: <a href="https://yamadablog.github.io/YamadaBlog/">yamadablog.github.io</a>.</sub>
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./assets/session-dark.svg">
@@ -24,7 +34,7 @@ Most of the bench is private — this is the public index.
 </picture>
 
 <!-- telemetry -->
-<samp>sampled 2026-09-26 . 3,809 contributions . 237/365 active . streak 32d . cadence 22.7/d . 1 views / 1 unique inbound</samp>
+<samp>sampled 2026-09-26 . 3,819 contributions . 236/365 active . streak 32d . cadence 24.1/d . 1 views / 1 unique inbound</samp>
 <!-- /telemetry -->
 
 ---
@@ -196,11 +206,6 @@ is now, and it has not been touched to suggest otherwise.
   <img alt="System state console: coverage, cadence and focus gauges, commit rhythm by local hour, language composition, and aggregated inbound traffic" src="./assets/state-light.svg" width="100%">
 </picture>
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./assets/signal-dark.svg">
-  <img alt="Daily contribution signal across 365 days" src="./assets/signal-light.svg" width="100%">
-</picture>
-
 <sub>Hue states a level, never a mood: <b>cyan</b> nominal, <b>steel</b> structural, <b>amber</b> elevated.
 Inbound figures come from GitHub's own Traffic API — already aggregated, 14-day window.
 No cookie, no script, no fingerprint, nothing that could single out a visitor.</sub>
@@ -262,19 +267,8 @@ assert "no edge" in notebook                       # killing ideas is output, no
 
 <div align="center">
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./assets/sigil-dark.svg">
-  <img alt="The observer sigil: twenty-four hour ticks lit by real commit activity, a gauge of active days, and an iris where the whole year is plotted as a polar rosette" src="./assets/sigil-light.svg" width="380">
-</picture>
-
-<samp><b>THE OBSERVER</b> — the ticks are hours, lit by the commits that land in them.<br>
-the ring is coverage. the iris is the year itself, one mark per day:<br>
-angle is the date, radius is the rank. nothing here is ornament.</samp>
-
-<br><br>
-
 <samp>every graphic is rendered from the GitHub API by <a href="./scripts/forge.py"><code>scripts/forge.py</code></a><br>
-stdlib python, no dependencies, no hosted widgets · re-forged nightly<br>
-press <code>~</code> on the <a href="https://yamadablog.github.io/YamadaBlog/">site</a> for a shell</samp>
+stdlib python, no dependencies, no hosted widgets · re-forged nightly<br><br>
+<a href="https://yamadablog.github.io/YamadaBlog/"><b>the field, in motion →</b></a></samp>
 
 </div>
