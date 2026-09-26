@@ -108,6 +108,24 @@ footer{padding:clamp(40px,7vh,80px) 0 calc(36px + env(safe-area-inset-bottom,0px
   display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
 footer a{color:var(--mute)}
 
+/* subject panel */
+.subj{border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.subj table{width:100%;border-collapse:collapse;font:500 12px/1.5 var(--mono);letter-spacing:.03em}
+.subj caption{text-align:left;font:500 11.5px var(--mono);letter-spacing:.16em;color:var(--dim);padding:0 0 14px}
+.subj th{text-align:left;font-weight:500;color:var(--dim);padding:9px 0;border-bottom:1px solid var(--line);
+  font-size:10.5px;letter-spacing:.12em}
+.subj td{padding:9px 0;border-bottom:1px solid var(--line);color:var(--mute);vertical-align:baseline}
+.subj tr:last-child td{border-bottom:0}
+.subj td.k{color:var(--dim);width:38%}
+.subj td.v{color:var(--ink);font-variant-numeric:tabular-nums}
+.subj td.d{text-align:right;font-variant-numeric:tabular-nums;width:22%}
+.subj .hi{color:var(--amber)}
+.subj .lo{color:var(--dim)}
+.pledge{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin:0 0 clamp(22px,3vw,34px);
+  font:500 11.5px var(--mono);letter-spacing:.1em;color:var(--cyan)}
+.pledge span{color:var(--dim);letter-spacing:.04em}
+@media (max-width:560px){.subj td.k{width:44%}.subj table{font-size:11px}}
+
 #fps{position:fixed;right:10px;bottom:10px;z-index:4;font:500 10.5px var(--mono);
   color:var(--dim);background:#06080ecc;padding:4px 8px;border:1px solid var(--line);border-radius:4px}
 #fps[hidden]{display:none}
@@ -128,6 +146,7 @@ footer a{color:var(--mute)}
   <a class="brand" href="#main">MAO<i>.</i></a>
   <nav aria-label="Sections">
     <a href="#bench">bench</a>
+    <a href="#subject">subject</a>
     <a href="#background">background</a>
     <a href="#contact">contact</a>
   </nav>
@@ -216,8 +235,28 @@ footer a{color:var(--mute)}
     </ol>
   </section>
 
+  <section id="subject" aria-labelledby="h-subj">
+    <p class="sh"><b>02</b> SUBJECT<span></span></p>
+    <h2 id="h-subj">The instrument turns around.</h2>
+    <p class="pledge">NOTHING LEAVES THIS DEVICE
+      <span>this page makes exactly one network request — for my data, not yours</span></p>
+    <div class="subj">
+      <table aria-live="off">
+        <caption id="subj-cap">SESSION — measured in this browser, discarded when you close the tab</caption>
+        <thead><tr><th scope="col">READING</th><th scope="col">VALUE</th><th scope="col">DRIFT</th></tr></thead>
+        <tbody id="subj-rows">
+          <tr><td class="k">session</td><td class="v" id="m-time">—</td><td class="d lo">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">Constants are reported as readings; they have no distribution, so they carry no drift.
+      Signals vary through the session, so their drift is the deviation from their own running median — the
+      same robust measure the field uses for my year. Your points are drawn in <span style="color:var(--amber)">amber</span>,
+      over mine. Nothing is uploaded, stored, or sent anywhere.</p>
+  </section>
+
   <section id="background" aria-labelledby="h-bg">
-    <p class="sh"><b>02</b> BACKGROUND<span></span></p>
+    <p class="sh"><b>03</b> BACKGROUND<span></span></p>
     <h2 id="h-bg">Before this bench.</h2>
     <div class="grid2">
       <div class="cell"><b>ANGULAR</b><p>Front-ends over REST APIs.</p></div>
@@ -230,7 +269,7 @@ footer a{color:var(--mute)}
   </section>
 
   <section id="contact" aria-labelledby="h-c">
-    <p class="sh"><b>03</b> CONTACT<span></span></p>
+    <p class="sh"><b>04</b> CONTACT<span></span></p>
     <h2 id="h-c" class="vh">Contact</h2>
     <p><a class="big" href="https://github.com/YamadaBlog">github.com/YamadaBlog</a></p>
     <p class="note">Open to research infrastructure, correctness-critical systems, agent orchestration and security engineering.</p>
@@ -295,7 +334,7 @@ function start(series){
     }
   }
 
-  const VS = `attribute vec4 a;uniform float uT,uS,uAsp,uPx,uEdge,uDim;uniform vec2 uM;varying float vL,vQ;
+  const VS = `attribute vec4 a;uniform float uT,uS,uAsp,uPx,uEdge,uDim,uSub;uniform vec2 uM;varying float vL,vQ,vS;
 void main(){
   float ph=a.z*31.4+uT*0.55;
   // x is a TIME axis, so it fills the viewport width; only the drift is
@@ -305,17 +344,20 @@ void main(){
   p+=vec2(d.x/uAsp,d.y)*m*0.55;
   float x=p.x*1.06;
   gl_Position=vec4(x,p.y,0.,1.);
-  gl_PointSize=(1.0+a.w*3.6)*uPx;
+  gl_PointSize=(1.0+a.w*3.6)*uPx*(1.0+uSub*0.9);
   // quiet down where the type lives, so the field never fights the headline
   vQ=mix(0.14,1.0,smoothstep(uEdge-0.10,uEdge+0.42,x))*uDim;
+  vQ=mix(vQ,1.0,uSub);
+  vS=uSub;
   vL=a.w;}`;
-  const FS = `precision mediump float;varying float vL,vQ;
+  const FS = `precision mediump float;varying float vL,vQ,vS;
 void main(){
   vec2 c=gl_PointCoord-0.5;float d=dot(c,c);
   if(d>0.25) discard;
   float al=smoothstep(0.25,0.01,d);
   vec3 col=mix(vec3(0.35,0.82,0.91),vec3(0.56,0.66,1.0),smoothstep(0.22,0.6,vL));
   col=mix(col,vec3(0.96,0.73,0.36),smoothstep(0.62,0.95,vL));
+  col=mix(col,vec3(0.96,0.73,0.36),vS);          // the visitor reads amber
   gl_FragColor=vec4(col,al*(0.38+1.05*vL)*vQ);}`;
 
   const sh = (t, src) => { const o = gl.createShader(t); gl.shaderSource(o, src); gl.compileShader(o);
@@ -335,7 +377,8 @@ void main(){
   gl.vertexAttribPointer(la, 4, gl.FLOAT, false, 0, 0);
   const uT = gl.getUniformLocation(prog, 'uT'), uS = gl.getUniformLocation(prog, 'uS'),
         uAsp = gl.getUniformLocation(prog, 'uAsp'), uM = gl.getUniformLocation(prog, 'uM'),
-        uPx = gl.getUniformLocation(prog, 'uPx'), uEdge = gl.getUniformLocation(prog, 'uEdge'), uDim = gl.getUniformLocation(prog, 'uDim');
+        uPx = gl.getUniformLocation(prog, 'uPx'), uEdge = gl.getUniformLocation(prog, 'uEdge'), uDim = gl.getUniformLocation(prog, 'uDim'),
+        uSub = gl.getUniformLocation(prog, 'uSub');
   gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
 
   let W = 1, H = 1, dpr = 1;
@@ -359,6 +402,7 @@ void main(){
 
   // frame-budget watchdog: revert to a still field rather than grind
   let slow = 0, frames = 0, t0 = performance.now(), dead = false;
+  const ft = []; let ftLast = performance.now();
   const badge = $('fps');
   const showFps = location.hash === '#fps' || location.search.indexOf('fps') > -1;
   if (showFps) badge.hidden = false;
@@ -369,6 +413,8 @@ void main(){
     last = now;
     slow = dt > 1.4 ? slow + 1 : Math.max(0, slow - 1);
     if (slow > 90){ stop(); return; }
+    ft.push(now - ftLast); ftLast = now;
+    if (ft.length > 60){ ft.shift(); const a = ft.slice().sort((x, y) => x - y); frameMed = a[30]; }
 
     cur += (target - cur) * (1 - Math.pow(1 - 0.09, dt));
     const span = Math.max(1, document.body.scrollHeight - innerHeight);
@@ -383,7 +429,18 @@ void main(){
     gl.uniform2f(uM, mouse[0] / 1.06, mouse[1]);
     gl.clearColor(0.024, 0.031, 0.055, 1);
     gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.vertexAttribPointer(la, 4, gl.FLOAT, false, 0, 0);
+    gl.uniform1f(uSub, 0);
     gl.drawArrays(gl.POINTS, 0, COUNT);
+    if (subCount){                                   // the visitor, over the year
+      gl.bindBuffer(gl.ARRAY_BUFFER, subBuf);
+      gl.vertexAttribPointer(la, 4, gl.FLOAT, false, 0, 0);
+      gl.uniform1f(uS, 0);                           // "now" does not scroll
+      gl.uniform1f(uSub, 1);
+      gl.drawArrays(gl.POINTS, 0, subCount);
+    }
+    paintSubject(now);
 
     if (showFps){ frames++; if (now - t0 > 1000){ badge.textContent = Math.round(frames * 1000 / (now - t0)) + ' fps'; frames = 0; t0 = now; } }
     tick();
@@ -399,9 +456,141 @@ void main(){
     else tick();
   });
 
+  // ── the mirror: the same mapping, pointed at the visitor ──────────────
+  //    Everything below is computed in this tab and never sent anywhere.
+  const MAXSUB = 640;
+  const subData = new Float32Array(MAXSUB * 4);
+  let subCount = 0, subHead = 0;
+  const subBuf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, subBuf);
+  gl.bufferData(gl.ARRAY_BUFFER, subData, gl.DYNAMIC_DRAW);
+
+  // robust drift: median + MAD, so one outlier cannot define the scale
+  const win = {};
+  function drift(key, v){
+    const w = win[key] || (win[key] = []);
+    w.push(v); if (w.length > 90) w.shift();
+    if (w.length < 12) return null;
+    const a = w.slice().sort((x, y) => x - y);
+    const med = a[a.length >> 1];
+    const dev = a.map(x => Math.abs(x - med)).sort((x, y) => x - y)[a.length >> 1];
+    const sigma = 1.4826 * dev;
+    if (!(sigma > 1e-9)) return null;
+    return Math.max(-9.9, Math.min(9.9, (v - med) / sigma));
+  }
+
+  const seen = {};
+  function norm(key, v){                       // position within this session's own observed range
+    const r = seen[key] || (seen[key] = { lo: v, hi: v });
+    r.lo = Math.min(r.lo, v); r.hi = Math.max(r.hi, v);
+    return r.hi - r.lo < 1e-9 ? 0 : (v - r.lo) / (r.hi - r.lo) * 2 - 1;
+  }
+  function pushPoint(t01, d, lvl){
+    const i = (subHead % MAXSUB) * 4;
+    subData[i]     = t01 * 2 - 1;
+    subData[i + 1] = Math.max(-0.88, Math.min(0.88, (d / 4) * 0.8));
+    subData[i + 2] = Math.min(1, Math.abs(d) / 6);
+    subData[i + 3] = Math.max(0.12, Math.min(1, lvl));
+    subHead++; subCount = Math.min(subCount + 1, MAXSUB);
+    gl.bindBuffer(gl.ARRAY_BUFFER, subBuf);
+    gl.bufferSubData(gl.ARRAY_BUFFER, i * 4, subData.subarray(i, i + 4));
+  }
+
+  // counters
+  const t0s = performance.now();
+  let moves = 0, dist = 0, lastPt = null, scrollPeak = 0, lastScroll = scrollY, lastScrollT = t0s;
+  let firstInput = null, frameMed = 0;
+  addEventListener('pointermove', e => {
+    moves++;
+    if (lastPt) dist += Math.hypot(e.clientX - lastPt[0], e.clientY - lastPt[1]);
+    lastPt = [e.clientX, e.clientY];
+    if (firstInput === null) firstInput = performance.now() - t0s;
+  }, { passive:true });
+  addEventListener('keydown', () => { if (firstInput === null) firstInput = performance.now() - t0s; }, { passive:true });
+  addEventListener('scroll', () => {
+    const now = performance.now(), dtv = Math.max(1, now - lastScrollT);
+    scrollPeak = Math.max(scrollPeak, Math.abs(scrollY - lastScroll) / dtv * 1000);
+    lastScroll = scrollY; lastScrollT = now;
+    if (firstInput === null) firstInput = now - t0s;
+  }, { passive:true });
+
+  const dwell = {}; const secs = [...document.querySelectorAll('main section[id]')];
+  new IntersectionObserver(es => es.forEach(e => {
+    const id = e.target.id;
+    dwell[id] = dwell[id] || { in:0, since:0 };
+    if (e.isIntersecting) dwell[id].since = performance.now();
+    else if (dwell[id].since){ dwell[id].in += performance.now() - dwell[id].since; dwell[id].since = 0; }
+  }), { threshold:0.4 }).observe(document.body);
+  secs.forEach(sec => new IntersectionObserver(es => es.forEach(e => {
+    const d = dwell[sec.id] || (dwell[sec.id] = { in:0, since:0 });
+    if (e.isIntersecting) d.since = performance.now();
+    else if (d.since){ d.in += performance.now() - d.since; d.since = 0; }
+  }), { threshold:0.4 }).observe(sec));
+
+  const mmss = ms => {
+    const t = Math.max(0, ms / 1000 | 0);
+    return String(t / 60 | 0).padStart(2, '0') + ':' + String(t % 60).padStart(2, '0');
+  };
+  const esc = v => String(v).replace(/[&<]/g, c => c === '&' ? '&amp;' : '&lt;');
+
+  // an opaque, per-session handle. Math.random only — not derived from anything
+  // about the visitor, so it identifies nothing and survives nothing.
+  const handle = '0x' + Math.floor(Math.random() * 0xfffff).toString(16).padStart(5, '0');
+  const cap = document.getElementById('subj-cap');
+  if (cap) cap.textContent = 'SUBJECT ' + handle + ' — measured in this browser, discarded when you close the tab';
+
+  const rowsEl = document.getElementById('subj-rows');
+  function readings(){
+    const now = performance.now();
+    let top = null, topMs = 0;
+    for (const k in dwell){
+      const ms = dwell[k].in + (dwell[k].since ? now - dwell[k].since : 0);
+      if (ms > topMs){ topMs = ms; top = k; }
+    }
+    return [
+      ['session',        mmss(now - t0s), null],
+      ['viewport',       innerWidth + '\u00d7' + innerHeight, null],
+      ['pixel ratio',    (devicePixelRatio || 1).toFixed(2), null],
+      ['cores',          navigator.hardwareConcurrency || 'undisclosed', null],
+      ['memory',         navigator.deviceMemory ? navigator.deviceMemory + ' GB+' : 'undisclosed', null],
+      ['frame',          frameMed ? frameMed.toFixed(1) + ' ms' : (dead || RM.matches ? 'unavailable' : 'sampling'),
+                         frameMed ? drift('frame', frameMed) : null],
+      ['pointer',        moves + ' events', drift('moves', moves)],
+      ['pointer path',   (dist / 1000).toFixed(2) + ' k px', drift('dist', dist)],
+      ['scroll peak',    scrollPeak.toFixed(0) + ' px/s', drift('scroll', scrollPeak)],
+      ['first input',    firstInput === null ? 'awaiting' : (firstInput / 1000).toFixed(2) + ' s', null],
+      ['longest dwell',  top ? top + ' ' + mmss(topMs) : 'none', null]
+    ];
+  }
+
+  let lastPaint = 0;
+  function paintSubject(now){
+    if (now - lastPaint < 500) return;           // 2 Hz: legible, and cheap
+    lastPaint = now;
+    const rows = readings();
+    rowsEl.innerHTML = rows.map(([k, v, d]) => {
+      const dTxt = d === null ? '—' : (d >= 0 ? '+' : '\u2212') + Math.abs(d).toFixed(1) + '\u03c3';
+      const cls = d === null ? 'lo' : (Math.abs(d) > 1.5 ? 'hi' : '');
+      return '<tr><td class="k">' + esc(k) + '</td><td class="v">' + esc(v) +
+             '</td><td class="d ' + cls + '">' + dTxt + '</td></tr>';
+    }).join('');
+    // the strongest signals become points in the field
+    const span = Math.max(1, document.body.scrollHeight - innerHeight);
+    const t01 = Math.min(1, (now - t0s) / 180000);
+    // drift when it exists; otherwise the signal's own magnitude. Both are measured.
+    const sig = { pointer: moves, 'pointer path': dist, 'scroll peak': scrollPeak, frame: frameMed };
+    rows.forEach(r => {
+      if (r[2] !== null){ pushPoint(t01, r[2], Math.min(1, Math.abs(r[2]) / 3 + 0.2)); return; }
+      const v = sig[r[0]];
+      if (typeof v === 'number' && v > 0) pushPoint(t01, norm(r[0], v) * 2.6, 0.45);
+    });
+  }
+
   canvas.classList.add('on');
   draw(performance.now());       // first frame always lands, motion or not
   if (!RM.matches) tick();
+  // the readout keeps updating even when the field is asleep
+  setInterval(() => paintSubject(performance.now()), 500);
 }
 })();
 </script>
