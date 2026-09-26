@@ -433,16 +433,16 @@ DOMAINS = [("research infrastructure", "cyan"), ("agent orchestration", "cyan"),
 
 
 def banner_svg(days, st: dict, th: dict) -> str:
-    W, H = 1100, 300
+    W, H = 1100, 322
     tail = days[-180:]
     peak = max(1, max(c for _, c in tail))
     step = W / len(tail)
-    pts = " ".join(f"{i*step:.1f},{H-54-40*(c/peak)**0.7:.1f}" for i, (_, c) in enumerate(tail))
+    pts = " ".join(f"{i*step:.1f},{H-40-30*(c/peak)**0.7:.1f}" for i, (_, c) in enumerate(tail))
 
     rows, y = [], 104
     for i, (d, key) in enumerate(DOMAINS):
         rows.append(
-            f'<g class="rw" style="animation-delay:{0.14 + i*0.07:.2f}s">'
+            f'<g>'
             f'<circle cx="52" cy="{y-5}" r="3" fill="{th[key]}"/>'
             f'<text x="68" y="{y}" fill="{th["fg"]}">{esc(d)}</text></g>')
         y += 25
@@ -451,7 +451,7 @@ def banner_svg(days, st: dict, th: dict) -> str:
     for i, (t, key) in enumerate([("no look-ahead", "cyan"), ("replay == live", "steel"),
                                   ("scope first", "violet"), ("it stops and asks", "amber")]):
         w = len(t) * 7.7 + 20
-        tags += (f'<g class="rw" style="animation-delay:{0.62 + i*0.09:.2f}s">'
+        tags += (f'<g>'
                  f'<rect x="{x}" y="{92 + (i//2)*32}" width="{w:.0f}" height="22" rx="11" fill="none" stroke="{th[key]}" stroke-opacity=".5"/>'
                  f'<text x="{x+10}" y="{107 + (i//2)*32}" fill="{th[key]}" style="font-size:11.5px">{esc(t)}</text></g>')
         x = 620 if i % 2 else x + w + 10
@@ -459,14 +459,10 @@ def banner_svg(days, st: dict, th: dict) -> str:
     return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}" role="img" aria-label="mao@lab -- research infrastructure, agent orchestration, reverse engineering, security research. {st['total']} contributions in the last year.">
 <style>
 text{{font-family:{MONO};font-size:14.5px}}
-.rw{{animation:rw .4s ease-out}}
-@keyframes rw{{from{{opacity:0;transform:translateX(-7px)}}}}
 .cur{{animation:bl 1.2s steps(1) infinite 1s}}
 @keyframes bl{{50%{{opacity:0}}}}
 .sc{{animation:sc 9s cubic-bezier(.4,0,.6,1) infinite}}
 @keyframes sc{{from{{transform:translateY(-70px)}}to{{transform:translateY({H}px)}}}}
-.sp{{stroke-dasharray:4000;animation:dr 3.6s ease-out backwards}}
-@keyframes dr{{from{{stroke-dashoffset:4000}}}}
 </style>
 <defs>
   <linearGradient id="ti" x1="0" x2="1"><stop offset="0" stop-color="{th['steel']}"/><stop offset="1" stop-color="{th['cyan']}"/></linearGradient>
@@ -476,7 +472,7 @@ text{{font-family:{MONO};font-size:14.5px}}
 <rect width="{W}" height="{H}" rx="14" fill="{th['bg']}"/>
 <rect width="{W}" height="{H}" rx="14" fill="url(#gr)"/>
 <rect class="sc" width="{W}" height="70" fill="url(#sg)"/>
-<polyline class="sp" points="{pts}" fill="none" stroke="{th['cyan']}" stroke-width="1.1" stroke-opacity=".36"/>
+<polyline points="{pts}" fill="none" stroke="{th['cyan']}" stroke-width="1.1" stroke-opacity=".36"/>
 <rect x=".5" y=".5" width="{W-1}" height="{H-1}" rx="14" fill="none" stroke="{th['line']}"/>
 <circle cx="26" cy="24" r="5" fill="{th['rose']}" opacity=".7"/><circle cx="43" cy="24" r="5" fill="{th['amber']}" opacity=".7"/><circle cx="60" cy="24" r="5" fill="{th['cyan']}" opacity=".7"/>
 <text x="{W/2}" y="29" text-anchor="middle" fill="{th['mute']}" style="font-size:11.5px">mao@lab: ~/bench . observation active</text>
@@ -535,24 +531,15 @@ def session_svg(st: dict, tr: dict, th: dict) -> str:
             n, speed = len(txt), 0.006
         dur = max(n * speed, 0.12)
         w = n * CH + 10
-        rows.append(
-            f'<text x="{X0}" y="{y}" xml:space="preserve">{body}</text>'
-            f'<rect class="cv" x="{X0-2}" y="{y-14}" width="{w:.0f}" height="19" fill="{th["bg"]}"'
-            f' style="transform-origin:{X0-2}px 0;animation-delay:{t:.2f}s;animation-duration:{dur:.2f}s"/>'
-            f'<rect class="cr" x="{X0}" y="{y-13}" width="8" height="16" fill="{th["cyan"]}"'
-            f' style="animation-delay:{t:.2f}s;animation-duration:{dur:.2f}s;--tx:{w-10:.0f}px"/>')
+        rows.append(f'<text x="{X0}" y="{y}" xml:space="preserve">{body}</text>')
         t += dur + (0.30 if kind == P else 0.06)
 
     H, W = Y0 + len(lines) * LH + 26, 1000
     return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}" role="img" aria-label="A terminal session reporting {st['active']} active days, {st['src_mb']} MB of authored source, a peak commit hour of {peak:02d}:00 local, and {seen} inbound over 14 days.">
 <style>
 text{{font-family:{MONO};font-size:13.5px}}
-/* default state is scaleX(0): the session reads as already typed if nothing animates */
-.cv{{transform:scaleX(0);animation-name:tp;animation-timing-function:steps(24,end);animation-fill-mode:none}}
-@keyframes tp{{from{{transform:scaleX(1)}}to{{transform:scaleX(0)}}}}
-.cr{{opacity:0;animation-name:cr;animation-timing-function:steps(24,end)}}
-@keyframes cr{{from{{opacity:1;transform:translateX(0)}}to{{opacity:1;transform:translateX(var(--tx))}}}}
-.cur{{animation:bl 1.2s steps(1) infinite {t+0.2:.2f}s}}
+/* the only motion is the prompt: nothing here can ever hide its own content */
+.cur{{animation:bl 1.2s steps(1) infinite}}
 @keyframes bl{{50%{{opacity:0}}}}
 </style>
 <rect width="{W}" height="{H}" rx="12" fill="{th['bg']}"/>
