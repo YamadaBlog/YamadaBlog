@@ -61,9 +61,49 @@ def calendar() -> list[tuple[dt.date, int]]:
     return days[-365:]
 
 
+
+def punch_repo(full_name: str, punch: list[list[int]]) -> None:
+    """Accumulate a weekday x hour matrix from the last year of commits.
+
+    Timestamps are read in the AUTHOR's own offset, so "3am" means 3am where the
+    commit was written -- not UTC. Only commits authored by LOGIN are counted.
+    """
+    since = (dt.date.today() - dt.timedelta(days=365)).isoformat() + "T00:00:00Z"
+    page = 1
+    while page <= 12:                                  # hard cap: stay polite
+        try:
+            rows, _ = api(f"repos/{full_name}/commits?per_page=100&page={page}&since={since}")
+        except Exception:
+            return
+        if not rows:
+            return
+        for c in rows:
+            author = (c.get("author") or {}).get("login")
+            stamp = (((c.get("commit") or {}).get("author") or {}).get("date")) or ""
+            if author and author != LOGIN:
+                continue
+            m = re.match(r"(\d{4})-(\d\d)-(\d\d)T(\d\d):\d\d:\d\d(Z|[+-]\d\d:\d\d)", stamp)
+            if not m:
+                continue
+            y, mo, d, hh, off = int(m[1]), int(m[2]), int(m[3]), int(m[4]), m[5]
+            if off != "Z":                              # shift into the author's local clock
+                sign = 1 if off[0] == "+" else -1
+                hh += sign * int(off[1:3])
+            day = dt.date(y, mo, d)
+            if hh >= 24:
+                hh -= 24; day += dt.timedelta(days=1)
+            elif hh < 0:
+                hh += 24; day -= dt.timedelta(days=1)
+            punch[day.weekday()][hh] += 1
+        if len(rows) < 100:
+            return
+        page += 1
+
+
 def refresh_snapshot() -> None:
     repos, _ = api("user/repos?per_page=100&affiliation=owner")
     langs: dict[str, int] = {}
+    punch = [[0] * 24 for _ in range(7)]
     commits, n = 0, 0
     for r in repos:
         if SKIP_MIRRORS in (r["description"] or "").lower() or r["fork"]:
@@ -74,11 +114,13 @@ def refresh_snapshot() -> None:
         _, h = api(f"repos/{r['full_name']}/commits?per_page=1")
         m = re.search(r'page=(\d+)>; rel="last"', h.get("Link", "") or "")
         commits += int(m.group(1)) if m else 1
+        punch_repo(r["full_name"], punch)
     DATA.mkdir(exist_ok=True)
     put(SNAPSHOT, json.dumps({
         "taken": dt.date.today().isoformat(),
         "repos": n, "public": sum(1 for r in repos if not r["private"]),
         "commits": commits, "languages": dict(sorted(langs.items(), key=lambda kv: -kv[1])),
+        "punch": punch,
     }, indent=2) + "\n")
     print(f"snapshot: {n} repos, {commits} commits")
 
@@ -202,6 +244,34 @@ text{{font-family:{MONO};font-size:14px}}
 
 
 
+
+# ---------------------------------------------------------------- svg: sigil
+def sigil_svg(th: dict) -> str:
+    """An ouroboros whose body is the source code of the program drawing it.
+
+    Not a picture of a snake: every glyph on the ring is a character taken, in
+    order, from this file. Change forge.py and the snake changes with it.
+    """
+    ring = ouroboros(62, 23)
+    W, H = 700, 430
+    art = "".join(
+        f'<text x="{W/2}" y="{48 + i*15}" text-anchor="middle" xml:space="preserve">{esc(line)}</text>'
+        for i, line in enumerate(ring))
+    return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}" role="img" aria-label="An ouroboros drawn in ASCII, where every glyph is a character of the source file that generates it.">
+<style>
+text{{font-family:{MONO};font-size:13px}}
+.b{{animation:br 6s ease-in-out infinite alternate}}
+@keyframes br{{from{{opacity:.62}}to{{opacity:1}}}}
+</style>
+<defs><linearGradient id="sg" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0" stop-color="{th['vio']}"/><stop offset=".55" stop-color="{th['acc']}"/><stop offset="1" stop-color="{th['vio']}"/></linearGradient></defs>
+<rect width="{W}" height="{H}" rx="12" fill="{th['bg']}"/>
+<rect x=".5" y=".5" width="{W-1}" height="{H-1}" rx="12" fill="none" stroke="{th['line']}"/>
+<g class="b" fill="url(#sg)">{art}</g>
+<text x="{W/2}" y="{H-24}" text-anchor="middle" fill="{th['mute']}" style="font-size:11px">the snake is made of the source that draws it . scripts/forge.py</text>
+</svg>'''
+
+
 # ---------------------------------------------------------------- svg: banner
 DOMAINS = ["research infrastructure", "agent orchestration", "reverse engineering",
            "security research", "systems & automation", "applied ML"]
@@ -220,7 +290,7 @@ def banner_svg(days, s: dict, th: dict) -> str:
     y = 96
     for i, d in enumerate(DOMAINS):
         col = [th["acc"], th["vio"], th["warn"]][i % 3]
-        delay = 1.5 + i * 0.16
+        delay = 0.12 + i * 0.07
         rows.append(
             f'<g class="rw" style="animation-delay:{delay:.2f}s">'
             f'<text x="56" y="{y}" fill="{th["mute"]}">[</text>'
@@ -234,7 +304,7 @@ def banner_svg(days, s: dict, th: dict) -> str:
     for i, t in enumerate(["no look-ahead", "replay == live", "scope first", "it stops and asks"]):
         col = [th["acc"], th["vio"], th["warn"], th["red"]][i]
         w = len(t) * 7.8 + 18
-        tags += (f'<g class="rw" style="animation-delay:{2.6 + i*0.14:.2f}s">'
+        tags += (f'<g class="rw" style="animation-delay:{0.70 + i*0.09:.2f}s">'
                  f'<rect x="{x}" y="{78 + (i//2)*30}" width="{w:.0f}" height="21" rx="10" fill="none" stroke="{col}" stroke-opacity=".55"/>'
                  f'<text x="{x+9}" y="{93 + (i//2)*30}" fill="{col}" style="font-size:12px">{t}</text></g>')
         x = 600 if i % 2 else x + w + 10
@@ -249,6 +319,9 @@ text{{font-family:{MONO};font-size:15px}}
 .scan{{animation:sc 7s linear infinite}}
 @keyframes sc{{from{{transform:translateY(-60px)}}to{{transform:translateY({H}px)}}}}
 .spark{{stroke-dasharray:4000;animation:dr 3.4s ease-out backwards}}
+.gl{{animation:g1 9s steps(1) infinite}}.gl2{{animation:g2 9s steps(1) infinite}}
+@keyframes g1{{0%,90.4%,91.6%,96.4%,97.4%,100%{{transform:translateX(0);opacity:0}}90.5%,91.5%{{transform:translateX(-2.5px);opacity:1}}96.5%,97.3%{{transform:translateX(2px);opacity:1}}}}
+@keyframes g2{{0%,90.4%,91.6%,96.4%,97.4%,100%{{transform:translateX(0);opacity:0}}90.5%,91.5%{{transform:translateX(2.5px);opacity:1}}96.5%,97.3%{{transform:translateX(-2px);opacity:1}}}}
 @keyframes dr{{from{{stroke-dashoffset:4000}}}}
 </style>
 <defs>
@@ -265,6 +338,8 @@ text{{font-family:{MONO};font-size:15px}}
 <text x="{W/2}" y="29" text-anchor="middle" fill="{th['mute']}" style="font-size:12px">mao@lab: ~/bench</text>
 <text x="34" y="66"><tspan fill="{th['acc']}">$</tspan><tspan fill="{th['fg']}"> probe --all</tspan><tspan class="cur" fill="{th['acc']}">_</tspan></text>
 {"".join(rows)}
+<g class="gl"><text x="600" y="60" style="font-size:36px;font-weight:700" fill="{th['red']}" opacity=".85">mao@lab</text></g>
+<g class="gl2"><text x="600" y="60" style="font-size:36px;font-weight:700" fill="{th['acc']}" opacity=".85">mao@lab</text></g>
 <text x="600" y="60" style="font-size:36px;font-weight:700" fill="url(#ti)">mao@lab</text>
 {tags}
 <text x="{W-34}" y="{H-16}" text-anchor="end" fill="{th['mute']}" style="font-size:12px">{s['total']:,} contributions . {s['active']}/365 active . streak {s['best']}d . {s['src_mb']} MB authored</text>
@@ -349,6 +424,114 @@ def spectrum_svg(s, th) -> str:
 </svg>'''
 
 
+
+
+# ---------------------------------------------------------------- svg: punch card
+def punch_svg(snap: dict, th: dict) -> str:
+    """When the work actually happens. Author-local hours, not UTC."""
+    W, H = 1000, 210
+    grid = snap.get("punch") or [[0] * 24 for _ in range(7)]
+    peak = max(1, max(max(r) for r in grid))
+    total = sum(map(sum, grid))
+    x0, y0, cw, ch = 58, 52, 36, 17
+    days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
+
+    cells = []
+    for d in range(7):
+        for h in range(24):
+            n = grid[d][h]
+            if not n:
+                continue
+            r = 2.2 + 5.6 * (n / peak) ** 0.5
+            cells.append(f'<circle cx="{x0 + h*cw + cw/2:.1f}" cy="{y0 + d*ch + ch/2:.1f}" '
+                         f'r="{r:.1f}" fill="{th["acc"]}" fill-opacity="{0.35 + 0.65*(n/peak)**0.6:.2f}"><title>'
+                         f'{days[d]} {h:02d}:00 . {n} commits</title></circle>')
+
+    hours = "".join(f'<text x="{x0 + h*cw + cw/2:.1f}" y="{y0 - 10}" text-anchor="middle" fill="{th["mute"]}">{h:02d}</text>'
+                    for h in range(0, 24, 3))
+    labels = "".join(f'<text x="{x0 - 12}" y="{y0 + d*ch + ch/2 + 4}" text-anchor="end" fill="{th["mute"]}">{days[d]}</text>'
+                     for d in range(7))
+    night = sum(grid[d][h] for d in range(7) for h in list(range(0, 7)) + [23])
+    wknd = sum(grid[d][h] for d in (5, 6) for h in range(24))
+    by_hour = [sum(grid[d][h] for d in range(7)) for h in range(24)]
+    busiest = by_hour.index(max(by_hour)) if total else 0
+    note = (f"peak hour {busiest:02d}:00 . {100*night//max(total,1)}% outside 07-23 . "
+            f"{100*wknd//max(total,1)}% on weekends" if total else "no commit timestamps in snapshot")
+    band = (f'<rect x="{x0}" y="{y0-2}" width="{7*cw}" height="{7*ch}" fill="{th["vio"]}" fill-opacity=".05"/>'
+            f'<rect x="{x0+23*cw}" y="{y0-2}" width="{cw}" height="{7*ch}" fill="{th["vio"]}" fill-opacity=".05"/>')
+    return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}" role="img" aria-label="Punch card of {total} commits by weekday and author-local hour. {note}">
+<style>text{{font-family:{MONO};font-size:11px}}</style>
+<rect width="{W}" height="{H}" rx="12" fill="{th['bg']}"/>
+<rect x=".5" y=".5" width="{W-1}" height="{H-1}" rx="12" fill="none" stroke="{th['line']}"/>
+<text x="16" y="24" fill="{th['mute']}">PUNCHCARD-04 . {total:,} commits by weekday x hour . author-local clock, not UTC . shaded band = 00-06 and 23</text>
+{band}{hours}{labels}{"".join(cells)}
+<text x="16" y="{H-14}" fill="{th['warn']}">{note}</text>
+</svg>'''
+
+
+# ---------------------------------------------------------------- svg: automaton
+def life_svg(days, th: dict) -> str:
+    """Conway's Life, seeded by the contribution year itself.
+
+    The seed is not decorative: a cell is born wherever that day cleared the
+    median of its active days. So the pattern that evolves is literally the
+    shape of the year's work. Generations are pre-computed and cross-faded in
+    SMIL, because a README cannot run JavaScript.
+    """
+    W, H, CELL, GENS = 1000, 176, 8, 14
+    cols, rows = W // CELL, H // CELL
+    counts = sorted(c for _, c in days if c)
+    med = counts[len(counts) // 2] if counts else 1
+
+    grid = [[0] * cols for _ in range(rows)]
+    weeks = max(1, len(days) // 7 + 1)
+    for i, (_, c) in enumerate(days):                 # weekday band, weeks stretched to full width
+        if c > med:
+            x = (i // 7) * (cols - 1) // (weeks - 1) if weeks > 1 else 0
+            grid[rows // 2 - 3 + i % 7][min(x, cols - 1)] = 1
+
+    def step(g):
+        out = [[0] * cols for _ in range(rows)]
+        for y in range(rows):
+            for x in range(cols):
+                n = sum(g[(y + dy) % rows][(x + dx) % cols]
+                        for dy in (-1, 0, 1) for dx in (-1, 0, 1) if dy or dx)
+                out[y][x] = 1 if (n == 3 or (g[y][x] and n == 2)) else 0
+        return out
+
+    gens, g = [grid], grid
+    for _ in range(GENS - 1):
+        g = step(g)
+        gens.append(g)
+
+    dur = GENS * 0.9
+    frames = []
+    for k, g in enumerate(gens):
+        cells = "".join(
+            f'<rect x="{x*CELL}" y="{y*CELL}" width="{CELL-1}" height="{CELL-1}" rx="1"/>'
+            for y in range(rows) for x in range(cols) if g[y][x])
+        # each generation is visible for one slot of the loop, then hands over
+        keys = f"0;1;1;0;0" if k else "1;1;0;0;1"
+        t0 = k / GENS
+        times = f"0;{max(t0-0.005,0):.4f};{t0+0.02:.4f};{min(t0+0.075,1):.4f};1" if k else "0;0.02;0.075;0.98;1"
+        frames.append(
+            f'<g opacity="0">{cells}'
+            f'<animate attributeName="opacity" values="{keys}" keyTimes="{times}" '
+            f'dur="{dur}s" repeatCount="indefinite" calcMode="linear"/></g>')
+
+    alive0 = sum(map(sum, gens[0]))
+    aliveN = sum(map(sum, gens[-1]))
+    return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H+30}" viewBox="0 0 {W} {H+30}" role="img" aria-label="Conway's Game of Life seeded by the year's contribution pattern: {alive0} live cells at generation 0, {aliveN} after {GENS} generations.">
+<style>text{{font-family:{MONO};font-size:11px}}</style>
+<rect width="{W}" height="{H+30}" rx="12" fill="{th['bg']}"/>
+<rect x=".5" y=".5" width="{W-1}" height="{H+29}" rx="12" fill="none" stroke="{th['line']}"/>
+<text x="16" y="18" fill="{th['mute']}">AUTOMATON-03 . life, seeded by the year itself . a cell is born where that day beat the median</text>
+<g transform="translate(0,26)" fill="{th['acc']}" fill-opacity=".85">{"".join(frames)}</g>
+<text x="{W-16}" y="{H+22}" text-anchor="end" fill="{th['mute']}">gen 0: {alive0} cells  ->  gen {GENS-1}: {aliveN}</text>
+<text x="16" y="{H+22}" fill="{th['mute']}">B3/S23 . toroidal . {cols}x{rows}</text>
+</svg>'''
+
+
 # ---------------------------------------------------------------- text outputs
 def card_txt(s) -> str:
     g, v, d, y, r = "\033[38;5;122m", "\033[38;5;141m", "\033[38;5;245m", "\033[38;5;221m", "\033[0m"
@@ -389,6 +572,9 @@ def main() -> None:
         put(ASSETS / f"header-{name}.svg", header_svg(s, th))
         put(ASSETS / f"seismo-{name}.svg", seismo_svg(days, s, th))
         put(ASSETS / f"spectrum-{name}.svg", spectrum_svg(s, th))
+        put(ASSETS / f"life-{name}.svg", life_svg(days, th))
+        put(ASSETS / f"punch-{name}.svg", punch_svg(snap, th))
+        put(ASSETS / f"sigil-{name}.svg", sigil_svg(th))
     put(SITE / "card.txt", card_txt(s))
     put(SITE / "stats.json", json.dumps({**s, "series": [[d.isoformat(), c] for d, c in days]}) + "\n")
     patch_readme(s)

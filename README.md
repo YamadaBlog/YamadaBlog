@@ -25,7 +25,7 @@ $ ls ~ | wc -l          # public index of a mostly private bench
 ```
 
 <!-- telemetry -->
-<samp>calibrated 2026-09-26 . 3,787 contributions . 237 active days . longest streak 32d . load avg 19.57 / 28.27 / 18.37</samp>
+<samp>calibrated 2026-09-26 . 3,787 contributions . 236 active days . longest streak 32d . load avg 19.57 / 28.27 / 18.37</samp>
 <!-- /telemetry -->
 
 ---
@@ -165,20 +165,42 @@ demo           post-deploy smoke job fails on ONE console error
 
 ---
 
-### `/signal`
+### `/telemetry`
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./assets/punch-dark.svg">
+  <img alt="Punch card of commits by weekday and author-local hour" src="./assets/punch-light.svg" width="100%">
+</picture>
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./assets/seismo-dark.svg">
   <img alt="Seismograph of daily contributions over the last 365 days" src="./assets/seismo-light.svg" width="100%">
 </picture>
 
+<details>
+<summary><samp><b>emission spectrum</b> — what the source is actually made of</samp></summary>
+
+<br>
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./assets/spectrum-dark.svg">
   <img alt="Authored source by language across public and private repositories" src="./assets/spectrum-light.svg" width="100%">
 </picture>
 
-<sub>No hosted widgets. Every graphic here is rendered from the GitHub API by
-<a href="./scripts/forge.py"><code>scripts/forge.py</code></a> — stdlib Python, no dependencies — and re-forged nightly.</sub>
+</details>
+
+---
+
+### `/automaton`
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./assets/life-dark.svg">
+  <img alt="Conway's Game of Life seeded by the year's own contribution pattern" src="./assets/life-light.svg" width="100%">
+</picture>
+
+<sub>Life, B3/S23, seeded by the year itself: a cell is born wherever that day beat the median.
+The colonies are the busy weeks. Generations are pre-computed and cross-faded in SMIL,
+because a README cannot run JavaScript.</sub>
 
 ---
 
@@ -233,7 +255,17 @@ assert scope.authorized and scope.written          # no target without a signed 
 assert "no edge" in notebook                       # killing ideas is output, not waste
 ```
 
+---
+
 <div align="center">
-<br>
-<samp>re-forged nightly · press <code>~</code> on the <a href="https://yamadablog.github.io/YamadaBlog/">site</a> for a shell</samp>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./assets/sigil-dark.svg">
+  <img alt="An ouroboros drawn in ASCII, where every glyph is a character of the source file that generates it" src="./assets/sigil-light.svg" width="480">
+</picture>
+
+<samp>every graphic above is rendered from the GitHub API by <a href="./scripts/forge.py"><code>scripts/forge.py</code></a><br>
+stdlib python, no dependencies, no hosted widgets · re-forged nightly<br>
+press <code>~</code> on the <a href="https://yamadablog.github.io/YamadaBlog/">site</a> for a shell</samp>
+
 </div>
