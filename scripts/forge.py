@@ -362,7 +362,7 @@ def state_svg(st: dict, tr: dict, th: dict) -> str:
         s_ = tr["series"][-14:]
         m_ = max(s_) or 1
         spark = "".join(
-            f'<rect x="{798 + i*9.6:.1f}" y="{136 - 22*(x/m_):.1f}" width="6" height="{max(22*(x/m_), 1.5):.1f}" '
+            f'<rect x="{798 + i*9.6:.1f}" y="{152 - 20*(x/m_):.1f}" width="6" height="{max(20*(x/m_), 1.5):.1f}" '
             f'rx="1.2" fill="{th["cyan"]}" fill-opacity=".5"/>' for i, x in enumerate(s_))
 
     return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}" role="img" aria-label="System state console: {st['active']} of 365 days covered, {st['load'][0]:.0f} contributions per day, peak commit hour {peak:02d}:00, and {v if v is not None else 'no'} views on this repository in the last 14 days.">
@@ -384,9 +384,9 @@ def state_svg(st: dict, tr: dict, th: dict) -> str:
 <text x="398" y="184" fill="{th['mute']}" style="letter-spacing:.09em">COMPOSITION . {st['src_mb']} MB authored</text>
 {"".join(segs)}{"".join(leg)}
 <text x="790" y="70" fill="{th['mute']}" style="letter-spacing:.09em">OBSERVATION . 14d</text>
-<text x="{W-18}" y="70" text-anchor="end" fill="{th['dim']}" style="font-size:9px">{("as of " + tr["asof"]) if tr.get("asof") else ""}</text>
-<text x="790" y="99" fill="{th['fg']}" style="font-size:20px;font-weight:600">{v if v is not None else "--"}</text>
-<text x="790" y="115" fill="{th['mute']}">views . {u if u is not None else "--"} unique</text>
+<text x="790" y="84" fill="{th['dim']}" style="font-size:9px">{("reading as of " + tr["asof"]) if tr.get("asof") else "reading unavailable"}</text>
+<text x="790" y="108" fill="{th['fg']}" style="font-size:20px;font-weight:600">{v if v is not None else "--"}</text>
+<text x="790" y="124" fill="{th['mute']}">views . {u if u is not None else "--"} unique</text>
 {spark}
 <text x="790" y="166" fill="{th['mute']}">source</text>
 <text x="790" y="181" fill="{th['steel']}">{esc(ref)[:20]}</text>
