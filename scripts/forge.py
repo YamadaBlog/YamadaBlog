@@ -306,6 +306,52 @@ def sigil_svg(days, st: dict, th: dict) -> str:
 </svg>'''
 
 
+
+# ---------------------------------------------------------------- svg: bench index
+SLOTS = [
+    ("01", "research infrastructure", "no look-ahead . sealed test sets . replayable", "cyan",  "ACTIVE"),
+    ("02", "agent orchestration",     "durable state . idempotent . budget-gated . HITL", "cyan", "ACTIVE"),
+    ("03", "reverse engineering",     "obfuscated binaries . packed runtimes . protocols", "steel", "ACTIVE"),
+    ("04", "security research",       "authorized only . scope first . private reporting", "steel", "ON CALL"),
+    ("05", "systems & automation",    "survives crash, reboot, and its own bugs", "violet", "ACTIVE"),
+    ("06", "applied ML",              "RL under non-stationarity . drift as a safety net", "violet", "ACTIVE"),
+    ("07", "frontend",                "one core, many frameworks, identical behaviour", "amber", "STEADY"),
+]
+
+
+def bench_svg(th: dict) -> str:
+    """The index of the bench, in the same language as every other panel.
+
+    This used to be an ASCII box. Next to the rendered consoles it read as a
+    different product; a profile that claims to care about coherence cannot
+    ship two visual languages on one page.
+    """
+    W, RH, TOP = 1000, 34, 58
+    H = TOP + len(SLOTS) * RH - 4
+    rows = []
+    for i, (num, name, desc, key, state) in enumerate(SLOTS):
+        y = TOP + i * RH
+        rows.append(
+            f'<g>'
+            f'<rect x="16" y="{y-20}" width="{W-32}" height="{RH-6}" rx="6" fill="{th["panel"]}" fill-opacity="{0.55 if i%2==0 else 0}"/>'
+            f'<rect x="16" y="{y-20}" width="3" height="{RH-6}" rx="1.5" fill="{th[key]}"/>'
+            f'<text x="34" y="{y}" fill="{th["dim"]}" style="font-size:10.5px">{num}</text>'
+            f'<text x="64" y="{y}" fill="{th["fg"]}" style="font-size:12.5px">{esc(name)}</text>'
+            f'<text x="300" y="{y}" fill="{th["mute"]}" style="font-size:11px">{esc(desc)}</text>'
+            f'<circle cx="{W-108}" cy="{y-4}" r="3" fill="{th[key]}"/>'
+            f'<text x="{W-96}" y="{y}" fill="{th[key]}" style="font-size:9.5px;letter-spacing:.07em">{state}</text>'
+            f'</g>')
+    return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}" role="img" aria-label="Bench index: seven slots -- research infrastructure, agent orchestration, reverse engineering, security research, systems and automation, applied ML, frontend.">
+<style>text{{font-family:{MONO}}}</style>
+<rect width="{W}" height="{H}" rx="12" fill="{th['bg']}"/>
+<rect x=".5" y=".5" width="{W-1}" height="{H-1}" rx="12" fill="none" stroke="{th['line']}"/>
+<line x1="0" y1="34" x2="{W}" y2="34" stroke="{th['line']}"/>
+<text x="20" y="23" fill="{th['fg']}" style="font-size:11px;letter-spacing:.11em">BENCH INDEX</text>
+<text x="{W-18}" y="23" text-anchor="end" fill="{th['mute']}" style="font-size:11px">pull a drawer below for any slot</text>
+{"".join(rows)}
+</svg>'''
+
+
 # ---------------------------------------------------------------- svg: system state
 def state_svg(st: dict, tr: dict, th: dict) -> str:
     """One console in place of four separate charts."""
@@ -605,6 +651,7 @@ def main() -> None:
     for name, th in THEMES.items():
         put(ASSETS / f"banner-{name}.svg", banner_svg(days, st, th))
         put(ASSETS / f"sigil-{name}.svg", sigil_svg(days, st, th))
+        put(ASSETS / f"bench-{name}.svg", bench_svg(th))
         put(ASSETS / f"state-{name}.svg", state_svg(st, tr, th))
         put(ASSETS / f"signal-{name}.svg", signal_svg(days, st, th))
         put(ASSETS / f"session-{name}.svg", session_svg(st, tr, th))

@@ -9,7 +9,6 @@
 
 <samp>
 <b>site</b> <a href="https://yamadablog.github.io/YamadaBlog/">yamadablog.github.io</a> &nbsp;·&nbsp;
-<b>oss</b> <a href="https://github.com/YamadaBlog/pulse-player">pulse-player</a> &nbsp;·&nbsp;
 <b>shell</b> <code>curl -sL yamadablog.github.io/YamadaBlog/card.txt</code>
 </samp>
 
@@ -25,25 +24,17 @@ Most of the bench is private — this is the public index.
 </picture>
 
 <!-- telemetry -->
-<samp>sampled 2026-09-26 . 3,796 contributions . 237/365 active . streak 32d . cadence 20.9/d . 1 views / 1 unique inbound</samp>
+<samp>sampled 2026-09-26 . 3,796 contributions . 236/365 active . streak 32d . cadence 20.9/d . 1 views / 1 unique inbound</samp>
 <!-- /telemetry -->
 
 ---
 
 ### `/bench`
 
-```text
-┌─ rack ───────────────────────────────────────────────────────────────────────┐
-│ SLOT 01  research infra   no look-ahead · sealed test sets · replayable      │
-│ SLOT 02  orchestration    durable state · idempotent · budget-gated · HITL   │
-│ SLOT 03  reverse eng.     obfuscated binaries · packed runtimes · protocols  │
-│ SLOT 04  security         authorized only · scope first · private reporting  │
-│ SLOT 05  systems          survives crash, reboot, and its own bugs           │
-│ SLOT 06  applied ML       RL under non-stationarity · drift as a safety net  │
-│ SLOT 07  frontend         one core, six frameworks, identical behaviour      │
-└──────────────────────────────────────────────────────────────────────────────┘
-        pull a drawer ↓ for what each actually means
-```
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./assets/bench-dark.svg">
+  <img alt="Bench index: seven slots -- research infrastructure, agent orchestration, reverse engineering, security research, systems and automation, applied ML, frontend" src="./assets/bench-light.svg" width="100%">
+</picture>
 
 <details>
 <summary><samp><b>SLOT 03 · reverse engineering</b> — reading things that do not want to be read</samp></summary>
@@ -145,23 +136,56 @@ honesty        SLO reporting returns `unavailable` rather than inventing
 </details>
 
 <details>
-<summary><samp><b>SLOT 07 · frontend</b> — <a href="https://github.com/YamadaBlog/pulse-player">pulse-player</a>, public, on npm</samp></summary>
+<summary><samp><b>SLOT 07 · frontend</b> — behaviour that has to survive the framework boundary</samp></summary>
 
 <br>
 
-One drop-in music player, seven `@pulse-music/*` packages, six frameworks — Vue, React, Svelte,
-Angular, Web Components, React Native — from a single framework-agnostic core.
-
 ```text
-provenance     sigstore-attested, built in CI
-parity         Vue reference checked byte-for-byte in CI
-consumers      clean-install builds tested end to end
-demo           post-deploy smoke job fails on ONE console error
+problem        the same component, embedded in Vue, React, Svelte, Angular, Web
+               Components and React Native, must behave identically -- not merely
+               look similar. One core, thin wrappers, no per-framework forks.
+verification   reference implementation checked byte-for-byte in CI
+               clean-install consumer builds tested end to end
+               accessibility asserted in a real browser, not claimed in a readme
+               size budgets enforced on every release
+supply chain   published with provenance: sigstore-attested, built in CI
 ```
 
-<a href="https://yamadablog.github.io/pulse-player/">live demo</a> · <a href="https://youtu.be/q_FJ1GWaCc8">3-min video</a>
+Earlier work was the enterprise side of the same discipline: Angular front-ends
+over Java/Spring and .NET APIs, layered so the UI never reaches past the service
+boundary. See `/background`.
+
+<sub>Example: <a href="https://github.com/YamadaBlog/pulse-player">pulse-player</a>, seven packages, six frameworks. A workbench for the parity problem rather than a headline project.</sub>
 
 </details>
+
+---
+
+### `/background`
+
+```text
+before      enterprise application development, including work in a banking
+2025        context
+            .......................................................................
+            angular            front-ends over REST APIs
+            java / spring      service and API layers
+            .net               API layers
+            architecture       strict layering: API / business / data access,
+                               each with its own contracts and its own tests
+            context            regulated delivery: review, traceability, the
+                               expectation that a change can be explained later
+since       the bench on this page: research infrastructure, orchestration,
+2025        reverse engineering, security
+```
+
+Those repositories are gone. I deleted them when I cleaned the account, so this
+section is testimony, not artifacts — there is nothing here to click. The public
+history starts later and stays deliberately unpadded: no backdated commits, no
+reconstructed repos. What that period actually left behind is the habit of
+layering, of writing things down, and of assuming someone will audit the change.
+
+The contribution graph reflects the same honesty. It was far quieter then than it
+is now, and it has not been touched to suggest otherwise.
 
 ---
 

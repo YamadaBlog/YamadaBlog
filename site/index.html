@@ -7,8 +7,8 @@
 <meta name="description" content="MAO (YamadaBlog) builds systems that have to be right: research infrastructure, agent orchestration, security research.">
 <meta property="og:title" content="mao@lab">
 <meta property="og:description" content="Research infrastructure, agent orchestration, security research. Systems that have to be right, not just run.">
-<meta name="theme-color" content="#0b0e14">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b0e14'/%3E%3Ctext x='6' y='22' font-family='monospace' font-size='16' fill='%237ee7c4'%3E%3E_%3C/text%3E%3C/svg%3E">
+<meta name="theme-color" content="#080b12">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23080b12'/%3E%3Ctext x='6' y='22' font-family='monospace' font-size='16' fill='%235ad2e8'%3E%3E_%3C/text%3E%3C/svg%3E">
 <!--
       you opened the source. good instinct.
       no framework, no bundler, no tracker. one file, hand-written.
@@ -17,14 +17,14 @@
 -->
 <style>
 :root{
-  --bg:#fbfaf7;--bg2:#f3f2ed;--fg:#1b1f29;--mute:#6a7182;--line:#e2e0d8;
-  --acc:#0f8a6a;--vio:#6a4fd6;--warn:#a86a00;--red:#c43d4b;--card:#ffffffcc;
+  --bg:#f7f8fb;--bg2:#eef1f7;--fg:#131924;--mute:#5c6880;--line:#dde3ee;
+  --acc:#0e7d93;--vio:#3f5bd4;--warn:#a06708;--red:#c02f69;--card:#ffffffcc;
   --mono:ui-monospace,'JetBrains Mono','SFMono-Regular',Consolas,'Liberation Mono',monospace;
   --sans:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color-scheme:light}
-:root[data-theme=dark]{--bg:#0b0e14;--bg2:#0f131c;--fg:#d6dce8;--mute:#7c869b;--line:#1c2230;
-  --acc:#7ee7c4;--vio:#b69cff;--warn:#ffcf70;--red:#ff7b86;--card:#0f131ccc;color-scheme:dark}
-@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0b0e14;--bg2:#0f131c;--fg:#d6dce8;--mute:#7c869b;--line:#1c2230;
-  --acc:#7ee7c4;--vio:#b69cff;--warn:#ffcf70;--red:#ff7b86;--card:#0f131ccc;color-scheme:dark}}
+:root[data-theme=dark]{--bg:#080b12;--bg2:#0c111c;--fg:#ccd6e8;--mute:#5f6e88;--line:#18202f;
+  --acc:#5ad2e8;--vio:#8fa8ff;--warn:#f5b95c;--red:#ff6b9d;--card:#0c111ccc;color-scheme:dark}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#080b12;--bg2:#0c111c;--fg:#ccd6e8;--mute:#5f6e88;--line:#18202f;
+  --acc:#5ad2e8;--vio:#8fa8ff;--warn:#f5b95c;--red:#ff6b9d;--card:#0c111ccc;color-scheme:dark}}
 *{box-sizing:border-box}[hidden]{display:none!important}
 html{scroll-behavior:smooth}
 body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.65 var(--sans);-webkit-font-smoothing:antialiased}
@@ -103,14 +103,14 @@ ul.auto b{color:var(--fg);font-weight:600}
 footer{padding-block:40px 64px;font:12px var(--mono);color:var(--mute);border-top:1px solid var(--line)}
 footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 kbd{font:11px var(--mono);border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 5px}
-#boot{position:fixed;inset:0;z-index:100;background:#0b0e14;color:#7c869b;font:13px/1.7 var(--mono);padding:28px;white-space:pre-wrap;transition:opacity .35s}
-#boot .ok{color:#7ee7c4}#boot.gone{opacity:0;pointer-events:none}
-#term{position:fixed;left:16px;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));max-width:760px;margin-inline:auto;height:min(440px,70vh);background:#0b0e14f5;color:#d6dce8;border:1px solid #283044;border-radius:12px;box-shadow:0 24px 70px #000a;font:13px/1.6 var(--mono);display:flex;flex-direction:column;z-index:50}
-#term>header{padding:8px 14px;border-bottom:1px solid #283044;color:#7c869b;display:flex;justify-content:space-between;align-items:center}
+#boot{position:fixed;inset:0;z-index:100;background:#080b12;color:#5f6e88;font:13px/1.7 var(--mono);padding:28px;white-space:pre-wrap;transition:opacity .35s}
+#boot .ok{color:#5ad2e8}#boot.gone{opacity:0;pointer-events:none}
+#term{position:fixed;left:16px;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));max-width:760px;margin-inline:auto;height:min(440px,70vh);background:#080b12f5;color:#ccd6e8;border:1px solid #1e2739;border-radius:12px;box-shadow:0 24px 70px #000a;font:13px/1.6 var(--mono);display:flex;flex-direction:column;z-index:50}
+#term>header{padding:8px 14px;border-bottom:1px solid #1e2739;color:#5f6e88;display:flex;justify-content:space-between;align-items:center}
 #out{flex:1;overflow:auto;padding:12px 14px;white-space:pre-wrap}
-#tf{display:flex;gap:8px;padding:8px 14px;border-top:1px solid #283044}
-#ti{flex:1;background:none;border:0;outline:0;color:#d6dce8;font:inherit}
-.g{color:#7ee7c4}.v{color:#b69cff}.y{color:#ffcf70}.r{color:#ff7b86}.d{color:#7c869b}
+#tf{display:flex;gap:8px;padding:8px 14px;border-top:1px solid #1e2739}
+#ti{flex:1;background:none;border:0;outline:0;color:#ccd6e8;font:inherit}
+.g{color:#5ad2e8}.v{color:#8fa8ff}.y{color:#f5b95c}.r{color:#ff6b9d}.d{color:#5f6e88}
 body.crt{filter:contrast(1.1) saturate(1.3)}
 body.crt::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:200;background:repeating-linear-gradient(0deg,#0000 0 2px,#0003 2px 3px)}
 @media (max-width:860px){.hero{grid-template-columns:1fr;padding-block:48px}.hero .viz{order:-1}#torus{font-size:9px;line-height:9px}
@@ -124,7 +124,7 @@ body.crt::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:20
 <header class="top"><div class="wrap">
   <a class="logo" href="#">mao<b>@</b><i>lab</i></a>
   <span class="status"><span class="dot"></span><span id="calib">snapshot</span></span>
-  <nav><a href="#work">work</a><a href="#instruments">instruments</a><a href="#domains">domains</a><a href="#notebook">notebook</a><a href="#contact">contact</a></nav>
+  <nav><a href="#work">work</a><a href="#instruments">instruments</a><a href="#background">background</a><a href="#notebook">notebook</a><a href="#contact">contact</a></nav>
   <button class="ic" id="termBtn" title="Open shell (~)">~</button>
   <button class="ic" id="themeBtn" title="Toggle theme">theme</button>
 </div></header>
@@ -138,7 +138,7 @@ body.crt::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:20
     <div class="cta">
       <a class="btn pri" href="#work">./work</a>
       <a class="btn" href="https://github.com/YamadaBlog">github</a>
-      <a class="btn" href="https://yamadablog.github.io/pulse-player/">pulse-player demo</a>
+      <a class="btn" href="#background">./background</a>
     </div>
   </div>
   <div class="viz">
@@ -181,17 +181,16 @@ body.crt::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:20
   <div class="sh"><b>02</b> work<span></span></div>
   <div class="grid">
     <article class="card w3">
-      <header><span class="pub">[public] npm</span><span>2026</span></header>
-      <h3>pulse-player</h3>
-      <p>A drop-in music player shipped as seven <code>@pulse-music/*</code> packages: <b>one framework-agnostic core</b>, thin wrappers for Vue, React, Svelte, Angular, Web Components and React Native.</p>
+      <header><span class="pub">[public]</span><span>frontend</span></header>
+      <h3>cross-framework component parity</h3>
+      <p>The same component embedded in Vue, React, Svelte, Angular, Web Components and React Native has to <b>behave identically</b> — not merely look similar. One core, thin wrappers, no per-framework forks.</p>
       <ul>
-        <li>npm provenance — sigstore-attested, built in CI</li>
-        <li>Vue reference checked byte-for-byte in CI</li>
-        <li>clean-consumer installs tested end to end</li>
-        <li>post-deploy smoke job fails on a single console error</li>
+        <li>reference implementation checked byte-for-byte in CI</li>
+        <li>clean-install consumer builds tested end to end</li>
+        <li>accessibility asserted in a real browser, not claimed in a readme</li>
+        <li>published with provenance: sigstore-attested, built in CI</li>
       </ul>
-      <div class="links"><a href="https://github.com/YamadaBlog/pulse-player">source</a><a href="https://yamadablog.github.io/pulse-player/">demo</a><a href="https://youtu.be/q_FJ1GWaCc8">video</a></div>
-      <div class="st">typescript · vue 3 · lit · react native · vite · vitest · playwright</div>
+      <div class="st">example: <a href="https://github.com/YamadaBlog/pulse-player">pulse-player</a> · a workbench for the parity problem, not a headline project</div>
     </article>
     <article class="card w3">
       <header><span class="prv">[private] ~1k commits</span><span>9 months</span></header>
@@ -317,15 +316,19 @@ body.crt::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:20
 <span class="k">assert</span> <span class="p">"no edge"</span> <span class="k">in</span> notebook                         <span class="c"># killing ideas is output, not waste</span></pre>
 </section>
 
-<section id="log">
-  <div class="sh"><b>07</b> git log --reverse<span></span></div>
-  <div class="tl">
-    <div><time>2022-11</time><div><h3>account created</h3><p>web projects, first public experiments.</p></div></div>
-    <div><time>2025-10</time><div><h3>quant platform, commit 1</h3><p>research environment, backtest engines, the statistical validation stack.</p></div></div>
-    <div><time>2026-04</time><div><h3>anima</h3><p>Tauri desktop companion: cognition and memory core.</p></div></div>
-    <div><time>2026-06</time><div><h3>pulse-player v3 on npm</h3><p>release candidates across six frameworks, with provenance. asof and proof-of-fill spin out.</p></div></div>
-    <div><time>2026-09</time><div><h3>model factory + production gates</h3><p>train → select → replay → qualify. busiest month on record.</p></div></div>
+<section id="background">
+  <div class="sh"><b>07</b> background<span></span></div>
+  <p class="intro">Before this bench, the work was enterprise application development — including a banking context.</p>
+  <div class="dom">
+    <div><b>angular</b><p>Front-ends over REST APIs.</p></div>
+    <div><b>java / spring</b><p>Service and API layers.</p></div>
+    <div><b>.net</b><p>API layers.</p></div>
+    <div><b>layered architecture</b><p>Strict separation: API / business / data access, each with its own contracts and its own tests.</p></div>
+    <div><b>regulated delivery</b><p>Review, traceability, and the expectation that any change can be explained long after it shipped.</p></div>
   </div>
+  <p class="note">Those repositories are gone — deleted when I cleaned the account — so this is testimony, not artifacts: there is nothing here to click.
+  The public history starts later and stays deliberately unpadded. No backdated commits, no reconstructed repos, and a contribution graph that was
+  genuinely quieter then than it is now.</p>
 </section>
 
 <section id="contact">
@@ -428,7 +431,8 @@ const esc=s=>String(s).replace(/[&<]/g,m=>m==='&'?'&amp;':'&lt;');
 const print=h=>{out.insertAdjacentHTML('beforeend',h+'\n');out.scrollTop=out.scrollHeight};
 const go=id=>{closeT();$(id).scrollIntoView()};
 const files={'README.md':'systems that have to be right. see ./work','invariants.py':'assert backtest.process_bar is live.process_bar','.plan':'1. ship the leakage linter\n2. pulse-player v3.0.0 stable\n3. unattended mode for the control plane (still gated on purpose)\n4. sleep (deprioritised)',
-  'domains.md':'research infra . agent orchestration . systems & automation\nsecurity research . reverse engineering . applied ml . frontend'};
+  'domains.md':'research infra . agent orchestration . systems & automation\nsecurity research . reverse engineering . applied ml . frontend',
+  'background.md':'before 2025: angular . java/spring . .net . layered architecture\nenterprise delivery, including a banking context.\nthose repos were deleted; nothing here is backdated.'};
 const C={
   help:()=>'<span class="y">available</span>\n  whoami  ls [work|instruments]  cat &lt;file&gt;  open &lt;project&gt;  stats  uptime  neofetch\n  instruments  domains  scope  goto &lt;section&gt;  theme  crt  history  clear  exit\n<span class="d">tab completes. some commands are not listed.</span>',
   whoami:()=>'mao. research infrastructure, agent orchestration, security research.',
@@ -438,13 +442,14 @@ const C={
   stats:()=>S?`contributions ${S.total}  active ${S.active}/365  streak ${S.best}d  peak ${S.peak} on ${S.peak_d}\ncommits ${S.commits}  source ${S.src_mb} MB  load ${S.load.join(' ')}`:'stats.json unavailable',
   uptime:()=>S?` ${new Date().toTimeString().slice(0,8)} up ${S.uptime},  1 user,  load average: ${S.load.join(', ')}`:'up',
   neofetch:()=>S?`<span class="g">mao</span>@<span class="v">lab</span>\n--------\n<span class="g">kernel</span>  python . typescript . rust\n<span class="g">365d</span>    ${S.total} contributions\n<span class="g">streak</span>  ${S.best}d\n<span class="g">status</span>  <span class="y">RUNNING</span>`:'…',
-  goto:a=>a&&$(a)?(go(a),''):'sections: uptime work instruments domains notebook invariants log contact',
+  goto:a=>a&&$(a)?(go(a),''):'sections: uptime work instruments domains notebook invariants background contact',
+  background:()=>(go('background'),''),
+  history:()=>hist.length?hist.map((h,i)=>`  ${i+1}  ${esc(h)}`).join('\n'):'  (empty)',
   domains:()=>(go('domains'),''),
   instruments:()=>(go('instruments'),''),
   scope:()=>'authorized work only: written scope, rules of engagement, private reporting.\nno targets, no findings, no tooling published. ever.',
   theme:()=>($('themeBtn').click(),'ok'),
   crt:()=>(document.body.classList.toggle('crt'),'phosphor '+(document.body.classList.contains('crt')?'on':'off')),
-  history:()=>hist.map((h,i)=>`  ${i+1}  ${esc(h)}`).join('\n'),
   clear:()=>(out.innerHTML='',''),exit:()=>(closeT(),''),
   sudo:a=>/hire/.test(a)?'<span class="g">[sudo] access granted.</span> try: goto contact':'mao is not in the sudoers file. This incident will be reported.',
   rm:a=>/-rf/.test(a)?'<span class="r">refused:</span> out_of_sample/ is read-only. that is the point.':'rm: missing operand',
@@ -472,7 +477,7 @@ addEventListener('keydown',e=>{
   if(e.key==='Escape')closeT();
   if((e.key==='~'||e.key==='`')&&document.activeElement!==ti){e.preventDefault();openT()}
   k=e.key===K[k]?k+1:(e.key===K[0]?1:0);if(k===K.length){k=0;document.body.classList.toggle('crt')}});
-console.log('%cmao@lab','font:600 16px monospace;color:#7ee7c4','\nsource is hand-written, read freely. press ~ for a shell.');
+console.log('%cmao@lab','font:600 16px monospace;color:#5ad2e8','\nsource is hand-written, read freely. press ~ for a shell.');
 })();
 </script>
 </body>
