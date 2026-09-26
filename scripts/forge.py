@@ -81,7 +81,7 @@ def traffic() -> dict:
     single out a visitor. Needs push access, so in CI only this repo resolves.
     Any failure degrades to 'unavailable' rather than to a fabricated number.
     """
-    out = {"views": None, "uniques": None, "clones": None, "referrer": None, "series": []}
+    out = {"views": None, "uniques": None, "clones": None, "referrer": None, "series": [], "asof": None}
     repo = f"{LOGIN}/{LOGIN}"
     try:
         v, _ = api(f"repos/{repo}/traffic/views")
@@ -99,6 +99,19 @@ def traffic() -> dict:
             out["referrer"] = r[0].get("referrer")
     except Exception:
         pass
+
+    # The Traffic API needs push access, which the default CI token does not
+    # carry. Rather than show "--" on every nightly run, remember the last
+    # reading and label it with its date -- stale but true, never invented.
+    cache = DATA / "traffic.json"
+    if out["views"] is not None:
+        out["asof"] = dt.date.today().isoformat()
+        put(cache, json.dumps(out, indent=2) + "\n")
+    elif cache.exists():
+        try:
+            out = json.loads(cache.read_text())
+        except Exception:
+            pass
     return out
 
 
@@ -371,6 +384,7 @@ def state_svg(st: dict, tr: dict, th: dict) -> str:
 <text x="398" y="184" fill="{th['mute']}" style="letter-spacing:.09em">COMPOSITION . {st['src_mb']} MB authored</text>
 {"".join(segs)}{"".join(leg)}
 <text x="790" y="70" fill="{th['mute']}" style="letter-spacing:.09em">OBSERVATION . 14d</text>
+<text x="{W-18}" y="70" text-anchor="end" fill="{th['dim']}" style="font-size:9px">{("as of " + tr["asof"]) if tr.get("asof") else ""}</text>
 <text x="790" y="99" fill="{th['fg']}" style="font-size:20px;font-weight:600">{v if v is not None else "--"}</text>
 <text x="790" y="115" fill="{th['mute']}">views . {u if u is not None else "--"} unique</text>
 {spark}

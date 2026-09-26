@@ -25,7 +25,7 @@ Most of the bench is private — this is the public index.
 </picture>
 
 <!-- telemetry -->
-<samp>sampled 2026-09-26 . 3,792 contributions . 237/365 active . streak 32d . cadence 20.3/d</samp>
+<samp>sampled 2026-09-26 . 3,793 contributions . 236/365 active . streak 32d . cadence 20.4/d . 1 views / 1 unique inbound</samp>
 <!-- /telemetry -->
 
 ---
