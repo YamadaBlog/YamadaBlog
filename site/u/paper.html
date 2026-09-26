@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>MAO — Technical Report</title>
+<meta name="description" content="MAO: research infrastructure, agent orchestration, reverse engineering, security research. Presented as a technical report.">
+<meta name="theme-color" content="#f4f1ea">
+<link rel="canonical" href="https://yamadablog.github.io/YamadaBlog/u/paper.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23f4f1ea'/%3E%3Crect x='7' y='6' width='18' height='20' fill='none' stroke='%231a1a18' stroke-width='2'/%3E%3C/svg%3E">
+<style>
+:root{
+  --paper:#f4f1ea; --ink:#1a1a18; --grey:#6b675e; --rule:#cfc9bc; --red:#a8331f;
+  --serif:'Iowan Old Style','Palatino Linotype',Palatino,'Book Antiqua',Georgia,'Times New Roman',serif;
+  --mono:ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 17px/1.62 var(--serif);
+  font-feature-settings:"onum" 1,"kern" 1;text-rendering:optimizeLegibility}
+::selection{background:var(--ink);color:var(--paper)}
+a{color:inherit;text-decoration-thickness:1px;text-underline-offset:2px}
+:focus-visible{outline:2px solid var(--red);outline-offset:3px}
+.skip{position:absolute;left:-9999px}
+.skip:focus{left:24px;top:14px;z-index:9;background:var(--ink);color:var(--paper);padding:10px 16px;
+  font:600 13px var(--mono);text-decoration:none}
+
+/* ── the sheet ────────────────────────────────────────────────────── */
+.sheet{max-width:46rem;margin:0 auto;padding:clamp(28px,6vw,72px) clamp(20px,6vw,56px) 0}
+.masthead{border-bottom:2px solid var(--ink);padding-bottom:14px;margin-bottom:34px;
+  display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;
+  font:600 11px var(--mono);letter-spacing:.16em;text-transform:uppercase}
+.masthead .no{color:var(--red)}
+.masthead .sp{flex:1}
+h1{font-size:clamp(30px,5.2vw,50px);line-height:1.08;font-weight:400;margin:0 0 .5em;letter-spacing:-.012em}
+.abstract{font-size:1.02em;color:var(--grey);border-left:2px solid var(--rule);padding-left:18px;margin:0 0 2.2em}
+h2{font-size:clamp(19px,2.6vw,25px);font-weight:400;margin:2.4em 0 .5em;line-height:1.2}
+h2 .sec{font:600 11px var(--mono);color:var(--red);letter-spacing:.1em;display:block;margin-bottom:.5em}
+h3{font-size:1.02em;font-weight:400;font-style:italic;margin:1.6em 0 .35em}
+p{margin:0 0 1.05em;hyphens:auto}
+.lead{font-size:1.05em}
+
+/* marginalia — the mechanic that makes it read as print */
+.fig{margin:1.8em 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:14px 0}
+.fig figcaption{font:400 13.5px/1.5 var(--serif);color:var(--grey);margin-top:10px}
+.fig figcaption b{font-weight:400;color:var(--red);font-family:var(--mono);font-size:11px;letter-spacing:.08em;
+  text-transform:uppercase;margin-right:.5em}
+.marg{float:right;clear:right;width:12rem;margin:.3em -14rem .9em 1.5rem;
+  font:400 13px/1.45 var(--serif);color:var(--grey);border-top:1px solid var(--rule);padding-top:7px}
+.marg b{display:block;font:600 10px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--red);margin-bottom:3px}
+@media (max-width:1180px){.marg{float:none;width:auto;margin:1.2em 0;border-left:2px solid var(--rule);
+  border-top:0;padding:2px 0 2px 14px}}
+
+dl.spec{margin:1.2em 0;display:grid;grid-template-columns:auto 1fr;gap:.35em 1.4em;
+  font:400 15px/1.5 var(--serif)}
+dl.spec dt{font:600 10.5px var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--grey);padding-top:.32em}
+dl.spec dd{margin:0}
+ul.pts{margin:.6em 0 1.2em;padding-left:1.1em}
+ul.pts li{margin-bottom:.3em}
+pre{font:400 12.5px/1.65 var(--mono);background:#ece7dc;border:1px solid var(--rule);
+  padding:14px 16px;overflow-x:auto;margin:1.4em 0}
+code{font-family:var(--mono);font-size:.88em}
+.fn{font-size:13.5px;color:var(--grey);border-top:1px solid var(--rule);padding-top:12px;margin-top:2.6em}
+.fn p{margin:0 0 .5em}
+sup a{text-decoration:none;color:var(--red);font-family:var(--mono);font-size:10px;padding:0 1px}
+
+/* ── pagination: the navigation model ─────────────────────────────── */
+.page{display:none}
+.page.on{display:block;animation:pg .34s ease}
+@keyframes pg{from{opacity:0;transform:translateY(5px)}}
+nav.pager{position:sticky;bottom:0;background:linear-gradient(transparent,var(--paper) 38%);
+  padding:26px 0 calc(22px + env(safe-area-inset-bottom,0px));margin-top:2.4em;
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  font:600 11px var(--mono);letter-spacing:.09em;text-transform:uppercase}
+nav.pager button{font:inherit;letter-spacing:inherit;text-transform:inherit;
+  background:none;border:1px solid var(--rule);color:var(--ink);padding:9px 14px;cursor:pointer;
+  min-height:44px}
+nav.pager button:hover:not(:disabled){border-color:var(--ink)}
+nav.pager button[aria-current="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+nav.pager button:disabled{opacity:.34;cursor:default}
+nav.pager .folio{margin-left:auto;color:var(--grey)}
+.colophon{border-top:2px solid var(--ink);margin-top:10px;padding:16px 0 46px;
+  font:400 12.5px/1.6 var(--mono);color:var(--grey);display:flex;gap:14px;flex-wrap:wrap;justify-content:space-between}
+.colophon a{color:var(--ink)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+@media print{nav.pager,.skip{display:none}.page{display:block!important}}
+</style>
+</head>
+<body>
+<a class="skip" href="#doc">Skip to report</a>
+
+<div class="sheet">
+  <header class="masthead">
+    <span class="no">REPORT 01</span>
+    <span>MAO</span>
+    <span class="sp"></span>
+    <span><a href="../">← field</a></span>
+  </header>
+
+  <main id="doc">
+    <!-- ── I ─────────────────────────────────────────────────────── -->
+    <article class="page on" id="p1" aria-label="Page 1 of 4">
+      <h1>Systems that have to be right, not just run.</h1>
+      <p class="abstract">Research infrastructure, agent orchestration, reverse engineering
+      and security research. Most of the work is private; this report is the index to it.
+      Figures are drawn from measured data. Where a quantity is unavailable it is reported
+      as unavailable rather than estimated.<sup><a href="#n1" id="r1">1</a></sup></p>
+
+      <h2><span class="sec">§ 1 — Position</span>The instrument, and what it is pointed at.</h2>
+
+      <aside class="marg"><b>Method</b>Every figure in this report is recomputed nightly from
+      the GitHub API by a stdlib-Python renderer. No hosted widget is involved.</aside>
+
+      <p class="lead">Software that merely runs is a low bar. The work collected here is the
+      other kind: research platforms where a single look-ahead bug silently invalidates months
+      of results, orchestration that has to survive being interrupted mid-call, and assessment
+      work where the only acceptable answer to an unproven claim is to write down that it is
+      unproven.</p>
+
+      <p>The through-line is not a technology. It is a refusal — to let a measurement drift
+      away from the thing it claims to measure. Backtest, replay and live execution call one
+      code path, so divergence is impossible by construction rather than merely unlikely. A
+      test set is opened once and is then spent. A service-level report returns
+      <code>unavailable</code> instead of computing a number from zero observations.</p>
+
+      <dl class="spec">
+        <dt>Domains</dt><dd>research infrastructure · agent orchestration · reverse engineering · security research · systems · applied ML</dd>
+        <dt>Public</dt><dd>a small fraction; the index rather than the contents</dd>
+        <dt>Invariant</dt><dd><i>it stops and asks</i></dd>
+      </dl>
+
+      <figure class="fig">
+        <pre>assert result.data_seen_at &lt;= decision.time
+assert backtest.process_bar is live.process_bar
+assert out_of_sample.opened == 1
+assert transition in contract or requires_human()</pre>
+        <figcaption><b>Fig. 1</b> Four of seven invariants held across the estate. Each is
+        enforced mechanically; none is a convention.</figcaption>
+      </figure>
+    </article>
+
+    <!-- ── II ────────────────────────────────────────────────────── -->
+    <article class="page" id="p2" hidden aria-label="Page 2 of 4">
+      <h2><span class="sec">§ 2 — Apparatus</span>Seven slots on one bench.</h2>
+      <aside class="marg"><b>Note</b>Private work is described by shape, never by contents.
+      Targets, findings and tooling from security engagements are permanently withheld.</aside>
+      <div id="slots"></div>
+    </article>
+
+    <!-- ── III ───────────────────────────────────────────────────── -->
+    <article class="page" id="p3" hidden aria-label="Page 3 of 4">
+      <h2><span class="sec">§ 3 — Prior work</span>Before this bench.</h2>
+      <aside class="marg"><b>Provenance</b>Testimony, not artifacts. The repositories no longer
+      exist, and nothing has been reconstructed to suggest otherwise.</aside>
+      <div id="bg"></div>
+    </article>
+
+    <!-- ── IV ────────────────────────────────────────────────────── -->
+    <article class="page" id="p4" hidden aria-label="Page 4 of 4">
+      <h2><span class="sec">§ 4 — Measurements</span>The record, as recorded.</h2>
+      <aside class="marg"><b>Caveat</b>A constant has no distribution. Where a reading cannot
+      carry a deviation, the cell is left empty rather than filled.</aside>
+      <div id="meas"><p>Loading measurements…</p></div>
+      <figure class="fig">
+        <img id="fieldimg" src="../../assets/field-light.svg" alt="One mark per day of the last 365 days: horizontal position is the date, vertical position is that day's rank among the year, and the scatter is its deviation from the surrounding 30-day median." width="100%">
+        <figcaption><b>Fig. 2</b> The field. Horizontal position is the date; vertical position
+        is the day's rank among the year; scatter is deviation from the surrounding 30-day
+        median. The same mapping is animated in the <a href="../">field edition</a>.</figcaption>
+      </figure>
+
+      <div class="fn">
+        <p id="n1"><sup><a href="#r1">1</a></sup> This is not rhetorical. Where the renderer
+        cannot obtain a quantity — a frame time while the canvas is asleep, inbound traffic
+        when the API is unreachable — it prints <code>unavailable</code>. No placeholder is
+        ever substituted for a measurement.</p>
+      </div>
+    </article>
+  </main>
+
+  <nav class="pager" aria-label="Report pages">
+    <button type="button" id="prev" disabled>← Prev</button>
+    <button type="button" class="pg" data-p="1" aria-current="true">I</button>
+    <button type="button" class="pg" data-p="2">II</button>
+    <button type="button" class="pg" data-p="3">III</button>
+    <button type="button" class="pg" data-p="4">IV</button>
+    <button type="button" id="next">Next →</button>
+    <span class="folio" id="folio">Page 1 / 4</span>
+  </nav>
+
+  <div class="colophon">
+    <span>MAO · technical report edition</span>
+    <span><a href="../">field</a> · <a href="https://github.com/YamadaBlog">github</a></span>
+  </div>
+</div>
+
+<script>
+(() => {
+'use strict';
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const esc = v => String(v).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+
+// ── pagination ─────────────────────────────────────────────────────
+const pages = $$('.page'), N = pages.length;
+let cur = 1;
+function show(n, push){
+  cur = Math.min(N, Math.max(1, n));
+  pages.forEach((p, i) => { const on = i === cur - 1; p.classList.toggle('on', on); p.hidden = !on; });
+  $$('.pg').forEach(b => b.setAttribute('aria-current', String(+b.dataset.p === cur)));
+  $('#prev').disabled = cur === 1; $('#next').disabled = cur === N;
+  $('#folio').textContent = 'Page ' + cur + ' / ' + N;
+  if (push) history.replaceState(null, '', '#p' + cur);
+  const h = pages[cur - 1].querySelector('h1,h2');
+  if (h){ h.setAttribute('tabindex', '-1'); h.focus({ preventScroll:true }); }
+  scrollTo({ top:0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+}
+$('#prev').onclick = () => show(cur - 1, true);
+$('#next').onclick = () => show(cur + 1, true);
+$$('.pg').forEach(b => b.onclick = () => show(+b.dataset.p, true));
+addEventListener('keydown', e => {
+  if (e.target.matches('input,textarea')) return;
+  if (e.key === 'ArrowRight' || e.key === 'PageDown'){ e.preventDefault(); show(cur + 1, true); }
+  if (e.key === 'ArrowLeft'  || e.key === 'PageUp'){ e.preventDefault(); show(cur - 1, true); }
+});
+const m = location.hash.match(/^#p([1-4])$/); if (m) show(+m[1], false);
+
+// ── content: one source, rendered as prose ─────────────────────────
+fetch('../content.json').then(r => r.json()).then(c => {
+  $('#slots').innerHTML = c.slots.map(s => `
+    <h3>${esc(s.n)} — ${esc(s.name)} <span style="font-family:var(--mono);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--red);font-style:normal">${esc(s.tag)}</span></h3>
+    <p>${esc(s.lead)}</p>
+    ${s.points.length ? '<ul class="pts">' + s.points.map(p => '<li>' + esc(p) + '</li>').join('') + '</ul>' : ''}`).join('');
+
+  $('#bg').innerHTML = '<dl class="spec">' + c.background.items.map(i =>
+      `<dt>${esc(i.k)}</dt><dd>${esc(i.v)}</dd>`).join('') + '</dl>' +
+    `<p>${esc(c.background.note)}</p>`;
+}).catch(() => { $('#slots').innerHTML = '<p>Content unavailable.</p>'; });
+
+fetch('../stats.json').then(r => r.json()).then(d => {
+  const rows = [
+    ['Observation window', d.days + ' days', 'ending ' + d.today],
+    ['Contributions', d.total.toLocaleString('en-US'), ''],
+    ['Active days', d.active + ' / ' + d.days, (100 * d.active / d.days).toFixed(0) + '%'],
+    ['Longest streak', d.best + ' days', ''],
+    ['Peak', d.peak + ' contributions', d.peak_d],
+    ['Cadence', d.load[0].toFixed(1) + ' / day', '7-day mean'],
+    ['Authored source', d.src_mb + ' MB', d.repos + ' repositories, ' + d.public + ' public'],
+    ['Inbound, 14 d', d.traffic && d.traffic.views != null ? d.traffic.views + ' views' : 'unavailable',
+      d.traffic && d.traffic.uniques != null ? d.traffic.uniques + ' unique' : '']
+  ];
+  $('#meas').innerHTML = '<dl class="spec">' + rows.map(([k, v, n]) =>
+    `<dt>${esc(k)}</dt><dd>${esc(v)}${n ? ' <span style="color:var(--grey)">— ' + esc(n) + '</span>' : ''}</dd>`
+  ).join('') + '</dl>';
+}).catch(() => { $('#meas').innerHTML = '<p>Measurements unavailable.</p>'; });
+})();
+</script>
+</body>
+</html>

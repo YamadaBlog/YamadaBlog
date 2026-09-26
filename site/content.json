@@ -1,0 +1,117 @@
+{
+  "$comment": "Single source of truth. Every universe under /u/ renders THIS and nothing else. Edit here once.",
+  "identity": {
+    "name": "MAO",
+    "role": "Software engineer",
+    "claim": "Systems that have to be right, not just run.",
+    "lede": "Research infrastructure, agent orchestration, reverse engineering and security research. Most of it is private; this is the index.",
+    "motto": "it stops and asks",
+    "github": "https://github.com/YamadaBlog",
+    "site": "https://yamadablog.github.io/YamadaBlog/"
+  },
+  "slots": [
+    {
+      "n": "01",
+      "name": "research infrastructure",
+      "tag": "~1K commits",
+      "lead": "Backtest, replay and live call the same process_bar(). Divergence is impossible by construction, not merely unlikely.",
+      "points": [
+        "walk-forward, frozen out-of-sample, FDR correction",
+        "drift and out-of-distribution kill-switches",
+        "local-GPU-first, burst to cloud when the queue justifies it"
+      ]
+    },
+    {
+      "n": "02",
+      "name": "agent orchestration",
+      "tag": "~700 commits",
+      "lead": "A private control plane for multi-agent workflows. The hard part is surviving a crash mid-call, not calling a model.",
+      "points": [
+        "transactional queue: atomic claim, idempotent enqueue, bounded retry",
+        "budget ceiling checked before a billable call",
+        "append-only hash-chained journal, checkpoint + replay",
+        "fail-safe autonomy: an unlisted transition stops and asks"
+      ]
+    },
+    {
+      "n": "03",
+      "name": "reverse engineering",
+      "tag": "static first",
+      "lead": "Obfuscated and virtualized managed binaries, packed interpreters, protocol layers.",
+      "points": [
+        "a protector's bytecode VM, partially mapped",
+        "blocked without an execution oracle — and written down as blocked",
+        "guessing is not the job"
+      ]
+    },
+    {
+      "n": "04",
+      "name": "security research",
+      "tag": "authorized only",
+      "lead": "Written authorization, defined scope, rules of engagement. Any one missing and the engagement is suspended.",
+      "points": [
+        "PTES · OWASP WSTG / ASVS · CVSS v3.1",
+        "timestamped evidence, prioritized remediation",
+        "targets, findings, evidence and tooling stay private — permanently"
+      ]
+    },
+    {
+      "n": "05",
+      "name": "systems & automation",
+      "tag": "durability",
+      "lead": "The boring parts that save you.",
+      "points": [
+        "a pre-commit gate that blocks any commit regressing a known fact",
+        "markdown is truth, the index is cache — burn it, lose nothing",
+        "append-only ADRs; rejections kept with the evidence that killed them",
+        "SLO reporting returns unavailable rather than inventing a metric"
+      ]
+    },
+    {
+      "n": "06",
+      "name": "applied ML",
+      "tag": "non-stationary",
+      "lead": "Reinforcement learning under non-stationarity, ensembles over point estimates, drift and OOD detection as a safety layer rather than a metric.",
+      "points": []
+    },
+    {
+      "n": "07",
+      "name": "frontend",
+      "tag": "parity",
+      "lead": "The same component across six framework boundaries must behave identically, not merely look similar.",
+      "points": [
+        "reference checked byte-for-byte in CI",
+        "clean-install consumer builds tested end to end",
+        "accessibility asserted in a real browser, not claimed in a readme"
+      ]
+    }
+  ],
+  "background": {
+    "headline": "Before this bench.",
+    "items": [
+      { "k": "angular", "v": "Front-ends over REST APIs." },
+      { "k": "java / spring", "v": "Service and API layers." },
+      { "k": ".net", "v": "API layers." },
+      { "k": "layered architecture", "v": "API / business / data access, each with its own contracts and tests." },
+      { "k": "regulated delivery", "v": "Including a banking context: review, traceability, changes explainable long after they shipped." }
+    ],
+    "note": "Those repositories were deleted when I cleaned the account, so this is testimony, not artifacts — there is nothing here to click. The public history starts later and stays unpadded: no backdated commits, no reconstructed repos, and a contribution graph that was genuinely quieter then than it is now."
+  },
+  "invariants": [
+    "result.data_seen_at <= decision.time",
+    "backtest.process_bar is live.process_bar",
+    "out_of_sample.opened == 1",
+    "sha256(dataset) == manifest[dataset.name]",
+    "transition in contract or requires_human()",
+    "effect_key not in ledger or not retried",
+    "scope.authorized and scope.written"
+  ],
+  "universes": [
+    { "id": "field",  "name": "FIELD",  "desc": "data as a living particle field",      "path": "./" },
+    { "id": "paper",  "name": "PAPER",  "desc": "a printed technical report",           "path": "./u/paper.html" },
+    { "id": "raw",    "name": "RAW",    "desc": "brutalist document, no decoration",    "path": "./u/raw.html" },
+    { "id": "system", "name": "SYSTEM", "desc": "an instrument you operate",            "path": "./u/system.html" },
+    { "id": "loud",   "name": "LOUD",   "desc": "maximum contrast, maximum type",       "path": "./u/loud.html" },
+    { "id": "void",   "name": "VOID",   "desc": "a volume you move through",            "path": "./u/void.html" }
+  ]
+}
