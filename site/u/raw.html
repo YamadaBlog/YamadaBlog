@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>MAO — RAW</title>
+<meta name="description" content="MAO: research infrastructure, agent orchestration, reverse engineering, security research. The document, unstyled.">
+<meta name="theme-color" content="#ffffff">
+<link rel="canonical" href="https://yamadablog.github.io/YamadaBlog/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23fff'/%3E%3Crect x='4' y='14' width='24' height='4' fill='%23000'/%3E%3C/svg%3E">
+<style>
+/* ────────────────────────────────────────────────────────────────────
+   RAW. Four decisions, enforced everywhere:
+     1. one family          system sans, nothing loaded
+     2. four sizes          and not one more
+     3. three colours       black, white, one red
+     4. the page SCALES     1rem = 1% of viewport width, so nothing reflows;
+                            the layout behaves like a printed poster.
+   Resizing the window is the only interaction.
+   ──────────────────────────────────────────────────────────────────── */
+html{
+  /* the clamp is the fix for the canonical bug in this technique:
+     unclamped 1vw is ~5px on a phone and ~25px on a 4K display */
+  font-size:clamp(9px,1vw,19px);
+  -webkit-text-size-adjust:100%;
+}
+:root{ --ink:#000; --paper:#fff; --grey:#767676; --red:#b81d13; }
+*,*::before,*::after{box-sizing:border-box}
+body{
+  margin:0;padding:3rem 4rem 6rem;background:var(--paper);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  font-size:1.3rem;line-height:1.35;font-weight:400;
+}
+/* the entire type scale. 1.3 / 2.2 / 4 / 9. */
+h1{font-size:9rem;font-weight:400;line-height:.88;letter-spacing:-.04em;margin:0 0 3rem;max-width:22ch}
+h2{font-size:4rem;font-weight:400;line-height:1;letter-spacing:-.02em;margin:0}
+h3{font-size:2.2rem;font-weight:400;line-height:1.12;margin:0}
+p,li,dd,dt,td,th{font-size:1.3rem}
+small{font-size:1.3rem}
+
+a{color:var(--ink)}
+a:hover{color:var(--red)}
+:focus-visible{outline:.2rem solid var(--red);outline-offset:.2rem}
+hr{width:4rem;height:0;border:0;border-top:.1rem solid var(--ink);margin:3rem 0}
+.rule{border-top:.1rem solid var(--ink);margin:0}
+
+header{border-bottom:.3rem solid var(--ink);padding-bottom:1rem;margin-bottom:3rem;
+  display:flex;gap:2rem;flex-wrap:wrap;align-items:baseline}
+header b{font-weight:400}
+header .sp{flex:1 1 4rem}
+nav.toc{margin:0 0 5rem}
+nav.toc ol{list-style:none;margin:0;padding:0;
+  columns:18rem;column-gap:3rem}
+nav.toc li{border-top:.1rem solid var(--ink);padding:.6rem 0;break-inside:avoid}
+nav.toc a{text-decoration:none;display:flex;gap:1.5rem}
+nav.toc a:hover{text-decoration:underline}
+nav.toc .n{color:var(--grey)}
+
+section{margin:0 0 5rem;scroll-margin-top:2rem}
+section > .rule{margin-bottom:1.2rem}
+.meta{color:var(--grey);margin:.4rem 0 1.6rem}
+ul.pts{margin:0;padding-left:1.6rem}
+ul.pts li{margin-bottom:.3rem}
+dl{margin:0;display:grid;grid-template-columns:14rem 1fr;gap:.5rem 2rem}
+dt{color:var(--grey)}
+dd{margin:0}
+.wide{max-width:52rem}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:1.15rem}
+pre{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:1.15rem;
+  line-height:1.5;overflow-x:auto;margin:1.2rem 0;border-left:.2rem solid var(--ink);padding-left:1.2rem}
+
+/* the self-audit: this page reports its own cost, and marks what it cannot verify */
+table.audit{border-collapse:collapse;width:100%;max-width:52rem}
+table.audit th,table.audit td{text-align:left;border-bottom:.1rem solid var(--ink);padding:.6rem 1rem .6rem 0}
+table.audit th{color:var(--grey);font-weight:400}
+table.audit td.n{font-variant-numeric:tabular-nums}
+.unver{color:var(--red)}
+footer{border-top:.3rem solid var(--ink);padding-top:1rem;margin-top:5rem;
+  display:flex;gap:2rem;flex-wrap:wrap}
+@media print{nav.toc{display:none}a{text-decoration:none}}
+</style>
+</head>
+<body>
+
+<header>
+  <b>MAO</b>
+  <span>RAW EDITION</span>
+  <span class="sp"></span>
+  <span><a href="../">FIELD</a> · <a href="./paper.html">PAPER</a></span>
+</header>
+
+<h1>Systems that have to be right, not just run.</h1>
+
+<p class="wide">Research infrastructure, agent orchestration, reverse engineering and security
+research. Most of it is private. This is the index, and it is the whole of it — there is no
+second page, no animation, and nothing here is loaded from anywhere else.</p>
+
+<hr>
+
+<nav class="toc" aria-label="Contents">
+  <ol id="toc"></ol>
+</nav>
+
+<main id="main"></main>
+
+<section id="audit">
+  <div class="rule"></div>
+  <h3>AUDIT</h3>
+  <p class="meta">What this page cost you, measured in this browser.</p>
+  <table class="audit">
+    <thead><tr><th scope="col">Quantity</th><th scope="col">Value</th><th scope="col">Source</th></tr></thead>
+    <tbody id="auditrows">
+      <tr><td>measurement</td><td class="n">unavailable</td><td>requires JavaScript</td></tr>
+    </tbody>
+  </table>
+  <p class="meta" style="margin-top:1.4rem">A quantity this page cannot obtain is printed as
+  <span class="unver">unavailable</span>. None is ever estimated.</p>
+</section>
+
+<footer>
+  <span>MAO</span>
+  <span><a href="https://github.com/YamadaBlog">github.com/YamadaBlog</a></span>
+  <span class="sp"></span>
+  <span>no webfont · no framework · no tracker</span>
+</footer>
+
+<script>
+/* Progressive enhancement only. With JS off the document above is complete;
+   the table simply keeps saying that measurement is unavailable. */
+(() => {
+'use strict';
+const esc = v => String(v).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+
+fetch('../content.json').then(r => r.json()).then(c => {
+  document.getElementById('toc').innerHTML = c.slots.map(s =>
+    `<li><a href="#s${esc(s.n)}"><span class="n">${esc(s.n)}</span><span>${esc(s.name)}</span></a></li>`
+  ).join('') + `<li><a href="#background"><span class="n">08</span><span>background</span></a></li>`
+    + `<li><a href="#invariants"><span class="n">09</span><span>invariants</span></a></li>`
+    + `<li><a href="#audit"><span class="n">10</span><span>audit</span></a></li>`;
+
+  document.getElementById('main').innerHTML =
+    c.slots.map(s => `
+      <section id="s${esc(s.n)}">
+        <div class="rule"></div>
+        <h2>${esc(s.name)}</h2>
+        <p class="meta">${esc(s.n)} — ${esc(s.tag)}</p>
+        <p class="wide">${esc(s.lead)}</p>
+        ${s.points.length ? '<ul class="pts">' + s.points.map(p => `<li>${esc(p)}</li>`).join('') + '</ul>' : ''}
+      </section>`).join('') + `
+      <section id="background">
+        <div class="rule"></div>
+        <h2>${esc(c.background.headline)}</h2>
+        <p class="meta">08 — prior work</p>
+        <dl>${c.background.items.map(i => `<dt>${esc(i.k)}</dt><dd>${esc(i.v)}</dd>`).join('')}</dl>
+        <p class="wide" style="margin-top:1.6rem">${esc(c.background.note)}</p>
+      </section>
+      <section id="invariants">
+        <div class="rule"></div>
+        <h2>invariants</h2>
+        <p class="meta">09 — enforced mechanically, not by convention</p>
+        <pre>${c.invariants.map(i => 'assert ' + esc(i)).join('\n')}</pre>
+      </section>`;
+  // The browser resolved the hash before this content existed. Anchors are
+  // this edition's only navigation, so re-apply it once layout has settled.
+  const jump = () => {
+    if (!location.hash) return;
+    const t = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+    if (t) t.scrollIntoView({ block:'start' });
+  };
+  requestAnimationFrame(() => requestAnimationFrame(jump));
+  addEventListener('hashchange', jump);
+}).catch(() => {
+  document.getElementById('main').innerHTML =
+    '<section><div class="rule"></div><h2>content unavailable</h2>' +
+    '<p class="meta">The content source did not load. Nothing has been substituted for it.</p></section>';
+});
+
+// ── the audit. Only quantities the browser will actually give us. ────
+function bytes(n){ return n < 1024 ? n + ' B' : (n / 1024).toFixed(1) + ' KB'; }
+function row(k, v, src, unver){
+  return `<tr><td>${esc(k)}</td><td class="n${unver ? ' unver' : ''}">${esc(v)}</td><td>${esc(src)}</td></tr>`;
+}
+addEventListener('load', () => {
+  setTimeout(() => {
+    const res = performance.getEntriesByType('resource');
+    const nav = performance.getEntriesByType('navigation')[0];
+    // transferSize is 0 when the Timing-Allow-Origin header is absent, and on
+    // some cross-origin or cached responses. Report that rather than guess.
+    const known = res.filter(r => r.transferSize > 0);
+    const opaque = res.length - known.length;
+    const total = (nav && nav.transferSize > 0 ? nav.transferSize : 0)
+                + known.reduce((a, r) => a + r.transferSize, 0);
+    const rows = [
+      row('requests', res.length + 1, 'PerformanceResourceTiming'),
+      total > 0
+        ? row('transferred', bytes(total), opaque ? `sum over ${known.length + 1} of ${res.length + 1} entries` : 'sum of all entries')
+        : row('transferred', 'unavailable', 'transferSize withheld by the server', true),
+      opaque
+        ? row('unmeasured responses', opaque, 'no Timing-Allow-Origin header', true)
+        : row('unmeasured responses', '0', 'every response was measurable'),
+      nav ? row('dom interactive', Math.round(nav.domInteractive) + ' ms', 'PerformanceNavigationTiming')
+          : row('dom interactive', 'unavailable', 'navigation timing absent', true),
+      row('stylesheets', document.styleSheets.length + ' (inline)', 'document.styleSheets'),
+      row('webfonts', '0', 'no @font-face rule in this document'),
+      row('third parties', '0', 'every URL in this document is same-origin'),
+      row('device memory', navigator.deviceMemory ? navigator.deviceMemory + ' GB+' : 'undisclosed',
+          navigator.deviceMemory ? 'navigator.deviceMemory' : 'browser withholds it', !navigator.deviceMemory)
+    ];
+    document.getElementById('auditrows').innerHTML = rows.join('');
+  }, 120);
+});
+})();
+</script>
+</body>
+</html>

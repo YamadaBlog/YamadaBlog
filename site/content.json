@@ -89,11 +89,26 @@
   "background": {
     "headline": "Before this bench.",
     "items": [
-      { "k": "angular", "v": "Front-ends over REST APIs." },
-      { "k": "java / spring", "v": "Service and API layers." },
-      { "k": ".net", "v": "API layers." },
-      { "k": "layered architecture", "v": "API / business / data access, each with its own contracts and tests." },
-      { "k": "regulated delivery", "v": "Including a banking context: review, traceability, changes explainable long after they shipped." }
+      {
+        "k": "angular",
+        "v": "Front-ends over REST APIs."
+      },
+      {
+        "k": "java / spring",
+        "v": "Service and API layers."
+      },
+      {
+        "k": ".net",
+        "v": "API layers."
+      },
+      {
+        "k": "layered architecture",
+        "v": "API / business / data access, each with its own contracts and tests."
+      },
+      {
+        "k": "regulated delivery",
+        "v": "Including a banking context: review, traceability, changes explainable long after they shipped."
+      }
     ],
     "note": "Those repositories were deleted when I cleaned the account, so this is testimony, not artifacts — there is nothing here to click. The public history starts later and stays unpadded: no backdated commits, no reconstructed repos, and a contribution graph that was genuinely quieter then than it is now."
   },
@@ -107,11 +122,29 @@
     "scope.authorized and scope.written"
   ],
   "universes": [
-    { "id": "field",  "name": "FIELD",  "desc": "data as a living particle field",      "path": "./" },
-    { "id": "paper",  "name": "PAPER",  "desc": "a printed technical report",           "path": "./u/paper.html" },
-    { "id": "raw",    "name": "RAW",    "desc": "brutalist document, no decoration",    "path": "./u/raw.html" },
-    { "id": "system", "name": "SYSTEM", "desc": "an instrument you operate",            "path": "./u/system.html" },
-    { "id": "loud",   "name": "LOUD",   "desc": "maximum contrast, maximum type",       "path": "./u/loud.html" },
-    { "id": "void",   "name": "VOID",   "desc": "a volume you move through",            "path": "./u/void.html" }
+    {
+      "id": "field",
+      "name": "FIELD",
+      "desc": "data as a living particle field",
+      "path": "./"
+    },
+    {
+      "id": "paper",
+      "name": "PAPER",
+      "desc": "a printed technical report",
+      "path": "./u/paper.html"
+    },
+    {
+      "id": "raw",
+      "name": "RAW",
+      "desc": "the document, unstyled and self-auditing",
+      "path": "./u/raw.html"
+    },
+    {
+      "id": "system",
+      "name": "SYSTEM",
+      "desc": "an instrument, operated",
+      "path": "./u/system.html"
+    }
   ]
 }

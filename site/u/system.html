@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>MAO — SYSTEM</title>
+<meta name="description" content="MAO: research infrastructure, agent orchestration, reverse engineering, security research. Operated as an instrument.">
+<meta name="theme-color" content="#2b2b2b">
+<link rel="canonical" href="https://yamadablog.github.io/YamadaBlog/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%232b2b2b'/%3E%3Crect x='6' y='9' width='20' height='3' fill='%2372c26a'/%3E%3Crect x='6' y='15' width='13' height='3' fill='%23d9a441'/%3E%3Crect x='6' y='21' width='8' height='3' fill='%238fb8d8'/%3E%3C/svg%3E">
+<style>
+/* ────────────────────────────────────────────────────────────────────
+   SYSTEM — built to ISA-101 "High Performance HMI" discipline.
+
+   Real operator interfaces do NOT use bright colour as decoration: the
+   ground is a muted neutral and chroma is reserved for STATE. Colour
+   semantics follow flight-deck convention:
+
+     green    nominal / normal range        amber   caution, needs attention
+     red      warning, immediate action     cyan    armed / selected, not active
+     magenta  active managed target         white   static labels and scales
+
+   Nothing on this page is coloured for looks. If it has colour, it means
+   something, and the legend at the bottom says what.
+   ──────────────────────────────────────────────────────────────────── */
+:root{
+  --g0:#1f1f1f; --g1:#2b2b2b; --g2:#363636; --g3:#454545; --g4:#5a5a5a;
+  --label:#d6d6d6; --dim:#9a9a9a;
+  --nominal:#72c26a; --caution:#d9a441; --warning:#c4554a;
+  --armed:#8fb8d8; --active:#b98fc4;
+  --mono:ui-monospace,'SFMono-Regular',Menlo,Consolas,'Liberation Mono',monospace;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--g1);color:var(--label);
+  font:400 13px/1.5 var(--mono);letter-spacing:.01em}
+::selection{background:var(--armed);color:var(--g0)}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--armed);outline-offset:2px}
+.skip{position:absolute;left:-9999px}
+.skip:focus{left:8px;top:8px;z-index:9;background:var(--armed);color:var(--g0);padding:10px 14px;text-decoration:none}
+
+/* ── chrome ───────────────────────────────────────────────────────── */
+.bar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  background:var(--g0);border-bottom:1px solid var(--g3);
+  padding:7px calc(10px + env(safe-area-inset-left,0px));
+  font-size:11.5px;letter-spacing:.09em}
+.bar .id{color:#fff}
+.bar .sp{flex:1}
+.bar a{color:var(--dim);text-decoration:none}
+.bar a:hover{color:var(--label)}
+.lamp{display:inline-flex;align-items:center;gap:6px;color:var(--dim)}
+.lamp i{width:7px;height:7px;border-radius:1px;background:var(--nominal);font-style:normal}
+
+/* ── layout: two panes, ranger/Miller style ───────────────────────── */
+.wrap{display:grid;grid-template-columns:minmax(230px,300px) 1fr;min-height:calc(100dvh - 34px)}
+@media (max-width:820px){.wrap{grid-template-columns:1fr}}
+
+.tree{border-right:1px solid var(--g3);background:var(--g1);padding:10px 0;overflow-y:auto}
+.tree h2{font-size:10.5px;letter-spacing:.14em;color:var(--dim);font-weight:400;
+  margin:0;padding:6px 14px 10px}
+.tree ul{list-style:none;margin:0;padding:0}
+.tree button{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;
+  width:100%;text-align:left;background:none;border:0;border-left:3px solid transparent;
+  color:var(--label);font:inherit;padding:8px 14px;cursor:pointer;min-height:40px}
+.tree button:hover{background:var(--g2)}
+.tree button[aria-current="true"]{background:var(--g2);border-left-color:var(--active);color:#fff}
+.tree .n{color:var(--dim);font-size:11px}
+.tree .st{width:7px;height:7px;border-radius:1px;background:var(--nominal)}
+.tree .st.caution{background:var(--caution)}
+.tree .st.armed{background:var(--armed)}
+
+.pane{padding:22px calc(20px + env(safe-area-inset-right,0px)) 80px 20px;max-width:78ch}
+.pane h1{font-size:19px;font-weight:400;letter-spacing:.02em;margin:0 0 2px;color:#fff}
+.pane .sub{color:var(--dim);font-size:11.5px;letter-spacing:.09em;margin:0 0 20px}
+.pane p{margin:0 0 12px;color:var(--label)}
+.pane ul{margin:0 0 14px;padding-left:18px;color:var(--label)}
+.pane li{margin-bottom:5px}
+
+/* readouts: the value carries the state colour, never the label */
+table.rd{width:100%;border-collapse:collapse;margin:14px 0 20px}
+table.rd th{text-align:left;font-weight:400;color:var(--dim);font-size:10.5px;letter-spacing:.11em;
+  padding:6px 10px 6px 0;border-bottom:1px solid var(--g3)}
+table.rd td{padding:7px 10px 7px 0;border-bottom:1px solid var(--g2);vertical-align:baseline}
+table.rd td.k{color:var(--dim);width:36%}
+table.rd td.v{font-variant-numeric:tabular-nums}
+.v.nominal{color:var(--nominal)} .v.caution{color:var(--caution)}
+.v.warning{color:var(--warning)} .v.armed{color:var(--armed)} .v.none{color:var(--dim)}
+button.prov{background:none;border:0;color:inherit;font:inherit;padding:0;cursor:help;
+  border-bottom:1px dotted var(--g4)}
+button.prov:hover{border-bottom-color:var(--label)}
+
+/* ── status bar: provenance lands here, nowhere else ──────────────── */
+.status{position:fixed;inset:auto 0 0 0;background:var(--g0);border-top:1px solid var(--g3);
+  padding:7px 10px calc(7px + env(safe-area-inset-bottom,0px));
+  font-size:11.5px;color:var(--dim);display:flex;gap:16px;flex-wrap:wrap;align-items:baseline}
+.status .src{color:var(--label)}
+.legend{margin-left:auto;display:flex;gap:12px;flex-wrap:wrap}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.legend i{width:7px;height:7px;border-radius:1px;font-style:normal}
+@media (max-width:820px){.legend{width:100%;margin-left:0}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<a class="skip" href="#pane">Skip to panel</a>
+
+<div class="bar">
+  <span class="id">MAO</span>
+  <span>SYSTEM EDITION</span>
+  <span class="lamp"><i id="lamp"></i><span id="lampTxt">NOMINAL</span></span>
+  <span class="sp"></span>
+  <a href="../">FIELD</a><a href="./paper.html">PAPER</a><a href="./raw.html">RAW</a>
+</div>
+
+<div class="wrap">
+  <nav class="tree" aria-label="Subsystems">
+    <h2>SUBSYSTEMS</h2>
+    <ul id="tree"></ul>
+  </nav>
+  <main class="pane" id="pane" tabindex="-1">
+    <h1 id="ttl">initialising</h1>
+    <p class="sub" id="sub">reading content source</p>
+    <div id="body"></div>
+  </main>
+</div>
+
+<div class="status" role="status">
+  <span>PROVENANCE</span>
+  <span class="src" id="prov">hover any value</span>
+  <span class="legend" aria-label="Colour legend">
+    <span><i style="background:var(--nominal)"></i>nominal</span>
+    <span><i style="background:var(--caution)"></i>caution</span>
+    <span><i style="background:var(--warning)"></i>warning</span>
+    <span><i style="background:var(--armed)"></i>armed</span>
+    <span><i style="background:var(--active)"></i>active</span>
+  </span>
+</div>
+
+<script>
+(() => {
+'use strict';
+const $ = s => document.querySelector(s);
+const esc = v => String(v).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let slots = [], stats = null;
+
+function provOn(el, text){
+  const set = () => { $('#prov').textContent = text; };
+  el.addEventListener('mouseenter', set);
+  el.addEventListener('focus', set);
+  el.addEventListener('mouseleave', () => { $('#prov').textContent = 'hover any value'; });
+}
+
+// A reading with no distribution gets no state colour — it gets 'none'.
+// Colour here is a claim about condition, so it is never applied decoratively.
+function readings(){
+  if (!stats) return [];
+  const d = stats, cov = d.active / d.days;
+  const t = d.traffic || {};
+  return [
+    ['coverage', d.active + ' / ' + d.days + ' days', cov > .6 ? 'nominal' : 'caution',
+     'GitHub contributions calendar · ' + d.days + '-day window ending ' + d.today],
+    ['cadence', d.load[0].toFixed(1) + ' /day', 'nominal',
+     'mean over trailing 7 days · same calendar'],
+    ['longest streak', d.best + ' days', 'nominal', 'longest run of consecutive active days in window'],
+    ['peak', d.peak + ' on ' + d.peak_d, 'caution', 'single highest day in window'],
+    ['authored source', d.src_mb + ' MB', 'none',
+     'sum of language bytes over ' + d.repos + ' repositories, public and private · a constant, so no state'],
+    ['inbound 14 d', t.views != null ? t.views + ' views / ' + t.uniques + ' unique' : 'unavailable',
+     t.views != null ? 'armed' : 'warning',
+     t.views != null ? 'GitHub Traffic API · aggregated by GitHub · as of ' + (t.asof || 'unknown')
+                     : 'Traffic API unreachable — no value substituted'],
+    ['frame budget', 'not measured here', 'none', 'this edition runs no render loop, so there is nothing to sample']
+  ];
+}
+
+function renderSlot(i){
+  const s = slots[i];
+  $('#ttl').textContent = s.name;
+  $('#sub').textContent = s.n + ' · ' + s.tag.toUpperCase();
+  let html = '<p>' + esc(s.lead) + '</p>';
+  if (s.points.length) html += '<ul>' + s.points.map(p => '<li>' + esc(p) + '</li>').join('') + '</ul>';
+  if (i === 0){
+    html += '<table class="rd"><thead><tr><th>READING</th><th>VALUE</th></tr></thead><tbody>' +
+      readings().map(([k, v, st, src]) =>
+        `<tr><td class="k">${esc(k)}</td><td class="v ${st}"><button class="prov" type="button" data-src="${esc(src)}">${esc(v)}</button></td></tr>`
+      ).join('') + '</tbody></table>' +
+      '<p style="color:var(--dim)">Every value above is hoverable. Its source, window and ' +
+      'aggregation appear in the status bar. A quantity that cannot be obtained is reported ' +
+      'as unavailable and coloured as a warning — never estimated.</p>';
+  }
+  $('#body').innerHTML = html;
+  document.querySelectorAll('.prov').forEach(b => provOn(b, b.dataset.src));
+  document.querySelectorAll('#tree button').forEach((b, j) => b.setAttribute('aria-current', String(j === i)));
+  history.replaceState(null, '', '#' + s.n);
+}
+
+Promise.all([
+  fetch('../content.json').then(r => r.json()),
+  fetch('../stats.json').then(r => r.json()).catch(() => null)
+]).then(([c, d]) => {
+  slots = c.slots; stats = d;
+  // a subsystem whose work is gated by an external condition is 'armed', not 'nominal'
+  const state = n => n === '04' ? 'armed' : n === '03' ? 'caution' : 'nominal';
+  $('#tree').innerHTML = slots.map((s, i) =>
+    `<li><button type="button" data-i="${i}"><span class="n">${esc(s.n)}</span>` +
+    `<span>${esc(s.name)}</span><span class="st ${state(s.n)}"></span></button></li>`).join('');
+  $('#tree').querySelectorAll('button').forEach(b =>
+    b.onclick = () => { renderSlot(+b.dataset.i); $('#pane').focus(); });
+
+  const want = slots.findIndex(s => '#' + s.n === location.hash);
+  renderSlot(want < 0 ? 0 : want);
+
+  if (!d){
+    $('#lamp').style.background = 'var(--caution)';
+    $('#lampTxt').textContent = 'DEGRADED';
+  }
+}).catch(() => {
+  $('#ttl').textContent = 'content source unavailable';
+  $('#sub').textContent = 'NO SUBSTITUTE VALUE HAS BEEN SHOWN';
+  $('#lamp').style.background = 'var(--warning)';
+  $('#lampTxt').textContent = 'FAULT';
+});
+
+// keyboard: j/k and arrows walk the tree, as in any real operator console
+addEventListener('keydown', e => {
+  if (e.target.matches('input,textarea')) return;
+  const btns = [...document.querySelectorAll('#tree button')];
+  if (!btns.length) return;
+  const cur = btns.findIndex(b => b.getAttribute('aria-current') === 'true');
+  let n = null;
+  if (e.key === 'j' || e.key === 'ArrowDown') n = Math.min(btns.length - 1, cur + 1);
+  if (e.key === 'k' || e.key === 'ArrowUp')   n = Math.max(0, cur - 1);
+  if (n !== null){ e.preventDefault(); renderSlot(n); btns[n].focus(); }
+});
+})();
+</script>
+</body>
+</html>

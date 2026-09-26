@@ -50,11 +50,12 @@ header.top{position:fixed;inset:0 0 auto 0;z-index:3;
   background:linear-gradient(var(--bg),transparent)}
 .brand{text-decoration:none;font-weight:700;letter-spacing:.1em}
 .brand i{font-style:normal;color:var(--cyan)}
-.ed{margin-left:18px;color:var(--dim);text-decoration:none;border:1px solid var(--line);
-  border-radius:99px;padding:5px 12px;white-space:nowrap;transition:color .2s,border-color .2s}
-.ed b{color:var(--cyan);font-weight:500}
-.ed:hover,.ed:focus-visible{color:var(--ink);border-color:var(--mute)}
-@media (max-width:560px){.ed{margin-left:0;order:3}}
+.ed{margin-left:18px;color:var(--dim);border:1px solid var(--line);border-radius:99px;
+  padding:5px 6px 5px 12px;display:inline-flex;align-items:center;gap:10px;white-space:nowrap}
+.ed b{color:var(--cyan);font-weight:500;margin-right:2px}
+.ed a{color:var(--dim);text-decoration:none;padding:3px 7px;border-radius:99px;transition:color .2s,background .2s}
+.ed a:hover,.ed a:focus-visible{color:var(--bg);background:var(--cyan)}
+@media (max-width:560px){.ed{margin-left:0;order:3;flex-wrap:wrap}}
 header.top nav{margin-left:auto;display:flex;gap:18px;flex-wrap:wrap;justify-content:flex-end}
 @media (max-width:560px){header.top nav{flex-basis:100%;margin-left:0;justify-content:flex-start;gap:16px}}
 header.top nav a{color:var(--mute);text-decoration:none;transition:color .2s}
@@ -155,7 +156,8 @@ footer a{color:var(--mute)}
     <a href="#background">background</a>
     <a href="#contact">contact</a>
   </nav>
-  <a class="ed" href="./u/paper.html">EDITION: FIELD <b>&#8250;</b></a>
+  <span class="ed" role="group" aria-label="Editions">EDITION <b>FIELD</b>
+    <a href="./u/paper.html">PAPER</a><a href="./u/raw.html">RAW</a><a href="./u/system.html">SYSTEM</a></span>
 </header>
 
 <main id="main" class="wrap">
