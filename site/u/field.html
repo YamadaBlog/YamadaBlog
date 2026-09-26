@@ -1,0 +1,607 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>MAO — FIELD</title>
+<meta name="description" content="MAO builds research infrastructure, agent orchestration and security research. Systems that have to be right, not just run.">
+<meta name="theme-color" content="#06080e">
+<link rel="canonical" href="https://yamadablog.github.io/YamadaBlog/">
+<meta property="og:type" content="profile">
+<meta property="og:title" content="MAO — systems that have to be right">
+<meta property="og:description" content="Research infrastructure · agent orchestration · reverse engineering · security research.">
+<meta property="og:url" content="https://yamadablog.github.io/YamadaBlog/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2306080e'/%3E%3Ccircle cx='16' cy='16' r='5' fill='none' stroke='%235ad2e8' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='1.6' fill='%235ad2e8'/%3E%3C/svg%3E">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Person","name":"MAO","alternateName":"YamadaBlog",
+"url":"https://yamadablog.github.io/YamadaBlog/","sameAs":["https://github.com/YamadaBlog"],
+"jobTitle":"Software engineer",
+"knowsAbout":["Research infrastructure","Agent orchestration","Reverse engineering","Security research","Systems programming","Applied machine learning"]}
+</script>
+<script src="../portal.js" data-id="field" data-ink="#5ad2e8" data-ground="#06080e" data-corner="bl"></script>
+<style>
+:root{
+  --bg:#06080e; --ink:#e6ecf5; --mute:#7d8aa3; --dim:#737e99; --line:#161d2b;
+  --cyan:#5ad2e8; --steel:#8fa8ff; --amber:#f5b95c;
+  --mono:ui-monospace,'SFMono-Regular',Menlo,Consolas,'Liberation Mono',monospace;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,Roboto,Helvetica,Arial,sans-serif;
+  --gut:clamp(20px,5vw,72px);
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.55 var(--sans);
+  -webkit-font-smoothing:antialiased;overflow-x:hidden}
+::selection{background:var(--cyan);color:var(--bg)}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:3px;border-radius:2px}
+.skip{position:absolute;left:-9999px;top:0;z-index:99;background:var(--cyan);color:var(--bg);
+  padding:12px 18px;font:600 14px var(--mono);text-decoration:none}
+.skip:focus{left:var(--gut);top:12px}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+
+#field{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;
+  opacity:0;transition:opacity 1.2s ease}
+#field.on{opacity:1}
+
+.wrap{position:relative;z-index:1;max-width:1240px;margin-inline:auto;padding-inline:var(--gut)}
+header.top{position:fixed;inset:0 0 auto 0;z-index:3;
+  padding:calc(16px + env(safe-area-inset-top,0px)) var(--gut) 14px;
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;font:500 11.5px var(--mono);letter-spacing:.05em;
+  background:linear-gradient(var(--bg),transparent)}
+.brand{text-decoration:none;font-weight:700;letter-spacing:.1em}
+.brand i{font-style:normal;color:var(--cyan)}
+.ed{margin-left:18px;color:var(--dim);border:1px solid var(--line);border-radius:99px;
+  padding:5px 6px 5px 12px;display:inline-flex;align-items:center;gap:10px;white-space:nowrap}
+.ed b{color:var(--cyan);font-weight:500;margin-right:2px}
+.ed a{color:var(--dim);text-decoration:none;padding:3px 7px;border-radius:99px;transition:color .2s,background .2s}
+.ed a:hover,.ed a:focus-visible{color:var(--bg);background:var(--cyan)}
+@media (max-width:560px){.ed{margin-left:0;order:3;flex-wrap:wrap}}
+header.top nav{margin-left:auto;display:flex;gap:18px;flex-wrap:wrap;justify-content:flex-end}
+@media (max-width:560px){header.top nav{flex-basis:100%;margin-left:0;justify-content:flex-start;gap:16px}}
+header.top nav a{color:var(--mute);text-decoration:none;transition:color .2s}
+header.top nav a:hover,header.top nav a:focus-visible{color:var(--ink)}
+
+.hero{min-height:100svh;display:grid;align-content:center;padding-block:16svh 10svh}
+.eyebrow{font:500 12px var(--mono);letter-spacing:.18em;color:var(--cyan);margin:0 0 clamp(18px,3vw,30px)}
+h1{margin:0;font-weight:500;letter-spacing:-.035em;line-height:.98;font-size:clamp(30px,7.6vw,150px);overflow-wrap:break-word}
+h1 span{display:block}
+h1 em{font-style:normal;color:var(--cyan)}
+.lede{margin:clamp(26px,4vw,44px) 0 0;max-width:36ch;color:var(--mute);font-size:clamp(15px,1.5vw,18px)}
+.readout{margin-top:clamp(34px,6vw,64px);display:flex;flex-wrap:wrap;gap:8px 22px;max-width:100%;
+  font:500 11.5px var(--mono);letter-spacing:.05em;color:var(--dim)}
+.readout b{color:var(--mute);font-weight:500}
+.readout>span{min-width:0}
+@media (max-width:560px){.readout{display:grid;gap:6px}}
+.readout i{font-style:normal;color:var(--cyan)}
+
+section{padding-block:clamp(72px,12vh,148px)}
+.sh{display:flex;align-items:baseline;gap:16px;margin:0 0 clamp(28px,4vw,52px);
+  font:500 11.5px var(--mono);letter-spacing:.16em;color:var(--dim)}
+.sh b{color:var(--cyan);font-weight:500}
+.sh span{flex:1;height:1px;background:var(--line)}
+h2{font-size:clamp(26px,4vw,44px);font-weight:500;letter-spacing:-.02em;margin:0 0 .4em;line-height:1.05}
+
+ol.slots{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+ol.slots li{border-bottom:1px solid var(--line)}
+ol.slots summary{display:grid;grid-template-columns:34px 1fr auto;gap:18px;align-items:baseline;
+  padding:20px 0;cursor:pointer;list-style:none;min-height:44px}
+ol.slots summary::-webkit-details-marker{display:none}
+ol.slots summary:hover .nm,ol.slots details[open] .nm{color:var(--cyan)}
+.no{font:500 11px var(--mono);color:var(--dim)}
+.nm{font-size:clamp(17px,2vw,21px);font-weight:500;letter-spacing:-.01em;transition:color .2s}
+.tag{font:500 10.5px var(--mono);letter-spacing:.1em;color:var(--dim);white-space:nowrap}
+.body{padding:0 0 26px 52px;max-width:62ch;color:var(--mute);font-size:15px}
+.body p{margin:0 0 14px}
+.body ul{margin:0;padding-left:16px}
+.body li{margin-bottom:6px}
+.body b{color:var(--ink);font-weight:500}
+.body .meta{font:500 11px var(--mono);letter-spacing:.05em;color:var(--dim);margin-top:14px}
+@media (max-width:640px){.body{padding-left:0}}
+
+.grid2{display:grid;gap:clamp(18px,3vw,34px);grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
+.cell{border-top:1px solid var(--line);padding-top:14px}
+.cell b{display:block;font:500 11.5px var(--mono);letter-spacing:.08em;color:var(--steel);margin-bottom:6px}
+.cell p{margin:0;color:var(--mute);font-size:14.5px}
+.note{margin-top:clamp(24px,4vw,40px);color:var(--dim);font-size:13.5px;max-width:64ch}
+
+.big{display:inline-block;font-size:clamp(28px,6vw,64px);font-weight:500;letter-spacing:-.03em;
+  text-decoration:none;line-height:1.05}
+.big::after{content:"";display:block;height:1px;background:currentColor;transform:scaleX(0);
+  transform-origin:0 50%;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.big:hover::after,.big:focus-visible::after{transform:scaleX(1)}
+footer{padding:clamp(40px,7vh,80px) 0 calc(36px + env(safe-area-inset-bottom,0px));
+  border-top:1px solid var(--line);color:var(--dim);font:500 11.5px var(--mono);letter-spacing:.05em;
+  display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
+footer a{color:var(--mute)}
+
+/* subject panel */
+.subj{border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.subj table{width:100%;border-collapse:collapse;font:500 12px/1.5 var(--mono);letter-spacing:.03em}
+.subj caption{text-align:left;font:500 11.5px var(--mono);letter-spacing:.16em;color:var(--dim);padding:0 0 14px}
+.subj th{text-align:left;font-weight:500;color:var(--dim);padding:9px 0;border-bottom:1px solid var(--line);
+  font-size:10.5px;letter-spacing:.12em}
+.subj td{padding:9px 0;border-bottom:1px solid var(--line);color:var(--mute);vertical-align:baseline}
+.subj tr:last-child td{border-bottom:0}
+.subj td.k{color:var(--dim);width:38%}
+.subj td.v{color:var(--ink);font-variant-numeric:tabular-nums}
+.subj td.d{text-align:right;font-variant-numeric:tabular-nums;width:22%}
+.subj .hi{color:var(--amber)}
+.subj .lo{color:var(--dim)}
+.pledge{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin:0 0 clamp(22px,3vw,34px);
+  font:500 11.5px var(--mono);letter-spacing:.1em;color:var(--cyan)}
+.pledge span{color:var(--dim);letter-spacing:.04em}
+@media (max-width:560px){.subj td.k{width:44%}.subj table{font-size:11px}}
+
+#fps{position:fixed;right:10px;bottom:10px;z-index:4;font:500 10.5px var(--mono);
+  color:var(--dim);background:#06080ecc;padding:4px 8px;border:1px solid var(--line);border-radius:4px}
+#fps[hidden]{display:none}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<canvas id="field" aria-hidden="true"></canvas>
+<output id="fps" hidden></output>
+
+<header class="top">
+  <a class="brand" href="#main">MAO<i>.</i></a>
+  <nav aria-label="Sections">
+    <a href="#bench">bench</a>
+    <a href="#subject">subject</a>
+    <a href="#background">background</a>
+    <a href="#contact">contact</a>
+  </nav>
+  <span class="ed" role="group" aria-label="Editions">EDITION <b>FIELD</b>
+    <a href="./paper.html">PAPER</a><a href="./raw.html">RAW</a><a href="./system.html">SYSTEM</a><a href="./loud.html">LOUD</a><a href="../">ATRIUM</a></span>
+</header>
+
+<main id="main" class="wrap">
+
+  <section class="hero" aria-labelledby="h1">
+    <p class="eyebrow">MAO — SOFTWARE ENGINEER</p>
+    <h1 id="h1"><span>Systems that</span><span>have to be <em>right</em>,</span><span>not just run.</span></h1>
+    <p class="lede">Research infrastructure, agent orchestration, reverse engineering and security research. Most of it is private; this is the index.</p>
+    <p class="readout">
+      <span><b>field</b> <i id="r-days">365</i> days</span>
+      <span><b>y</b> contributions</span>
+      <span><b>drift</b> deviation from 30-day median</span>
+      <span><b>peak</b> <i id="r-peak">—</i></span>
+    </p>
+  </section>
+
+  <section id="bench" aria-labelledby="h-bench">
+    <p class="sh"><b>01</b> BENCH<span></span></p>
+    <h2 id="h-bench" class="vh">Bench</h2>
+    <ol class="slots">
+      <li><details>
+        <summary><span class="no">01</span><span class="nm">research infrastructure</span><span class="tag">~1K COMMITS</span></summary>
+        <div class="body">
+          <p>Backtest, replay and live call the same <b>process_bar()</b>. Divergence is impossible by construction, not merely unlikely.</p>
+          <ul>
+            <li>walk-forward, frozen out-of-sample, FDR correction</li>
+            <li>drift and out-of-distribution kill-switches</li>
+            <li>local-GPU-first, burst to cloud when the queue justifies it</li>
+          </ul>
+        </div>
+      </details></li>
+      <li><details>
+        <summary><span class="no">02</span><span class="nm">agent orchestration</span><span class="tag">~700 COMMITS</span></summary>
+        <div class="body">
+          <p>A private control plane for multi-agent workflows. The hard part is surviving a crash mid-call, not calling a model.</p>
+          <ul>
+            <li>transactional queue: atomic claim, idempotent enqueue, bounded retry</li>
+            <li>budget ceiling checked <b>before</b> a billable call</li>
+            <li>append-only hash-chained journal, checkpoint + replay</li>
+            <li>fail-safe autonomy: an unlisted transition stops and asks</li>
+          </ul>
+        </div>
+      </details></li>
+      <li><details>
+        <summary><span class="no">03</span><span class="nm">reverse engineering</span><span class="tag">STATIC FIRST</span></summary>
+        <div class="body">
+          <p>Obfuscated and virtualized managed binaries, packed interpreters, protocol layers.</p>
+          <p>A protector's bytecode VM got partially mapped, then hit a wall without an execution oracle. That wall is written down as a wall — <b>guessing is not the job</b>.</p>
+        </div>
+      </details></li>
+      <li><details>
+        <summary><span class="no">04</span><span class="nm">security research</span><span class="tag">AUTHORIZED ONLY</span></summary>
+        <div class="body">
+          <p>Written authorization, defined scope, rules of engagement. Any one missing and the engagement is suspended.</p>
+          <p>PTES · OWASP WSTG / ASVS · CVSS v3.1 · timestamped evidence · prioritized remediation.</p>
+          <p class="meta">TARGETS, FINDINGS, EVIDENCE AND TOOLING STAY PRIVATE. PERMANENTLY.</p>
+        </div>
+      </details></li>
+      <li><details>
+        <summary><span class="no">05</span><span class="nm">systems &amp; automation</span><span class="tag">DURABILITY</span></summary>
+        <div class="body">
+          <ul>
+            <li>a pre-commit gate that blocks any commit regressing a known fact</li>
+            <li>markdown is truth, the index is cache — burn it, lose nothing</li>
+            <li>append-only ADRs; rejections kept with the evidence that killed them</li>
+            <li>SLO reporting returns <b>unavailable</b> rather than inventing a metric</li>
+          </ul>
+        </div>
+      </details></li>
+      <li><details>
+        <summary><span class="no">06</span><span class="nm">applied ML</span><span class="tag">NON-STATIONARY</span></summary>
+        <div class="body">
+          <p>Reinforcement learning under non-stationarity, ensembles over point estimates, drift and OOD detection as a safety layer rather than a metric.</p>
+        </div>
+      </details></li>
+      <li><details>
+        <summary><span class="no">07</span><span class="nm">frontend</span><span class="tag">PARITY</span></summary>
+        <div class="body">
+          <p>The same component across six framework boundaries must <b>behave</b> identically, not merely look similar. Reference checked byte-for-byte in CI, consumer installs tested end to end, accessibility asserted in a real browser.</p>
+          <p class="meta">EXAMPLE: <a href="https://github.com/YamadaBlog/pulse-player">PULSE-PLAYER</a></p>
+        </div>
+      </details></li>
+    </ol>
+  </section>
+
+  <section id="subject" aria-labelledby="h-subj">
+    <p class="sh"><b>02</b> SUBJECT<span></span></p>
+    <h2 id="h-subj">The instrument turns around.</h2>
+    <p class="pledge">NOTHING LEAVES THIS DEVICE
+      <span>this page makes exactly one network request — for my data, not yours</span></p>
+    <div class="subj">
+      <table aria-live="off">
+        <caption id="subj-cap">SESSION — measured in this browser, discarded when you close the tab</caption>
+        <thead><tr><th scope="col">READING</th><th scope="col">VALUE</th><th scope="col">DRIFT</th></tr></thead>
+        <tbody id="subj-rows">
+          <tr><td class="k">session</td><td class="v" id="m-time">—</td><td class="d lo">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">Constants are reported as readings; they have no distribution, so they carry no drift.
+      Signals vary through the session, so their drift is the deviation from their own running median — the
+      same robust measure the field uses for my year. Your points are drawn in <span style="color:var(--amber)">amber</span>,
+      over mine. Nothing is uploaded, stored, or sent anywhere.</p>
+  </section>
+
+  <section id="background" aria-labelledby="h-bg">
+    <p class="sh"><b>03</b> BACKGROUND<span></span></p>
+    <h2 id="h-bg">Before this bench.</h2>
+    <div class="grid2">
+      <div class="cell"><b>ANGULAR</b><p>Front-ends over REST APIs.</p></div>
+      <div class="cell"><b>JAVA / SPRING</b><p>Service and API layers.</p></div>
+      <div class="cell"><b>.NET</b><p>API layers.</p></div>
+      <div class="cell"><b>LAYERED ARCHITECTURE</b><p>API / business / data access, each with its own contracts and tests.</p></div>
+      <div class="cell"><b>REGULATED DELIVERY</b><p>Including a banking context: review, traceability, changes explainable long after they shipped.</p></div>
+    </div>
+    <p class="note">Those repositories were deleted when I cleaned the account, so this is testimony, not artifacts — there is nothing here to click. The public history starts later and stays unpadded: no backdated commits, no reconstructed repos, and a contribution graph that was genuinely quieter then than it is now.</p>
+  </section>
+
+  <section id="contact" aria-labelledby="h-c">
+    <p class="sh"><b>04</b> CONTACT<span></span></p>
+    <h2 id="h-c" class="vh">Contact</h2>
+    <p><a class="big" href="https://github.com/YamadaBlog">github.com/YamadaBlog</a></p>
+    <p class="note">Open to research infrastructure, correctness-critical systems, agent orchestration and security engineering.</p>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  <span>© 2026 MAO</span>
+  <span>Field: 365 days of real contribution data · <a href="https://github.com/YamadaBlog/YamadaBlog">source</a></span>
+</footer>
+
+<script>
+(() => {
+'use strict';
+const $ = id => document.getElementById(id);
+const RM = matchMedia('(prefers-reduced-motion: reduce)');
+
+fetch('../stats.json').then(r => r.ok ? r.json() : Promise.reject()).then(d => {
+  const s = d.series || [];
+  $('r-days').textContent = s.length;
+  $('r-peak').textContent = d.peak + ' on ' + d.peak_d;
+  start(s);
+}).catch(() => {});
+
+function start(series){
+  const canvas = $('field');
+  const gl = canvas.getContext('webgl', {
+    antialias:false, depth:false, stencil:false, alpha:false,
+    powerPreference:'high-performance', failIfMajorPerformanceCaveat:true
+  });
+  if (!gl) return;
+  if ((navigator.deviceMemory ?? 8) < 4) return;
+  if (navigator.connection && navigator.connection.saveData) return;
+
+  // one particle per day, plus siblings. Positions are derived from the data
+  // once, on the CPU: nothing is simulated per frame.
+  const N = series.length, PER = 72, COUNT = N * PER;
+  const counts = series.map(d => d[1]);
+  const peak = Math.max(1, ...counts);
+  const median = arr => { const a = arr.slice().sort((x, y) => x - y); return a[a.length >> 1] || 0; };
+  // rank, not raw ratio: a handful of huge days would otherwise pin every
+  // ordinary day to the floor. Rank spreads the year across the frame.
+  const order = counts.map((c, i) => [c, i]).sort((p, q) => p[0] - q[0]);
+  const rank = new Float32Array(N);
+  order.forEach(([, i], pos) => { rank[i] = N > 1 ? pos / (N - 1) : 0.5; });
+  const data = new Float32Array(COUNT * 4);
+  let k = 0;
+  for (let i = 0; i < N; i++){
+    const c = counts[i];
+    const m = median(counts.slice(Math.max(0, i - 15), Math.min(N, i + 15)));
+    const dev = Math.min(1, Math.abs(c - m) / Math.max(peak * 0.35, 1));
+    const lvl = Math.pow(c / peak, 0.55);
+    const y = (rank[i] - 0.5) * 1.62;
+    for (let j = 0; j < PER; j++){
+      const r = Math.random(), a = Math.random() * 6.2831853;
+      // jitter x within the day so the year reads as a field, not as rain
+      data[k++] = (i / (N - 1)) * 2 - 1 + (Math.random() - 0.5) * 0.007;
+      data[k++] = y + (Math.random() - 0.5) * 0.055;
+      data[k++] = dev * (0.25 + 0.75 * r);
+      data[k++] = Math.max(0.04, lvl * (0.6 + 0.4 * Math.sin(a)));
+    }
+  }
+
+  const VS = `attribute vec4 a;uniform float uT,uS,uAsp,uPx,uEdge,uDim,uSub;uniform vec2 uM;varying float vL,vQ,vS;
+void main(){
+  float ph=a.z*31.4+uT*0.55;
+  // x is a TIME axis, so it fills the viewport width; only the drift is
+  // aspect-corrected, otherwise the wander turns into an ellipse.
+  vec2 p=vec2(a.x-uS,a.y)+vec2(cos(ph)/uAsp,sin(ph*1.27))*a.z*0.085;
+  vec2 d=p-uM;float m=exp(-dot(d,d)*7.0);
+  p+=vec2(d.x/uAsp,d.y)*m*0.55;
+  float x=p.x*1.06;
+  gl_Position=vec4(x,p.y,0.,1.);
+  gl_PointSize=(1.0+a.w*3.6)*uPx*(1.0+uSub*0.9);
+  // quiet down where the type lives, so the field never fights the headline
+  vQ=mix(0.14,1.0,smoothstep(uEdge-0.10,uEdge+0.42,x))*uDim;
+  vQ=mix(vQ,1.0,uSub);
+  vS=uSub;
+  vL=a.w;}`;
+  const FS = `precision mediump float;varying float vL,vQ,vS;
+void main(){
+  vec2 c=gl_PointCoord-0.5;float d=dot(c,c);
+  if(d>0.25) discard;
+  float al=smoothstep(0.25,0.01,d);
+  vec3 col=mix(vec3(0.35,0.82,0.91),vec3(0.56,0.66,1.0),smoothstep(0.22,0.6,vL));
+  col=mix(col,vec3(0.96,0.73,0.36),smoothstep(0.62,0.95,vL));
+  col=mix(col,vec3(0.96,0.73,0.36),vS);          // the visitor reads amber
+  gl_FragColor=vec4(col,al*(0.38+1.05*vL)*vQ);}`;
+
+  const sh = (t, src) => { const o = gl.createShader(t); gl.shaderSource(o, src); gl.compileShader(o);
+    return gl.getShaderParameter(o, gl.COMPILE_STATUS) ? o : null; };
+  const vs = sh(gl.VERTEX_SHADER, VS), fs = sh(gl.FRAGMENT_SHADER, FS);
+  if (!vs || !fs) return;
+  const prog = gl.createProgram();
+  gl.attachShader(prog, vs); gl.attachShader(prog, fs); gl.linkProgram(prog);
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return;
+  gl.useProgram(prog);
+
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
+  const la = gl.getAttribLocation(prog, 'a');
+  gl.enableVertexAttribArray(la);
+  gl.vertexAttribPointer(la, 4, gl.FLOAT, false, 0, 0);
+  const uT = gl.getUniformLocation(prog, 'uT'), uS = gl.getUniformLocation(prog, 'uS'),
+        uAsp = gl.getUniformLocation(prog, 'uAsp'), uM = gl.getUniformLocation(prog, 'uM'),
+        uPx = gl.getUniformLocation(prog, 'uPx'), uEdge = gl.getUniformLocation(prog, 'uEdge'), uDim = gl.getUniformLocation(prog, 'uDim'),
+        uSub = gl.getUniformLocation(prog, 'uSub');
+  gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+
+  let W = 1, H = 1, dpr = 1;
+  function resize(){
+    dpr = Math.min(devicePixelRatio || 1, 2);        // cost scales with dpr²
+    W = Math.max(1, Math.round(innerWidth * dpr));
+    H = Math.max(1, Math.round(innerHeight * dpr));
+    canvas.width = W; canvas.height = H;
+    gl.viewport(0, 0, W, H);
+  }
+  resize();
+  addEventListener('resize', resize, { passive:true });
+
+  let target = 0, cur = 0, mouse = [9, 9], onScreen = true, raf = 0, last = performance.now();
+  addEventListener('scroll', () => { target = scrollY; tick(); }, { passive:true });
+  addEventListener('pointermove', e => {
+    mouse = [(e.clientX / innerWidth) * 2 - 1, 1 - (e.clientY / innerHeight) * 2];
+  }, { passive:true });
+  addEventListener('pointerleave', () => { mouse = [9, 9]; }, { passive:true });
+  new IntersectionObserver(es => { onScreen = es[0].isIntersecting; tick(); }).observe(document.body);
+
+  // frame-budget watchdog: revert to a still field rather than grind
+  let slow = 0, frames = 0, t0 = performance.now(), dead = false;
+  const ft = []; let ftLast = performance.now();
+  const badge = $('fps');
+  const showFps = location.hash === '#fps' || location.search.indexOf('fps') > -1;
+  if (showFps) badge.hidden = false;
+
+  function draw(now){
+    raf = 0;
+    const dt = Math.min(Math.max((now - last) / 16.667, 0.01), 4);
+    last = now;
+    slow = dt > 1.4 ? slow + 1 : Math.max(0, slow - 1);
+    if (slow > 90){ stop(); return; }
+    ft.push(now - ftLast); ftLast = now;
+    if (ft.length > 60){ ft.shift(); const a = ft.slice().sort((x, y) => x - y); frameMed = a[30]; }
+
+    cur += (target - cur) * (1 - Math.pow(1 - 0.09, dt));
+    const span = Math.max(1, document.body.scrollHeight - innerHeight);
+    gl.uniform1f(uT, now / 1000);
+    gl.uniform1f(uS, (cur / span) * 1.8);
+    gl.uniform1f(uAsp, W / H);
+    gl.uniform1f(uPx, dpr * 1.25);
+    // narrow viewports have no free column, so the field dims globally instead
+    const narrow = innerWidth < 760;
+    gl.uniform1f(uEdge, narrow ? -1.6 : -0.02);
+    gl.uniform1f(uDim, narrow ? 0.34 : 1.0);
+    gl.uniform2f(uM, mouse[0] / 1.06, mouse[1]);
+    gl.clearColor(0.024, 0.031, 0.055, 1);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.vertexAttribPointer(la, 4, gl.FLOAT, false, 0, 0);
+    gl.uniform1f(uSub, 0);
+    gl.drawArrays(gl.POINTS, 0, COUNT);
+    if (subCount){                                   // the visitor, over the year
+      gl.bindBuffer(gl.ARRAY_BUFFER, subBuf);
+      gl.vertexAttribPointer(la, 4, gl.FLOAT, false, 0, 0);
+      gl.uniform1f(uS, 0);                           // "now" does not scroll
+      gl.uniform1f(uSub, 1);
+      gl.drawArrays(gl.POINTS, 0, subCount);
+    }
+    paintSubject(now);
+
+    if (showFps){ frames++; if (now - t0 > 1000){ badge.textContent = Math.round(frames * 1000 / (now - t0)) + ' fps'; frames = 0; t0 = now; } }
+    tick();
+  }
+  const shouldRun = () => !RM.matches && !document.hidden && onScreen && !dead;
+  function tick(){ if (shouldRun() && !raf) raf = requestAnimationFrame(draw); }
+  function stop(){ dead = true; if (raf) cancelAnimationFrame(raf); raf = 0; }
+
+  document.addEventListener('visibilitychange', tick);
+  // reduced motion answered at runtime: render ONE frame, then hold.
+  RM.addEventListener('change', () => {
+    if (RM.matches){ if (raf) cancelAnimationFrame(raf); raf = 0; draw(performance.now()); raf = 0; }
+    else tick();
+  });
+
+  // ── the mirror: the same mapping, pointed at the visitor ──────────────
+  //    Everything below is computed in this tab and never sent anywhere.
+  const MAXSUB = 640;
+  const subData = new Float32Array(MAXSUB * 4);
+  let subCount = 0, subHead = 0;
+  const subBuf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, subBuf);
+  gl.bufferData(gl.ARRAY_BUFFER, subData, gl.DYNAMIC_DRAW);
+
+  // robust drift: median + MAD, so one outlier cannot define the scale
+  const win = {};
+  function drift(key, v){
+    const w = win[key] || (win[key] = []);
+    w.push(v); if (w.length > 90) w.shift();
+    if (w.length < 12) return null;
+    const a = w.slice().sort((x, y) => x - y);
+    const med = a[a.length >> 1];
+    const dev = a.map(x => Math.abs(x - med)).sort((x, y) => x - y)[a.length >> 1];
+    const sigma = 1.4826 * dev;
+    if (!(sigma > 1e-9)) return null;
+    return Math.max(-9.9, Math.min(9.9, (v - med) / sigma));
+  }
+
+  const seen = {};
+  function norm(key, v){                       // position within this session's own observed range
+    const r = seen[key] || (seen[key] = { lo: v, hi: v });
+    r.lo = Math.min(r.lo, v); r.hi = Math.max(r.hi, v);
+    return r.hi - r.lo < 1e-9 ? 0 : (v - r.lo) / (r.hi - r.lo) * 2 - 1;
+  }
+  function pushPoint(t01, d, lvl){
+    const i = (subHead % MAXSUB) * 4;
+    subData[i]     = t01 * 2 - 1;
+    subData[i + 1] = Math.max(-0.88, Math.min(0.88, (d / 4) * 0.8));
+    subData[i + 2] = Math.min(1, Math.abs(d) / 6);
+    subData[i + 3] = Math.max(0.12, Math.min(1, lvl));
+    subHead++; subCount = Math.min(subCount + 1, MAXSUB);
+    gl.bindBuffer(gl.ARRAY_BUFFER, subBuf);
+    gl.bufferSubData(gl.ARRAY_BUFFER, i * 4, subData.subarray(i, i + 4));
+  }
+
+  // counters
+  const t0s = performance.now();
+  let moves = 0, dist = 0, lastPt = null, scrollPeak = 0, lastScroll = scrollY, lastScrollT = t0s;
+  let firstInput = null, frameMed = 0;
+  addEventListener('pointermove', e => {
+    moves++;
+    if (lastPt) dist += Math.hypot(e.clientX - lastPt[0], e.clientY - lastPt[1]);
+    lastPt = [e.clientX, e.clientY];
+    if (firstInput === null) firstInput = performance.now() - t0s;
+  }, { passive:true });
+  addEventListener('keydown', () => { if (firstInput === null) firstInput = performance.now() - t0s; }, { passive:true });
+  addEventListener('scroll', () => {
+    const now = performance.now(), dtv = Math.max(1, now - lastScrollT);
+    scrollPeak = Math.max(scrollPeak, Math.abs(scrollY - lastScroll) / dtv * 1000);
+    lastScroll = scrollY; lastScrollT = now;
+    if (firstInput === null) firstInput = now - t0s;
+  }, { passive:true });
+
+  const dwell = {}; const secs = [...document.querySelectorAll('main section[id]')];
+  new IntersectionObserver(es => es.forEach(e => {
+    const id = e.target.id;
+    dwell[id] = dwell[id] || { in:0, since:0 };
+    if (e.isIntersecting) dwell[id].since = performance.now();
+    else if (dwell[id].since){ dwell[id].in += performance.now() - dwell[id].since; dwell[id].since = 0; }
+  }), { threshold:0.4 }).observe(document.body);
+  secs.forEach(sec => new IntersectionObserver(es => es.forEach(e => {
+    const d = dwell[sec.id] || (dwell[sec.id] = { in:0, since:0 });
+    if (e.isIntersecting) d.since = performance.now();
+    else if (d.since){ d.in += performance.now() - d.since; d.since = 0; }
+  }), { threshold:0.4 }).observe(sec));
+
+  const mmss = ms => {
+    const t = Math.max(0, ms / 1000 | 0);
+    return String(t / 60 | 0).padStart(2, '0') + ':' + String(t % 60).padStart(2, '0');
+  };
+  const esc = v => String(v).replace(/[&<]/g, c => c === '&' ? '&amp;' : '&lt;');
+
+  // an opaque, per-session handle. Math.random only — not derived from anything
+  // about the visitor, so it identifies nothing and survives nothing.
+  const handle = '0x' + Math.floor(Math.random() * 0xfffff).toString(16).padStart(5, '0');
+  const cap = document.getElementById('subj-cap');
+  if (cap) cap.textContent = 'SUBJECT ' + handle + ' — measured in this browser, discarded when you close the tab';
+
+  const rowsEl = document.getElementById('subj-rows');
+  function readings(){
+    const now = performance.now();
+    let top = null, topMs = 0;
+    for (const k in dwell){
+      const ms = dwell[k].in + (dwell[k].since ? now - dwell[k].since : 0);
+      if (ms > topMs){ topMs = ms; top = k; }
+    }
+    return [
+      ['session',        mmss(now - t0s), null],
+      ['viewport',       innerWidth + '\u00d7' + innerHeight, null],
+      ['pixel ratio',    (devicePixelRatio || 1).toFixed(2), null],
+      ['cores',          navigator.hardwareConcurrency || 'undisclosed', null],
+      ['memory',         navigator.deviceMemory ? navigator.deviceMemory + ' GB+' : 'undisclosed', null],
+      ['frame',          frameMed ? frameMed.toFixed(1) + ' ms' : (dead || RM.matches ? 'unavailable' : 'sampling'),
+                         frameMed ? drift('frame', frameMed) : null],
+      ['pointer',        moves + ' events', drift('moves', moves)],
+      ['pointer path',   (dist / 1000).toFixed(2) + ' k px', drift('dist', dist)],
+      ['scroll peak',    scrollPeak.toFixed(0) + ' px/s', drift('scroll', scrollPeak)],
+      ['first input',    firstInput === null ? 'awaiting' : (firstInput / 1000).toFixed(2) + ' s', null],
+      ['longest dwell',  top ? top + ' ' + mmss(topMs) : 'none', null]
+    ];
+  }
+
+  let lastPaint = 0;
+  function paintSubject(now){
+    if (now - lastPaint < 500) return;           // 2 Hz: legible, and cheap
+    lastPaint = now;
+    const rows = readings();
+    rowsEl.innerHTML = rows.map(([k, v, d]) => {
+      const dTxt = d === null ? '—' : (d >= 0 ? '+' : '\u2212') + Math.abs(d).toFixed(1) + '\u03c3';
+      const cls = d === null ? 'lo' : (Math.abs(d) > 1.5 ? 'hi' : '');
+      return '<tr><td class="k">' + esc(k) + '</td><td class="v">' + esc(v) +
+             '</td><td class="d ' + cls + '">' + dTxt + '</td></tr>';
+    }).join('');
+    // the strongest signals become points in the field
+    const span = Math.max(1, document.body.scrollHeight - innerHeight);
+    const t01 = Math.min(1, (now - t0s) / 180000);
+    // drift when it exists; otherwise the signal's own magnitude. Both are measured.
+    const sig = { pointer: moves, 'pointer path': dist, 'scroll peak': scrollPeak, frame: frameMed };
+    rows.forEach(r => {
+      if (r[2] !== null){ pushPoint(t01, r[2], Math.min(1, Math.abs(r[2]) / 3 + 0.2)); return; }
+      const v = sig[r[0]];
+      if (typeof v === 'number' && v > 0) pushPoint(t01, norm(r[0], v) * 2.6, 0.45);
+    });
+  }
+
+  canvas.classList.add('on');
+  draw(performance.now());       // first frame always lands, motion or not
+  if (!RM.matches) tick();
+  // the readout keeps updating even when the field is asleep
+  setInterval(() => paintSubject(performance.now()), 500);
+}
+})();
+</script>
+</body>
+</html>

@@ -126,25 +126,51 @@
       "id": "field",
       "name": "FIELD",
       "desc": "data as a living particle field",
-      "path": "./"
+      "path": "./u/field.html",
+      "ink": "#5ad2e8",
+      "ground": "#06080e",
+      "face": "mono",
+      "line": "365 days. one mark each. rank, not raw."
     },
     {
       "id": "paper",
       "name": "PAPER",
       "desc": "a printed technical report",
-      "path": "./u/paper.html"
+      "path": "./u/paper.html",
+      "ink": "#8a2b1e",
+      "ground": "#f4f1ea",
+      "face": "serif",
+      "line": "figures, marginalia, footnotes, four pages."
     },
     {
       "id": "raw",
       "name": "RAW",
       "desc": "the document, unstyled and self-auditing",
-      "path": "./u/raw.html"
+      "path": "./u/raw.html",
+      "ink": "#b81d13",
+      "ground": "#ffffff",
+      "face": "sans",
+      "line": "four sizes. three colours. it never reflows."
     },
     {
       "id": "system",
       "name": "SYSTEM",
       "desc": "an instrument, operated",
-      "path": "./u/system.html"
+      "path": "./u/system.html",
+      "ink": "#72c26a",
+      "ground": "#2b2b2b",
+      "face": "mono",
+      "line": "ISA-101. colour is reserved for state."
+    },
+    {
+      "id": "loud",
+      "name": "LOUD",
+      "desc": "the same facts, shouted",
+      "path": "./u/loud.html",
+      "ink": "#0a0a0a",
+      "ground": "#f2ff00",
+      "face": "display",
+      "line": "sideways. six hues, one per room."
     }
   ]
 }

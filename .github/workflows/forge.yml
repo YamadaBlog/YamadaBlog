@@ -15,6 +15,9 @@ jobs:
       - name: render assets from live data
         env: { GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}' }
         run: python scripts/forge.py
+      - name: check.py - registry, contrast, syntax, geometry, leaks
+        run: python scripts/check.py
+
       - name: every svg must parse, and must read correctly with no animation
         run: |
           python - <<'PY'

@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>MAO — LOUD</title>
+<meta name="description" content="MAO: research infrastructure, agent orchestration, reverse engineering, security research. The same facts, shouted, one room at a time, sideways.">
+<meta name="theme-color" content="#f2ff00">
+<link rel="canonical" href="https://yamadablog.github.io/YamadaBlog/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23f2ff00'/%3E%3Crect x='5' y='6' width='6' height='20' fill='%230a0a0a'/%3E%3Crect x='5' y='20' width='22' height='6' fill='%230a0a0a'/%3E%3C/svg%3E">
+<script src="../portal.js" data-id="loud" data-ink="#0a0a0a" data-ground="#f2ff00" data-corner="tr"></script>
+<style>
+/* ════════════════════════════════════════════════════════════════════════
+   LOUD
+   Every other edition in this set is quiet and reads downward. This one
+   reads SIDEWAYS, one room per fact, and each room owns a saturated hue.
+
+   Three rules hold it together, and they are the only reason a page this
+   loud stays legible:
+     1. A room's ground and its ink are a fixed, contrast-checked pair.
+        Nothing on the page picks a colour any other way.
+     2. One invariant SHAPE marks everything you can act on: a 7px solid bar
+        in the room's own ink. Not a colour. A single reserved hue cannot
+        work here, and the reason is arithmetic rather than taste: these
+        grounds run from L=0.004 to L=0.94, and no colour clears 3:1 against
+        both ends at once. The shape is invariant; its contrast is whatever
+        rule 1 already guarantees.
+     3. The more colour is on screen, the less is allowed to move. The only
+        animation here is the marquee, and it stops when you point at it.
+   The display face never runs body copy. Neither face is downloaded.
+   ════════════════════════════════════════════════════════════════════════ */
+:root{
+  --disp:Impact,Haettenschweiler,'Arial Narrow Bold','Arial Black',sans-serif;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --g:#f2ff00; --k:#0a0a0a;              /* current room, set by the observer  */
+  --bar:clamp(34px,4.4vh,46px);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;background:var(--g);height:100%}
+body{margin:0;height:100%;overflow:hidden;background:var(--g);color:var(--k);
+  font:400 16px/1.4 var(--sans);-webkit-font-smoothing:antialiased;
+  transition:background .34s steps(4,end),color .34s steps(4,end)}
+::selection{background:var(--k);color:var(--g)}
+:focus-visible{outline:4px solid var(--k);outline-offset:2px}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.skip{position:fixed;left:-9999px;top:0;z-index:60;background:var(--k);color:var(--g);
+  padding:12px 18px;font:700 13px var(--mono);text-decoration:none}
+.skip:focus{left:12px;top:calc(var(--bar) + 12px)}
+
+/* ── the marquee. The only moving thing. It stops when pointed at. ────── */
+.marq{position:fixed;inset:0 0 auto 0;z-index:40;height:var(--bar);
+  border-bottom:3px solid currentColor;background:var(--g);color:var(--k);
+  display:flex;align-items:center;overflow:hidden;
+  padding-top:env(safe-area-inset-top,0px);
+  transition:background .34s steps(4,end),color .34s steps(4,end)}
+.marq ul{display:flex;flex:none;margin:0;padding:0;list-style:none;
+  animation:run 46s linear infinite;will-change:transform}
+.marq:hover ul,.marq:focus-within ul{animation-play-state:paused}
+.marq li{flex:none;padding:0 1.6rem;font:400 13px/1 var(--mono);letter-spacing:.1em;
+  text-transform:uppercase;white-space:nowrap}
+.marq li::after{content:'▸';margin-left:1.6rem;opacity:.42}
+@keyframes run{to{transform:translateX(-50%)}}
+
+/* ── the rail. Rooms sit side by side; the page scrolls sideways. ─────── */
+#rail{position:fixed;inset:var(--bar) 0 var(--bar) 0;display:flex;
+  overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;
+  scrollbar-width:none;-ms-overflow-style:none;overscroll-behavior-x:contain}
+#rail::-webkit-scrollbar{display:none}
+.room{flex:0 0 100%;height:100%;scroll-snap-align:start;scroll-snap-stop:always;
+  overflow-y:auto;overflow-x:hidden;padding:clamp(18px,3.4vh,40px) clamp(18px,4vw,72px);
+  display:flex;flex-direction:column;justify-content:center;gap:clamp(10px,1.6vh,20px);
+  background:var(--rg);color:var(--rk)}
+.room>*{max-width:min(54rem,100%)}
+.room .n{font:400 13px/1 var(--mono);letter-spacing:.24em;opacity:.72}
+.room h2{font:400 clamp(56px,15vw,250px)/.78 var(--disp);letter-spacing:-.008em;
+  text-transform:uppercase;margin:0;max-width:none;overflow-wrap:break-word;hyphens:none}
+.room h2.sm{font-size:clamp(38px,8.6vw,132px);line-height:.86}
+/* the cover is a poster, not a column: it gets the whole width */
+.room.cover h2{font-size:clamp(76px,23vw,400px);line-height:.74}
+.room.cover .lead{font-size:clamp(20px,2.7vw,34px);max-width:26ch}
+.room .tag{font:400 13px/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;
+  display:inline-block;border:3px solid currentColor;padding:7px 11px}
+.room .lead{font:400 clamp(17px,2.1vw,25px)/1.34 var(--sans);margin:0;max-width:34ch}
+.room ul.pts{margin:0;padding:0;list-style:none;display:grid;gap:5px;max-width:54rem}
+.room ul.pts li{font:400 clamp(14px,1.55vw,17px)/1.32 var(--sans);
+  border-left:7px solid currentColor;padding:5px 0 5px 13px}
+.room dl{margin:0;display:grid;grid-template-columns:minmax(6rem,11rem) 1fr;
+  gap:6px clamp(12px,2vw,26px);max-width:46rem}
+.room dt{font:400 12px/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;opacity:.72}
+.room dd{margin:0;font-size:clamp(14px,1.5vw,17px)}
+.room .note{font-size:clamp(13px,1.35vw,15px);line-height:1.45;max-width:52ch;opacity:.86}
+.room ol.inv{margin:0;padding:0;list-style:none;display:grid;gap:3px;
+  font:400 clamp(12px,1.5vw,16px)/1.5 var(--mono);max-width:46rem}
+.room ol.inv li{white-space:nowrap;overflow-x:auto;padding:3px 0}
+.room ol.inv b{opacity:.5;font-weight:400;padding-right:.5em}
+.room a{color:inherit;text-decoration:none;box-shadow:inset 0 -7px 0 currentColor;
+  padding:0 2px}
+.room a:hover,.room a:focus-visible{background:var(--rk);color:var(--rg);box-shadow:none}
+@media (max-width:640px){
+  .room{justify-content:flex-start;padding-top:clamp(14px,4vh,28px)}
+  .room dl{grid-template-columns:1fr;gap:1px 0}
+  .room dt{margin-top:9px}
+}
+
+/* ── the tabs. Eleven rooms, one per fact, always reachable. ──────────── */
+#tabs{position:fixed;inset:auto 0 0 0;z-index:40;height:var(--bar);
+  border-top:3px solid currentColor;background:var(--g);color:var(--k);
+  display:flex;align-items:stretch;overflow-x:auto;scrollbar-width:none;
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  transition:background .34s steps(4,end),color .34s steps(4,end)}
+#tabs::-webkit-scrollbar{display:none}
+#tabs button{flex:1 0 auto;appearance:none;background:none;border:0;
+  border-right:1px solid currentColor;color:inherit;cursor:pointer;
+  font:400 12px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;
+  padding:0 clamp(9px,1.5vw,18px);white-space:nowrap;position:relative}
+#tabs button::after{content:'';position:absolute;inset:auto 0 0 0;height:0;background:currentColor;
+  transition:height .14s}
+#tabs button[aria-current=true]::after,#tabs button:hover::after{height:7px}
+#tabs button[aria-current=true]{font-weight:700}
+#tabs .hint{flex:none;display:flex;align-items:center;padding:0 14px;
+  font:400 11px var(--mono);letter-spacing:.14em;text-transform:uppercase;opacity:.6}
+@media (max-width:760px){#tabs .hint{display:none}}
+
+/* the return chip belongs to this page's colour system, not to the portal's */
+#mao-back{top:calc(var(--bar) + 12px)!important;color:var(--k)!important;
+  background:transparent!important;border-color:currentColor}
+#mao-back:hover,#mao-back:focus-visible{background:var(--k)!important;color:var(--g)!important}
+
+@media (prefers-reduced-motion:reduce){
+  .marq ul{animation:none}
+  #rail{scroll-behavior:auto}
+  body,.marq,#tabs{transition:none}
+}
+@media print{#rail{display:block;overflow:visible}.room{height:auto;page-break-after:always}
+  .marq,#tabs{display:none}}
+</style>
+</head>
+<body>
+
+<a class="skip" href="#r0">Skip to the first room</a>
+
+<header class="marq" aria-hidden="true"><ul id="marq"></ul></header>
+
+<main id="rail" tabindex="-1" aria-label="Eleven rooms, read sideways">
+  <section class="room" id="r0">
+    <p class="n">LOADING</p>
+    <h2>LOUD</h2>
+    <p class="lead">If this text stays, the content source did not load. Nothing has been
+    substituted for it. <a href="./raw.html">Read the RAW edition instead.</a></p>
+  </section>
+</main>
+
+<nav id="tabs" aria-label="Rooms"></nav>
+
+<script>
+(() => {
+'use strict';
+const esc = v => String(v).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* Six pairs. Each ground carries exactly one ink, and the pair is fixed here
+   rather than computed anywhere, so no room can drift out of contrast. The
+   ratios below are measured, not claimed: check.py recomputes them from
+   these very literals and fails if a comment has drifted from the colour. */
+const PAIRS = [
+  ['#f2ff00','#0a0a0a'],   // acid        18.0 : 1
+  ['#ff2d55','#0a0a0a'],   // hot pink     5.4 : 1
+  ['#00e5ff','#0a0a0a'],   // cyan        12.9 : 1
+  ['#1d1bff','#f2ff00'],   // ultramarine  7.2 : 1
+  ['#00ff85','#0a0a0a'],   // green       14.8 : 1
+  ['#0a0a0a','#f2ff00'],   // black       18.0 : 1
+];
+
+const rail = document.getElementById('rail');
+const tabs = document.getElementById('tabs');
+const root = document.documentElement;
+
+fetch('../content.json').then(r => r.json()).then(c => {
+  const rooms = [];
+
+  rooms.push({ label: 'MAO', html: `
+    <p class="n">00 — ${esc(c.identity.role).toUpperCase()}</p>
+    <h2>LOUD</h2>
+    <p class="lead">${esc(c.identity.claim)}</p>
+    <p class="note">${esc(c.identity.lede)} This edition says the same thing as the others
+    and says it sideways, one room per fact. Scroll, drag, press <b>→</b>, or use the rooms below.</p>` });
+
+  c.slots.forEach(s => rooms.push({ label: s.n, html: `
+    <p class="n">${esc(s.n)}</p>
+    <h2 class="${s.name.length > 15 ? 'sm' : ''}">${esc(s.name)}</h2>
+    <p><span class="tag">${esc(s.tag)}</span></p>
+    <p class="lead">${esc(s.lead)}</p>
+    ${s.points.length ? '<ul class="pts">' + s.points.map(p => `<li>${esc(p)}</li>`).join('') + '</ul>' : ''}` }));
+
+  rooms.push({ label: 'BEFORE', html: `
+    <p class="n">08 — PRIOR WORK</p>
+    <h2 class="sm">${esc(c.background.headline)}</h2>
+    <dl>${c.background.items.map(i => `<dt>${esc(i.k)}</dt><dd>${esc(i.v)}</dd>`).join('')}</dl>
+    <p class="note">${esc(c.background.note)}</p>` });
+
+  rooms.push({ label: 'ASSERT', html: `
+    <p class="n">09 — ENFORCED, NOT PROMISED</p>
+    <h2 class="sm">INVARIANTS</h2>
+    <ol class="inv">${c.invariants.map(i => `<li><b>assert</b>${esc(i)}</li>`).join('')}</ol>
+    <p class="note">Each of these is checked by something that can stop the run. None of them
+    is a convention, a comment, or an intention.</p>` });
+
+  rooms.push({ label: 'END', html: `
+    <p class="n">10 — COLOPHON</p>
+    <h2 class="sm">${esc(c.identity.motto).toUpperCase()}</h2>
+    <p class="lead">Eleven rooms, six ground-and-ink pairs, two typefaces, neither downloaded.</p>
+    <p class="note">Everything you can act on carries the same 7&nbsp;pixel bar, in the room's own
+    ink. That is a shape rather than a colour on purpose: these six grounds run from almost black
+    to almost white, and no single hue clears 3:1 against both ends, so a &ldquo;reserved accent
+    colour&rdquo; would have been a lie in four of the eleven rooms. The bar cannot drift, and its
+    contrast is whatever the room's pair already guarantees.</p>
+    <dl>
+      <dt>elsewhere</dt><dd><a href="${esc(c.identity.github)}">${esc(c.identity.github.replace(/^https:\/\//,''))}</a></dd>
+      <dt>other editions</dt><dd><a href="./field.html">FIELD</a> · <a href="./paper.html">PAPER</a> · <a href="./raw.html">RAW</a> · <a href="./system.html">SYSTEM</a></dd>
+      <dt>the atrium</dt><dd><a href="../">five slabs of glass, one per edition</a></dd>
+    </dl>
+    <p class="note">No framework, no webfont, no third party, no tracker. The marquee is the
+    only animation on this page and it stops when you point at it.</p>` });
+
+  rail.innerHTML = rooms.map((r, i) => {
+    const [g, k] = PAIRS[i % PAIRS.length];
+    return `<section class="room${i === 0 ? ' cover' : ''}" id="r${i}" aria-label="Room ${i + 1}: ${esc(r.label)}"
+      style="--rg:${g};--rk:${k}" data-g="${g}" data-k="${k}">${r.html}</section>`;
+  }).join('');
+
+  tabs.innerHTML = rooms.map((r, i) =>
+    `<button type="button" data-i="${i}" aria-current="${i === 0}">${esc(r.label)}</button>`).join('')
+    + '<span class="hint">scroll · drag · ← →</span>';
+
+  // the marquee reads the invariants, twice, so the loop is seamless
+  const items = c.invariants.map(i => `<li>assert ${esc(i)}</li>`).join('');
+  document.getElementById('marq').innerHTML = items + items;
+
+  wire(rooms.length);
+}).catch(() => {
+  tabs.innerHTML = '<span class="hint">content source unavailable</span>';
+});
+
+function wire(n) {
+  const sections = [...rail.querySelectorAll('.room')];
+  let cur = -1;
+
+  const land = i => {
+    if (i === cur) return;
+    cur = i;
+    const s = sections[i];
+    root.style.setProperty('--g', s.dataset.g);
+    root.style.setProperty('--k', s.dataset.k);
+    document.querySelector('meta[name=theme-color]').setAttribute('content', s.dataset.g);
+    for (const b of tabs.querySelectorAll('button'))
+      b.setAttribute('aria-current', String(+b.dataset.i === i));
+  };
+
+  // Which room is on screen decides the colour of the bars. Nothing else does.
+  const ratio = new Array(n).fill(0);
+  const obs = new IntersectionObserver(entries => {
+    for (const e of entries) {
+      const i = sections.indexOf(e.target);
+      if (i >= 0) ratio[i] = e.isIntersecting ? e.intersectionRatio : 0;
+    }
+    let best = 0;
+    for (let i = 1; i < n; i++) if (ratio[i] > ratio[best]) best = i;
+    if (ratio[best] > 0) land(best);
+  }, { root: rail, threshold: [0, 0.25, 0.5, 0.75, 1] });
+  sections.forEach(s => obs.observe(s));
+
+  land(0);
+
+  const go = i => {
+    i = Math.max(0, Math.min(n - 1, i));
+    sections[i].scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches
+      ? 'auto' : 'smooth', block: 'nearest', inline: 'start' });
+  };
+
+  tabs.addEventListener('click', e => {
+    const b = e.target.closest('button'); if (b) go(+b.dataset.i);
+  });
+
+  // A vertical wheel on a horizontal rail is the whole point of this edition.
+  rail.addEventListener('wheel', e => {
+    if (e.ctrlKey) return;                                  // let the browser zoom
+    if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;   // a real sideways gesture
+    const room = sections[Math.max(0, cur)];
+    // a room taller than the viewport keeps its own vertical scroll
+    if (room && room.scrollHeight > room.clientHeight + 2) {
+      const atTop = room.scrollTop <= 0, atEnd = room.scrollTop + room.clientHeight >= room.scrollHeight - 1;
+      if (!(e.deltaY < 0 && atTop) && !(e.deltaY > 0 && atEnd)) return;
+    }
+    e.preventDefault();
+    rail.scrollLeft += e.deltaY;
+  }, { passive: false });
+
+  addEventListener('keydown', e => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.target.closest('input,textarea,select')) return;
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') { go(cur + 1); e.preventDefault(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { go(cur - 1); e.preventDefault(); }
+    else if (e.key === 'Home') { go(0); e.preventDefault(); }
+    else if (e.key === 'End') { go(n - 1); e.preventDefault(); }
+  });
+
+  // drag the rail sideways, on any pointer, without breaking a click on a link
+  let down = false, sx = 0, sl = 0, moved = 0;
+  rail.addEventListener('pointerdown', e => {
+    if (e.pointerType === 'touch') return;                  // touch already does this
+    if (e.target.closest('a,button')) return;
+    down = true; moved = 0; sx = e.clientX; sl = rail.scrollLeft;
+    rail.style.scrollSnapType = 'none';
+  });
+  addEventListener('pointermove', e => {
+    if (!down) return;
+    moved = Math.abs(e.clientX - sx);
+    if (moved > 3) rail.scrollLeft = sl - (e.clientX - sx);
+  });
+  addEventListener('pointerup', () => {
+    if (!down) return;
+    down = false; rail.style.scrollSnapType = 'x mandatory';
+    if (moved > 3) go(Math.round(rail.scrollLeft / rail.clientWidth));
+  });
+}
+})();
+</script>
+</body>
+</html>

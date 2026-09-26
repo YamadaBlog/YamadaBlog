@@ -12,7 +12,36 @@
 <b>shell</b> <code>curl -sL yamadablog.github.io/YamadaBlog/card.txt</code>
 </samp>
 
+<br>
+
+<samp><b>THE ATRIUM</b> — five slabs of cast glass stand in a ring. Each one is frosted until
+you come closer, and each one opens a <i>different</i> portfolio: not a theme, a different
+art direction, navigation model and set of rules. One content source, written five ways.</samp>
+
+<samp>
+<a href="https://yamadablog.github.io/YamadaBlog/"><b>ATRIUM</b></a> &nbsp;·&nbsp;
+<a href="https://yamadablog.github.io/YamadaBlog/u/field.html">FIELD</a> &nbsp;·&nbsp;
+<a href="https://yamadablog.github.io/YamadaBlog/u/paper.html">PAPER</a> &nbsp;·&nbsp;
+<a href="https://yamadablog.github.io/YamadaBlog/u/raw.html">RAW</a> &nbsp;·&nbsp;
+<a href="https://yamadablog.github.io/YamadaBlog/u/system.html">SYSTEM</a> &nbsp;·&nbsp;
+<a href="https://yamadablog.github.io/YamadaBlog/u/loud.html">LOUD</a>
+</samp>
+
 </div>
+
+| edition | what it is | how you move through it |
+|---|---|---|
+| **FIELD** | a living particle field, drawn from real commit data | one page, continuous scroll |
+| **PAPER** | a printed technical report: marginalia, figures, footnotes | four numbered pages, arrow keys |
+| **RAW** | the document unstyled, auditing its own cost in the footer | anchors, nothing else |
+| **SYSTEM** | an instrument under ISA-101 rules; chroma means state, never decoration | a subsystem tree, `j` / `k` |
+| **LOUD** | the same facts, shouted; one saturated room per fact | sideways, eleven rooms |
+
+<sub>The atrium is hand-rolled WebGL2 — no three.js, no framework, one lazily imported module.
+It refuses to start on a software renderer, under Data Saver, under `prefers-reduced-motion`,
+or on a machine below its budget, and hands over to a flat typographic index that is in the
+HTML rather than built by script. That index is not an apology; it is the fallback I would
+ship on its own.</sub>
 
 I build systems that have to be **right**, not just run.
 Most of the bench is private — this is the public index.
@@ -25,8 +54,8 @@ Most of the bench is private — this is the public index.
 </a>
 
 <sub><b>THE FIELD</b> — one mark per day. x is the date, y is that day's rank among the year,
-and the scatter is its deviation from the surrounding 30-day median. The portfolio animates
-the same mapping in WebGL: <a href="https://yamadablog.github.io/YamadaBlog/">yamadablog.github.io</a>.</sub>
+and the scatter is its deviation from the surrounding 30-day median. The FIELD edition animates
+the same mapping in WebGL: <a href="https://yamadablog.github.io/YamadaBlog/u/field.html">yamadablog.github.io/u/field.html</a>.</sub>
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./assets/session-dark.svg">
@@ -269,6 +298,6 @@ assert "no edge" in notebook                       # killing ideas is output, no
 
 <samp>every graphic is rendered from the GitHub API by <a href="./scripts/forge.py"><code>scripts/forge.py</code></a><br>
 stdlib python, no dependencies, no hosted widgets · re-forged nightly<br><br>
-<a href="https://yamadablog.github.io/YamadaBlog/"><b>the field, in motion →</b></a></samp>
+<a href="https://yamadablog.github.io/YamadaBlog/"><b>enter the atrium →</b></a></samp>
 
 </div>
