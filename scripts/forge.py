@@ -569,7 +569,6 @@ def main() -> None:
     ASSETS.mkdir(exist_ok=True)
     for name, th in THEMES.items():
         put(ASSETS / f"banner-{name}.svg", banner_svg(days, s, th))
-        put(ASSETS / f"header-{name}.svg", header_svg(s, th))
         put(ASSETS / f"seismo-{name}.svg", seismo_svg(days, s, th))
         put(ASSETS / f"spectrum-{name}.svg", spectrum_svg(s, th))
         put(ASSETS / f"life-{name}.svg", life_svg(days, th))
