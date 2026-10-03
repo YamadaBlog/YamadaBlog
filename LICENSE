@@ -1,0 +1,10 @@
+Copyright (c) 2026 MAO (github.com/YamadaBlog). All rights reserved.
+
+The site published from this repository (site/), its code, shaders, images,
+models, texts and art direction are the author's work. No licence is granted:
+they may not be copied, reused, modified or redistributed, in whole or in
+part, without the author's written permission.
+
+The third-party components it contains keep their own licences (three.js and
+GSAP under their respective licences, IBM Plex Mono and Open Sauce One under
+the SIL Open Font License 1.1, see site/world/fonts/).
