@@ -9,7 +9,7 @@
 
 <samp>
 <b>site</b> <a href="https://mao-portfolio.pages.dev/">mao-portfolio.pages.dev</a> &nbsp;·&nbsp;
-<b>shell</b> <code>curl -sL yamadablog.github.io/YamadaBlog/card.txt</code>
+<b>shell</b> <code>curl -sL maoxor.github.io/maoxor/card.txt</code>
 </samp>
 
 <br>
@@ -186,7 +186,7 @@ Earlier work was the enterprise side of the same discipline: Angular front-ends
 over Java/Spring and .NET APIs, layered so the UI never reaches past the service
 boundary. See `/background`.
 
-<sub>Example: <a href="https://github.com/YamadaBlog/pulse-player">pulse-player</a>, seven packages, six frameworks. A workbench for the parity problem rather than a headline project.</sub>
+<sub>Example: <a href="https://github.com/maoxor/pulse-player">pulse-player</a>, seven packages, six frameworks. A workbench for the parity problem rather than a headline project.</sub>
 
 </details>
 

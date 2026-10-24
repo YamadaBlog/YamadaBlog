@@ -23,7 +23,7 @@ import sys
 import urllib.request
 from pathlib import Path
 
-LOGIN = "YamadaBlog"
+LOGIN = "maoxor"
 ROOT = Path(__file__).resolve().parent.parent
 ASSETS, SITE, DATA = ROOT / "assets", ROOT / "site", ROOT / "data"
 SNAPSHOT = DATA / "snapshot.json"

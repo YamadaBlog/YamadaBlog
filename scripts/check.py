@@ -2,7 +2,7 @@
 """
 check.py — everything the published site claims about itself, verified mechanically.
 
-The site in site/ is built in the private repository YamadaBlog/portfolio
+The site in site/ is built in the private repository maoxor/portfolio
 (`npm run build`, then dist/ is copied here). This is that repository's
 tools/check.py, run on what is published: the same invariants, against
 site/ instead of dist/, without the unit suite (it lives with the sources).
